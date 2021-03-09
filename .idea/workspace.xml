@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9a7d645b-92e4-4f1a-b26a-8cb4945b1dd0" name="Default Changelist" comment="funkčné">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +106,7 @@
       <workItem from="1615206940784" duration="2343000" />
       <workItem from="1615209303965" duration="300000" />
       <workItem from="1615299832606" duration="933000" />
-      <workItem from="1615300787936" duration="106000" />
+      <workItem from="1615300787936" duration="291000" />
     </task>
     <task id="LOCAL-00001" summary="gitignore">
       <created>1615207125629</created>
@@ -151,7 +150,21 @@
       <option name="project" value="LOCAL" />
       <updated>1615209531059</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add gitignore">
+      <created>1615300902508</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1615300902508</updated>
+    </task>
+    <task id="LOCAL-00008" summary="gitignore test">
+      <created>1615300977052</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1615300977052</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -211,7 +224,9 @@
     <MESSAGE value="pridanie library" />
     <MESSAGE value="javafx" />
     <MESSAGE value="funkčné" />
-    <option name="LAST_COMMIT_MESSAGE" value="funkčné" />
+    <MESSAGE value="add gitignore" />
+    <MESSAGE value="gitignore test" />
+    <option name="LAST_COMMIT_MESSAGE" value="gitignore test" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
