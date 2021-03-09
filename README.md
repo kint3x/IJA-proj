@@ -4,9 +4,9 @@ Tento projekt je pro předmet Seminář Java na Fakultě Informačních technolo
 ✔ - done 
 
 * Add code 
-#Tímové úlohy
+# Tímové úlohy
 ___
-###Simon:
+### Simon:
 * Spraviť projekt
-###Martin:
+### Martin:
 * Pomôcť Simonovi
