@@ -7,15 +7,15 @@ import java.util.ArrayList;
  */
 public class Shelf {
     private ArrayList<Item> items = new ArrayList<>();
-    private Integer posX;
-    private Integer posY;
+    private int posX;
+    private int posY;
 
     /**
      * Konštruktor.
      * @param posX  x-ová súradnica
      * @param posY  y-ová súradnica
      */
-    public Shelf(Integer posX, Integer posY) {
+    public Shelf(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
     }
@@ -24,7 +24,7 @@ public class Shelf {
      * Vráti pozíciu regálu na x-ovej súradnici.
      * @return  hodnota x-ovej súradnice
      */
-    public Integer getPosX() {
+    public int getPosX() {
         return this.posX;
     }
 
@@ -32,7 +32,7 @@ public class Shelf {
      * Vráti pozíciu regálu na y-ovej súradnici.
      * @return  hodnota y-ovej súradnice
      */
-    public Integer getPosY() {
+    public int getPosY() {
         return this.posY;
     }
 
