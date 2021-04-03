@@ -2,13 +2,24 @@ package design.model;
 
 import java.util.Objects;
 
+/**
+ * Trieda reprezentujúca typ položky.
+ */
 public class ItemType {
     private String name;
 
+    /**
+     * Konštruktor.
+     * @param name  názov
+     */
     public ItemType(String name) {
         this.name = name;
     }
 
+    /**
+     * Zistí názov položky
+     * @return  názov položky
+     */
     public String getName() {
         return this.name;
     }
