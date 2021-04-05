@@ -26,6 +26,12 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
+        try {
+            storage.importItems("input/items.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         storage.printStorage();
 
         launch(args);

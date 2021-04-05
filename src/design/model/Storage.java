@@ -53,7 +53,7 @@ public class Storage {
     }
 
     /**
-     * Parsuje uvedený súbor, volá metodu createShelfs pre špecifikované rozmery regálov.
+     * Parsuje uvedený súbor, vytvára a vkladá regále na uvedených pozíciach.
      * @param filename JSON súbor obsahujúci popis regálov
      * @throws Exception otvorenie a parsovanie súboru
      */
@@ -74,6 +74,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Parsuje daný súbor, do regálu na danej pozícii vkladá položky uvedené v súbore.
+     * @param filename JSON súbor s popisom vkladaných položiek
+     * @throws Exception otvorenie a parsovanie súboru
+     */
     public void importItems(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
         JSONObject jo = (JSONObject) obj;
@@ -82,13 +87,31 @@ public class Storage {
         for (Object o : ja) {
             Map m = (Map) o;
 
-            int x1 = ((Long) m.get("x1")).intValue();
-            int y1 = ((Long) m.get("y1")).intValue();
-            int x2 = ((Long) m.get("x2")).intValue();
-            int y2 = ((Long) m.get("y2")).intValue();
+            String name = (String) m.get("name");
+            Item item = new Item(new ItemType(name));
 
-            this.createShelfs(x1, y1, x2, y2);
+            int count = ((Long) m.get("count")).intValue();
+            int x = ((Long) m.get("x")).intValue();
+            int y = ((Long) m.get("y")).intValue();
+
+            this.getShelfByPosition(x,y).addItem(item, count);
         }
+    }
+
+    /**
+     * Vráti objekt reprezentujúci regál na uvedenej pozícii.
+     * @param x pozícia na x-ovej súradnici
+     * @param y pozícia na y-ovej súradnici
+     * @return  regál umiestnený na špecifikovanej pozícii
+     */
+    public Shelf getShelfByPosition(int x, int y) {
+        for (Shelf s : this.shelfs) {
+            if (s.getPosX() == x && s.getPosY() == y) {
+                return s;
+            }
+        }
+
+        return null;
     }
 
     public void printStorage() {

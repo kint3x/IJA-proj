@@ -3,13 +3,21 @@
   [
     {
       "name": "stôl",
+      "count": 5,
       "x": 1,
       "y": 1
     },
     {
       "name": "postel",
-      "x": 2,
+      "count": 2,
+      "x": 1,
       "y": 2
+    },
+    {
+      "name": "vaňa",
+      "count": 4,
+      "x": 1,
+      "y": 3
     }
   ]
 }

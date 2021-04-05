@@ -37,11 +37,22 @@ public class Shelf {
     }
 
     /**
-     * Pridanie položky do regálu.
+     * Pridanie jednej položky do regálu.
      * @param item  položka
      */
     public void addItem(Item item) {
         this.items.add(item);
+    }
+
+    /**
+     * Pridanie niekoľkých položiek do regálu.
+     * @param item  položka
+     * @param count počet položiek
+     */
+    public void addItem(Item item, int count) {
+        for (int i = 0; i < count; i++) {
+            this.addItem(item);
+        }
     }
 
     /**
