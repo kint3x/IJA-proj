@@ -1,12 +1,14 @@
 package design.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Trieda reprezentujúca regál, obsahujúci položky.
  */
 public class Shelf {
     private ArrayList<Item> items = new ArrayList<>();
+    private HashMap<String, Integer> itemCounts = new HashMap<>();
     private int posX;
     private int posY;
 
@@ -37,11 +39,21 @@ public class Shelf {
     }
 
     /**
+     * Upraví počty jednotlivých položiek.
+     * @param itemName  meno položky
+     * @param diff      hodnota, ktorá bude pripočítaná k aktuálnej
+     */
+    public void updateCounts(String itemName, int diff) {
+        this.itemCounts.put(itemName, this.itemCounts.getOrDefault(itemName, 0) + diff);
+    }
+
+    /**
      * Pridanie jednej položky do regálu.
      * @param item  položka
      */
     public void addItem(Item item) {
         this.items.add(item);
+        this.updateCounts(item.getType().getName(), 1);
     }
 
     /**
@@ -72,7 +84,9 @@ public class Shelf {
         if (i >= this.items.size()) {
             return null;
         } else {
-            return this.items.remove(i);
+            Item item =  this.items.remove(i);
+            this.updateCounts(item.getType().getName(), -1);
+            return item;
         }
     }
 
@@ -82,22 +96,23 @@ public class Shelf {
      * @return          počet položiek daného typu
      */
     public int countItems(ItemType itemType) {
-        int cnt = 0;
+        return this.itemCounts.getOrDefault(itemType.getName(), 0);
+    }
 
-        for (Item item : this.items) {
-            if (item.getType().equals(itemType)) {
-                cnt++;
-            }
-        }
-
-        return cnt;
+    /**
+     * Zistí počet položiek daného typu v regáli.
+     * @param itemName  názov položiek
+     * @return          počet položiek daného typu
+     */
+    public int countItems(String itemName) {
+        return this.itemCounts.getOrDefault(itemName, 0);
     }
 
     public void printShelf() {
         System.out.format("x: %d, y: %d\n", this.getPosX(), this.getPosY());
 
-        for (Item i : this.items) {
-            System.out.format("\tname: %s, count: %d\n", i.getType().getName(), this.countItems(i.getType()));
+        for (String key : this.itemCounts.keySet()) {
+            System.out.format("\tname: %s, count: %d\n", key, this.countItems(key));
         }
 
         System.out.println("------------------------------");

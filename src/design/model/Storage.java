@@ -94,6 +94,12 @@ public class Storage {
             int x = ((Long) m.get("x")).intValue();
             int y = ((Long) m.get("y")).intValue();
 
+            Shelf shelf = getShelfByPosition(x,y);
+
+            if (shelf == null) {
+                System.err.format("Nenájdený regál na pozícii x: %d, y:%d\n", x, y);
+            }
+
             this.getShelfByPosition(x,y).addItem(item, count);
         }
     }
