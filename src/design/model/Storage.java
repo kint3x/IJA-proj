@@ -120,6 +120,10 @@ public class Storage {
         return null;
     }
 
+    public ArrayList<Shelf> getAllShelfs(){
+        return shelfs;
+    }
+
     public void printStorage() {
         for (Shelf s : this.shelfs) {
             s.printShelf();
