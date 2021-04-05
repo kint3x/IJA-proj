@@ -2,13 +2,21 @@
 
 
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="design.controllers.Controller">
-    <HBox>
-        <fx:include fx:id="consoleTab" source="menu.fxml"/>
-    </HBox>
+
+    <VBox>
+        <children>
+            <fx:include  source="menu.fxml"/>
+            <fx:include  source="storage.fxml" />
+        </children>
+    </VBox>
+
+
+
 
 
 </AnchorPane>

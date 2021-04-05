@@ -21,22 +21,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        Storage storage = new Storage();
-
-        try {
-            storage.importShelfs("input/shelfs.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            storage.importItems("input/items.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        storage.printStorage();
-
         launch(args);
     }
 

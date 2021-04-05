@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:controller="design.controllers.storageController"
+          xmlns:fx="http://javafx.com/fxml" alignment="BOTTOM_LEFT"
+          styleClass="root" fx:id="storageGrid" maxHeight="Infinity" maxWidth="Infinity">
+
+</GridPane>
