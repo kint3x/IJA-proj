@@ -59,7 +59,6 @@ public class Storage {
      */
     public void importShelfs(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
-
         JSONObject jo = (JSONObject) obj;
         JSONArray ja = (JSONArray) jo.get("shelfs");
 
@@ -75,9 +74,26 @@ public class Storage {
         }
     }
 
-    public void printShelfs() {
+    public void importItems(String filename) throws Exception {
+        Object obj = new JSONParser().parse(new FileReader(filename));
+        JSONObject jo = (JSONObject) obj;
+        JSONArray ja = (JSONArray) jo.get("items");
+
+        for (Object o : ja) {
+            Map m = (Map) o;
+
+            int x1 = ((Long) m.get("x1")).intValue();
+            int y1 = ((Long) m.get("y1")).intValue();
+            int x2 = ((Long) m.get("x2")).intValue();
+            int y2 = ((Long) m.get("y2")).intValue();
+
+            this.createShelfs(x1, y1, x2, y2);
+        }
+    }
+
+    public void printStorage() {
         for (Shelf s : this.shelfs) {
-            System.out.format("%d, %d\n", s.getPosX(), s.getPosY());
+            s.printShelf();
         }
     }
 }

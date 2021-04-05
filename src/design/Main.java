@@ -26,7 +26,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        storage.printShelfs();
+        storage.printStorage();
 
         launch(args);
     }

@@ -7,6 +7,34 @@ import java.util.ArrayList;
  */
 public class Shelf {
     private ArrayList<Item> items = new ArrayList<>();
+    private int posX;
+    private int posY;
+
+    /**
+     * Konštruktor.
+     * @param posX  x-ová súradnica
+     * @param posY  y-ová súradnica
+     */
+    public Shelf(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+    /**
+     * Vráti pozíciu regálu na x-ovej súradnici.
+     * @return  hodnota x-ovej súradnice
+     */
+    public int getPosX() {
+        return this.posX;
+    }
+
+    /**
+     * Vráti pozíciu regálu na y-ovej súradnici.
+     * @return  hodnota y-ovej súradnice
+     */
+    public int getPosY() {
+        return this.posY;
+    }
 
     /**
      * Pridanie položky do regálu.
