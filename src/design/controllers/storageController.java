@@ -57,7 +57,7 @@ public class storageController {
 
         // storageGrid.add(t,0,0);
         addShelfs();
-        handleMouseClick();
+        // handleMouseClick();
     }
     public void addShelfs(){
         ArrayList<Shelf> shelfs= storage.getAllShelfs();

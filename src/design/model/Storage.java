@@ -13,13 +13,38 @@ import java.util.Map;
  */
 public class Storage {
     private ArrayList<Shelf> shelfs = new ArrayList<>();
+    private int height = 0;
+    private int width = 0;
+
+    /**
+     * Vráti hodnotu výšky skladu.
+     * @return  výška skladu
+     */
+    public int getHeight() {
+        return this.height;
+    }
+
+    /**
+     * Vráti hodnota šírky skladu.
+     * @return šírka skladu
+     */
+    public int getWidth() {
+        return this.width;
+    }
 
     /**
      * Pridanie regálu do skladu.
      * @param shelf regál
      */
     public void addShelf(Shelf shelf) {
-        shelfs.add(shelf);
+        if (0 <= shelf.getPosY() && shelf.getPosY() < this.height) {
+            if (0 <= shelf.getPosX() && shelf.getPosX() < this.width) {
+                this.shelfs.add(shelf);
+                return;
+            }
+        }
+
+        System.err.format("Zadaná pozícia regálu je mimo hranice.\nx: %d, y: %d\n", shelf.getPosX(), shelf.getPosY());
     }
 
     /**
@@ -60,9 +85,13 @@ public class Storage {
     public void importShelfs(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
         JSONObject jo = (JSONObject) obj;
-        JSONArray ja = (JSONArray) jo.get("shelfs");
 
-        for (Object o : ja) {
+        this.width = ((Long) jo.get("width")).intValue();
+        this.height = ((Long) jo.get("height")).intValue();
+
+        JSONArray shelfsArray = (JSONArray) jo.get("shelfs");
+
+        for (Object o : shelfsArray) {
             Map m = (Map) o;
 
             int x1 = ((Long) m.get("x1")).intValue();
@@ -82,9 +111,9 @@ public class Storage {
     public void importItems(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
         JSONObject jo = (JSONObject) obj;
-        JSONArray ja = (JSONArray) jo.get("items");
+        JSONArray itemsArray = (JSONArray) jo.get("items");
 
-        for (Object o : ja) {
+        for (Object o : itemsArray) {
             Map m = (Map) o;
 
             String name = (String) m.get("name");
@@ -97,7 +126,8 @@ public class Storage {
             Shelf shelf = getShelfByPosition(x,y);
 
             if (shelf == null) {
-                System.err.format("Nenájdený regál na pozícii x: %d, y:%d\n", x, y);
+                System.err.format("Nenájdený regál na pozícii x: %d, y: %d\n", x, y);
+                continue;
             }
 
             this.getShelfByPosition(x,y).addItem(item, count);
@@ -120,6 +150,10 @@ public class Storage {
         return null;
     }
 
+    /**
+     * Vráti zoznam všetkých regálov.
+     * @return  zoznam regálov
+     */
     public ArrayList<Shelf> getAllShelfs(){
         return shelfs;
     }
