@@ -10,7 +10,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="design.controllers.menuController">
 
-<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"  xmlns:fx="http://javafx.com/fxml/1" >
+<MenuBar fx:id="menuBar"  xmlns:fx="http://javafx.com/fxml/1" >
 <menus>
     <Menu text="Súbor">
         <items>

@@ -1,62 +1,51 @@
 package design.controllers;
 
 import design.Main;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
-import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.io.IOException;
 
 public class menuController {
     @FXML
     private MenuBar menuBar;
-
-
     /**
-     * Handluje event na tlačítku O aplikácií
+     * Pri stlačení tlačidla O aplikácií otvorí nové okno s designom about.fxml
      *
-     * @param event Event na tlačítku O aplikácií v menu.
      */
-    @FXML
-    private void handleAboutAction(final ActionEvent event)
-    {
-
+    @FXML void handleAboutAction(){
         provideAboutFunctionality();
     }
 
-    /**
-     * Handluje CTRL+A pre O aplikáci
-     *
-     * @param event Input event.
-     */
     @FXML
-    private void handleKeyInput(final InputEvent event)
+    public void provideAboutFunctionality()
     {
-        if (event instanceof KeyEvent)
-        {
-            final KeyEvent keyEvent = (KeyEvent) event;
-            if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.A)
-            {
-                provideAboutFunctionality();
-            }
+        try {
+            Parent a = FXMLLoader.load(getClass().getResource("/design/layouts/about.fxml"));
+            Stage about = new Stage();
+            about.setTitle("O aplikácií");
+            about.initStyle(StageStyle.UTILITY);
+            about.setScene(new Scene(a));
+            about.show();
+
         }
-    }
+        catch (IOException e) {
+            System.out.println(e);
+        }
 
-    /**
-     * Perform functionality associated with "About" menu selection or CTRL-A.
-     */
-    @FXML
-    private void provideAboutFunctionality()
-    {
 
-        System.out.println("Kliknutie na about!");
     }
 
     @FXML
     protected void initialize(){
         Stage primaryStage = Main.getStage();
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
+        Controller.menu=this; //Do hlavneho kontrolera vloží svoju inštanciu
     }
+
 }

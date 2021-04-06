@@ -39,10 +39,17 @@ public class GShelf {
         grid.add(rect,shelf.getPosX(),shelf.getPosY());
     }
 
+    /**
+     * Vrati shelf ulozeny v tomto policku
+     * @return shelf
+     */
     public Shelf getShelf(){
         return shelf;
     }
 
+    /**
+     * Ak je kliknute na políčko, zavola metodu storageControlleru
+     */
     EventHandler<MouseEvent> clickedHandler = ev -> {
         controller.ClickedAction(this);
         ev.consume();

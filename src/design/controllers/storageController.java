@@ -8,20 +8,18 @@ import design.model.Storage;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
 public class storageController {
-    private ArrayList<GShelf> gShelfs;
-    private ArrayList<GEmpty> gEmpty;
-    private int scale=1;
-    private Storage storage;
+    private ArrayList<GShelf> gShelfs; //všetky graficke shelfs
+    private ArrayList<GEmpty> gEmpty; // vsetky volne policka na mape
+    private Storage storage;          // nacitany sklad
 
-    private int rect_s;
+    private int rect_s;             // premenna pre velkost policok
 
-    private double initial_coordX;
-    private double initial_coordY;
+    private double initial_coordX;   //premenna pre drag na uchovavanie predoslej pozicie
+    private double initial_coordY;  //premenna pre drag na uchovavanie predoslej pozicie
 
     @FXML
     private GridPane storageGrid;
@@ -32,10 +30,10 @@ public class storageController {
 
         gShelfs = new ArrayList<GShelf>();
         gEmpty = new ArrayList<GEmpty>();
+
         loadStorage();
-        //handleMouseClick();
 
-
+        /** Obslúži ZOOM a DRAG **/
         storageGrid.setOnMouseDragged(ev -> {
             if(!Main.DragLock) dragGrid(ev.getX(),ev.getY());
         });
@@ -47,12 +45,14 @@ public class storageController {
             else rect_s = rect_s - 1 ;
 
             zoomEvent();
-            System.out.println(rect_s);
         });
 
 
     }
 
+    /**
+     * Obslúži zoomovanie, prekreslí kocky na inú veľkosť
+     */
     private void zoomEvent(){
         for(int i=0;i<gShelfs.size();i++){
             gShelfs.get(i).rectSize((int)rect_s,(int)rect_s);
@@ -62,6 +62,11 @@ public class storageController {
         }
     }
 
+    /**
+     * Obslúži drag a zmení polohu Gridu
+     * @param Aktuálna pozícia myši X
+     * @param Aktuálna pozícia myši Y
+     */
     private void dragGrid(double X, double Y){
         double changex = X - initial_coordX;
         double changey = Y - initial_coordY;
@@ -71,7 +76,9 @@ public class storageController {
 
     }
 
-
+    /**
+     * Načíta Storage (neskôr z nastavení)
+     */
     public void loadStorage(){
         storage = new Storage();
 
@@ -90,18 +97,22 @@ public class storageController {
         storage.printStorage();
 
         storageGrid.setPadding(new Insets(10,10,10,10));
-        //storageGrid.gridLinesVisibleProperty().set(true);
-
-        Stage primaryStage = Main.getStage();
-        storageGrid.prefWidthProperty().bind(primaryStage.widthProperty());
 
 
+       /* Stage primaryStage = Main.getStage();
+        storageGrid.prefWidthProperty().bind(primaryStage.widthProperty());*/
 
 
-        // storageGrid.add(t,0,0);
+
+
+
         drawMap();
-        // handleMouseClick();
+
     }
+
+    /**
+     * Vykreslí načítanú mapu s políčkami
+     */
     public void drawMap(){
         ArrayList<Shelf> shelfs= storage.getAllShelfs();
 
@@ -120,17 +131,26 @@ public class storageController {
             news.drawShelf();
             gShelfs.add(news);
         }
+        storageGrid.setMaxSize(1,1); // defaultne nech je grid maly, pridanymi prvkami sa zvacsi
     }
 
     public GridPane getStorageGrid(){
         return storageGrid;
     }
 
+    /**
+     * Akcia volaná ak sa klikne na shelfu
+     * @param s Gshelfa ktorá akciu zavolala
+     */
     public void ClickedAction(GShelf s){
         System.out.println("Kliknutie na shelfu: \n");
         s.getShelf().printShelf();
     }
 
+    /**
+     * Vráti aktuálnu velkosť políčka
+     * @return velkosť políčka
+     */
     public int getRect_s(){
         return rect_s;
     }
