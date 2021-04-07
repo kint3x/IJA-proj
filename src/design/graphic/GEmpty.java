@@ -22,7 +22,6 @@ public class GEmpty {
     /**
      * Nastavenie defaultnych nastaveni prazdneho políčka
      */
-
     private void rectDefaultstyle(){
         rect.setHeight(controller.getRect_s());
         rect.setWidth(controller.getRect_s());

@@ -11,6 +11,9 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 
+/**
+ * Classa pre storageController, ovláda grid
+ */
 public class storageController {
     private ArrayList<GShelf> gShelfs; //všetky graficke shelfs
     private ArrayList<GEmpty> gEmpty; // vsetky volne policka na mape
@@ -24,6 +27,9 @@ public class storageController {
     @FXML
     private GridPane storageGrid;
 
+    /**
+     * Funkcia volaná pri inicializácii controlleru, nastaví listeners
+     */
     @FXML
     protected void initialize(){
         rect_s = 30; //default rect s = 30
@@ -83,13 +89,13 @@ public class storageController {
         storage = new Storage();
 
         try {
-            storage.importShelfs("input/shelfs.json");
+            storage.importShelfs("data/shelfs.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            storage.importItems("input/items.json");
+            storage.importItems("data/items.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,13 +103,6 @@ public class storageController {
         storage.printStorage();
 
         storageGrid.setPadding(new Insets(10,10,10,10));
-
-
-       /* Stage primaryStage = Main.getStage();
-        storageGrid.prefWidthProperty().bind(primaryStage.widthProperty());*/
-
-
-
 
 
         drawMap();
@@ -134,6 +133,10 @@ public class storageController {
         storageGrid.setMaxSize(1,1); // defaultne nech je grid maly, pridanymi prvkami sa zvacsi
     }
 
+    /**
+     * Vráti instanci gridu
+     * @return grid
+     */
     public GridPane getStorageGrid(){
         return storageGrid;
     }
