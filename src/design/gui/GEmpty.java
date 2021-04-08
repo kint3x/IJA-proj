@@ -1,4 +1,4 @@
-package design.graphic;
+package design.gui;
 
 import design.controllers.storageController;
 import javafx.scene.layout.GridPane;

@@ -1,8 +1,8 @@
 package design.controllers;
 
 import design.Main;
-import design.graphic.GEmpty;
-import design.graphic.GShelf;
+import design.gui.GEmpty;
+import design.gui.GShelf;
 import design.model.Shelf;
 import design.model.Storage;
 import javafx.fxml.FXML;
@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 
 /**
- * Classa pre storageController, ovláda grid
+ * Trieda pre storageController, ovláda grid.
  */
 public class storageController {
     private ArrayList<GShelf> gShelfs; //všetky graficke shelfs
@@ -28,7 +28,7 @@ public class storageController {
     private GridPane storageGrid;
 
     /**
-     * Funkcia volaná pri inicializácii controlleru, nastaví listeners
+     * Funkcia volaná pri inicializácii controlleru, nastaví listeners.
      */
     @FXML
     protected void initialize(){
@@ -39,7 +39,7 @@ public class storageController {
 
         loadStorage();
 
-        /** Obslúži ZOOM a DRAG **/
+        // Obslúži ZOOM a DRAG
         storageGrid.setOnMouseDragged(ev -> {
             if(!Main.DragLock) dragGrid(ev.getX(),ev.getY());
         });
@@ -57,7 +57,7 @@ public class storageController {
     }
 
     /**
-     * Obslúži zoomovanie, prekreslí kocky na inú veľkosť
+     * Obslúži zoomovanie, prekreslí kocky na inú veľkosť.
      */
     private void zoomEvent(){
         for(int i=0;i<gShelfs.size();i++){
@@ -69,9 +69,9 @@ public class storageController {
     }
 
     /**
-     * Obslúži drag a zmení polohu Gridu
-     * @param Aktuálna pozícia myši X
-     * @param Aktuálna pozícia myši Y
+     * Obslúži drag a zmení polohu Gridu.
+     * @param X Aktuálna pozícia myši X
+     * @param Y Aktuálna pozícia myši Y
      */
     private void dragGrid(double X, double Y){
         double changex = X - initial_coordX;
@@ -83,7 +83,7 @@ public class storageController {
     }
 
     /**
-     * Načíta Storage (neskôr z nastavení)
+     * Načíta Storage (neskôr z nastavení).
      */
     public void loadStorage(){
         storage = new Storage();
@@ -134,7 +134,7 @@ public class storageController {
     }
 
     /**
-     * Vráti instanci gridu
+     * Vráti instanciu gridu.
      * @return grid
      */
     public GridPane getStorageGrid(){
@@ -142,7 +142,7 @@ public class storageController {
     }
 
     /**
-     * Akcia volaná ak sa klikne na shelfu
+     * Akcia volaná ak sa klikne na shelfu.
      * @param s Gshelfa ktorá akciu zavolala
      */
     public void ClickedAction(GShelf s){
@@ -151,7 +151,7 @@ public class storageController {
     }
 
     /**
-     * Vráti aktuálnu velkosť políčka
+     * Vráti aktuálnu velkosť políčka.
      * @return velkosť políčka
      */
     public int getRect_s(){

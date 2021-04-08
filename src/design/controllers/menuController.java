@@ -15,8 +15,7 @@ public class menuController {
     @FXML
     private MenuBar menuBar;
     /**
-     * Pri stlačení tlačidla O aplikácií otvorí nové okno s designom about.fxml
-     *
+     * Pri stlačení tlačidla O aplikácií otvorí nové okno s designom about.fxml.
      */
     @FXML void handleAboutAction(){
         provideAboutFunctionality();
