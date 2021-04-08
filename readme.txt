@@ -1,18 +1,15 @@
 
 Projekt StorageApp, využíva Java SE 11.
 
-----------------------------------------
 AUTORI:
 
     Košina Simon, xkosin09
     Matějka Martin, xmatej55
 
-----------------------------------------
 POPIS:
 
     Aplikácia predstavujúca sklad tovaru. V sklade sa nachádzajú regále s položkami.
 
-----------------------------------------
 KONFIGURÁCIA:
 
     Konfigurácia skladu je uložená v JSON súboroch viz. priečinok 'data'. Zatiaľ sú mená
