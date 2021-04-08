@@ -9,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+/**
+ * Trieda reprezentujúca aplikáciu.
+ */
 public class StorageApp extends Application {
     public static Stage act_stage;
     public static Scene mainScene;
@@ -16,7 +19,7 @@ public class StorageApp extends Application {
     public static boolean DragLock;
 
     /**
-     * Pri štarte aplikácie sa spustí táto funkcia:
+     * Volaná po štarte aplikácie.
      */
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -31,7 +34,7 @@ public class StorageApp extends Application {
         mainScene = new Scene(root, 1280, 720);
 
         DragLock=true;
-       /** Zachytáva stlačenia a volá funkcie ktoré obslúžia tieto klávesy **/
+       // Zachytáva stlačenia a volá funkcie ktoré obslúžia tieto klávesy
        mainScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {

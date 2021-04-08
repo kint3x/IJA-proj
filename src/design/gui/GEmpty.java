@@ -29,9 +29,9 @@ public class GEmpty {
     }
 
     /**
-     * Nastavi velkost policka na zadanu velkost
-     * @param width
-     * @param height
+     * Nastavi veľkost políčka na zadanú veľkost.
+     * @param width šírka
+     * @param height výška
      */
     public void rectSize(int width, int height){
         rect.setWidth(width);
