@@ -110,7 +110,7 @@ public class StorageController {
     }
 
     /**
-     * Vykreslí načítanú mapu s políčkami
+     * Vykreslí načítanú mapu s políčkami.
      */
     public void drawMap(){
         ArrayList<Shelf> shelfs= storage.getAllShelfs();

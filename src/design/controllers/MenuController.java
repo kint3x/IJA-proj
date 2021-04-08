@@ -11,6 +11,9 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
+/**
+ * Trieda, ktorá kontroluje menu.
+ */
 public class MenuController {
     @FXML
     private MenuBar menuBar;
@@ -21,6 +24,9 @@ public class MenuController {
         provideAboutFunctionality();
     }
 
+    /**
+     * Dodá funkčnosť po kliknutí na "O aplikácií".
+     */
     @FXML
     public void provideAboutFunctionality()
     {
@@ -40,6 +46,9 @@ public class MenuController {
 
     }
 
+    /**
+     * Inicializácia controlleru. Vloží svoju inštanciu do statickej premennej hlavného controllera.
+     */
     @FXML
     protected void initialize(){
         Stage primaryStage = StorageApp.getStage();

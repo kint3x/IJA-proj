@@ -4,6 +4,9 @@ import design.controllers.StorageController;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Trieda pre uchovanie grafickej podoby prázdneho políčka.
+ */
 public class GEmpty {
     private Rectangle rect;
     private StorageController controller;
@@ -12,6 +15,10 @@ public class GEmpty {
     public int xPos;
     public int yPos;
 
+    /**
+     * Konštruktor grafickej podoby prázdneho políčka.
+     * @param c inštancia kontrolleru prázdneho políčka
+     */
     public GEmpty(StorageController c){
 
         controller=c;
@@ -20,7 +27,7 @@ public class GEmpty {
     }
 
     /**
-     * Nastavenie defaultnych nastaveni prazdneho políčka
+     * Nastavenie defaultnych nastaveni prazdneho políčka.
      */
     private void rectDefaultstyle(){
         rect.setHeight(controller.getRect_s());
@@ -39,7 +46,7 @@ public class GEmpty {
     }
 
     /**
-     * Vykresli prazdne policko na gridpane
+     * Vykresli prazdne policko na gridpane.
      * @param x poz x
      * @param y poz y
      */

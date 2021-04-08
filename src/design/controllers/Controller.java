@@ -12,6 +12,9 @@ public class Controller {
 
     public static MenuController menu;
 
+    /**
+     * Funkcia volaná po inicializácií aplikácie
+     */
     public void initialize(){
 
 
