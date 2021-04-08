@@ -1,6 +1,6 @@
 package design.controllers;
 
-import design.Main;
+import design.StorageApp;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +11,7 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-public class menuController {
+public class MenuController {
     @FXML
     private MenuBar menuBar;
     /**
@@ -42,7 +42,7 @@ public class menuController {
 
     @FXML
     protected void initialize(){
-        Stage primaryStage = Main.getStage();
+        Stage primaryStage = StorageApp.getStage();
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
         Controller.menu=this; //Do hlavneho kontrolera vloží svoju inštanciu
     }

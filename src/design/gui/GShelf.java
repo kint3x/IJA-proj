@@ -1,7 +1,7 @@
 package design.gui;
 
 
-import design.controllers.storageController;
+import design.controllers.StorageController;
 import design.model.Shelf;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -11,10 +11,10 @@ import javafx.scene.shape.Rectangle;
 public class GShelf {
     private Shelf shelf;
     private Rectangle rect;
-    private storageController controller;
+    private StorageController controller;
 
 
-    public GShelf(Shelf s, storageController c){
+    public GShelf(Shelf s, StorageController c){
 
         controller=c;
         shelf = s;
@@ -40,7 +40,7 @@ public class GShelf {
     }
 
     /**
-     * Vrati shelf ulozeny v tomto policku
+     * Vrati shelf ulozeny v tomto policku.
      * @return shelf
      */
     public Shelf getShelf(){
@@ -48,7 +48,7 @@ public class GShelf {
     }
 
     /**
-     * Ak je kliknute na políčko, zavola metodu storageControlleru
+     * Ak je kliknute na políčko, zavola metodu storageControlleru.
      */
     EventHandler<MouseEvent> clickedHandler = ev -> {
         controller.ClickedAction(this);

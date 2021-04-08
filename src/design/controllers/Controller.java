@@ -5,13 +5,12 @@ import javafx.scene.layout.AnchorPane;
 
 /**
  * Uchováva inštancie vnorených controllerov.
- *
  */
 public class Controller {
     @FXML
     private AnchorPane AppPane;
 
-    public static menuController menu;
+    public static MenuController menu;
 
     public void initialize(){
 

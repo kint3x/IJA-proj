@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class StorageApp extends Application {
     public static Stage act_stage;
     public static Scene mainScene;
 

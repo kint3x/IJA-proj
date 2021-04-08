@@ -1,6 +1,6 @@
 package design.controllers;
 
-import design.Main;
+import design.StorageApp;
 import design.gui.GEmpty;
 import design.gui.GShelf;
 import design.model.Shelf;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Trieda pre storageController, ovláda grid.
  */
-public class storageController {
+public class StorageController {
     private ArrayList<GShelf> gShelfs; //všetky graficke shelfs
     private ArrayList<GEmpty> gEmpty; // vsetky volne policka na mape
     private Storage storage;          // nacitany sklad
@@ -41,7 +41,7 @@ public class storageController {
 
         // Obslúži ZOOM a DRAG
         storageGrid.setOnMouseDragged(ev -> {
-            if(!Main.DragLock) dragGrid(ev.getX(),ev.getY());
+            if(!StorageApp.DragLock) dragGrid(ev.getX(),ev.getY());
         });
 
         storageGrid.setOnScroll(scrollEvent -> {

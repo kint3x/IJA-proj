@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:controller="design.controllers.storageController"
+<GridPane fx:controller="design.controllers.StorageController"
           xmlns:fx="http://javafx.com/fxml" alignment="BOTTOM_LEFT"
           styleClass="root" fx:id="storageGrid" maxHeight="Infinity" maxWidth="Infinity">
 

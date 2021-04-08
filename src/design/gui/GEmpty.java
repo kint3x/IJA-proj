@@ -1,18 +1,18 @@
 package design.gui;
 
-import design.controllers.storageController;
+import design.controllers.StorageController;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
 public class GEmpty {
     private Rectangle rect;
-    private storageController controller;
+    private StorageController controller;
 
 
     public int xPos;
     public int yPos;
 
-    public GEmpty(storageController c){
+    public GEmpty(StorageController c){
 
         controller=c;
         rect = new Rectangle();
