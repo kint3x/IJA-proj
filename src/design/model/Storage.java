@@ -158,6 +158,9 @@ public class Storage {
         return shelfs;
     }
 
+    /**
+     * Vypísanie informácií o sklade na štandardný výstup. Slúži na testovanie.
+     */
     public void printStorage() {
         for (Shelf s : this.shelfs) {
             s.printShelf();

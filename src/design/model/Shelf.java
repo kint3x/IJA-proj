@@ -108,6 +108,9 @@ public class Shelf {
         return this.itemCounts.getOrDefault(itemName, 0);
     }
 
+    /**
+     * Vypíše informácie o regáli na štandardný výstup. Slúži na testovanie.
+     */
     public void printShelf() {
         System.out.format("x: %d, y: %d\n", this.getPosX(), this.getPosY());
 
