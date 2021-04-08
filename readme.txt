@@ -28,6 +28,8 @@ KONFIGURÁCIA REGÁLOV:
         shelfs  - zoznam objektov reprezentujúci regále, ktoré ležia na políčkach v tvare obdlížnika,
                   definovaného bodmi [x1, y1] a [x2, y2]
 
+    Regále umiestnené mimo hranice skladu budú pri vytváraní vynechané.
+
 KONFIGÚRACIA POLOŽIEK:
 
     Objekt má jeden atribút 'items', ktorý je zoznamom objektov reprezentujúcich jednotlivé položky.
