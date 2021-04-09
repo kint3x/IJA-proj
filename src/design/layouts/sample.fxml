@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.AnchorPane?>
 
 
@@ -11,7 +12,7 @@
         <VBox>
             <children>
                 <fx:include  source="menu.fxml"/>
-                <fx:include  source="storage.fxml" />
+                <fx:include  source="storage.fxml"/>
             </children>
         </VBox>
 
