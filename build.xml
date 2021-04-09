@@ -65,7 +65,7 @@
  
   </target>
 
-  <target name="run">
+  <target name="run" depends="compile">
     <java fork="true" jar="${dest}/ija-app.jar"></java>
  
   </target>

@@ -8,6 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.io.IOException;
 
 /**
  * Trieda reprezentujúca aplikáciu.
@@ -55,6 +58,19 @@ public class StorageApp extends Application {
 
         primaryStage.setScene(mainScene);
         primaryStage.show();
+        // Ukážka čo sme vypracovali
+        try {
+            Parent a = FXMLLoader.load(getClass().getResource("/design/layouts/proj2.fxml"));
+            Stage about = new Stage();
+            about.setTitle("Demonstrační třída");
+            about.initStyle(StageStyle.UTILITY);
+            about.setScene(new Scene(a));
+            about.show();
+
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     public static void main(String[] args) {
