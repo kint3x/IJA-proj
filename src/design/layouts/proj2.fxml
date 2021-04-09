@@ -1,26 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.GridPane?>
-<GridPane prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane prefHeight="198.0" prefWidth="494.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 
     <children>
-        <Label  GridPane.rowIndex="0" prefHeight="28.0" prefWidth="300.0" text="Popis k úlohe 2">
+        <Label alignment="CENTER" prefHeight="28.0" prefWidth="494.0" text="Popis k úlohe 2" textAlignment="CENTER" GridPane.rowIndex="0">
             <font>
                 <Font name="System Bold" size="15.0" />
             </font>
         </Label>
-        <Label GridPane.rowIndex="1" prefHeight="20.0" prefWidth="300.0" text="Čo som vypracoval ja:">
+        <Label prefHeight="26.0" prefWidth="515.0" text="Čo som vypracoval ja:" GridPane.rowIndex="1">
             <font>
                 <Font size="17.0" />
             </font>
+         <padding>
+            <Insets left="15.0" />
+         </padding>
         </Label>
-        <Label GridPane.rowIndex="2" prefHeight="17.0" prefWidth="400.0" text="GUI - ukážka ovládania cez F1" />
-        <Label GridPane.rowIndex="3" prefHeight="17.0" prefWidth="400.0" text="Vykreslovanie skladu" />
-        <Label GridPane.rowIndex="4" prefHeight="17.0" prefWidth="400.0" text="Všetko čo je v balíčkoch gui, layouts, controllers" />
+        <Label prefHeight="17.0" prefWidth="400.0" text="GUI (ukážka možnosti ovládania cez F1)" GridPane.rowIndex="2">
+         <padding>
+            <Insets left="20.0" />
+         </padding></Label>
+        <Label prefHeight="17.0" prefWidth="400.0" text="Vykreslovanie skladu - klikanie na jednotlive regale" GridPane.rowIndex="3">
+         <padding>
+            <Insets left="20.0" />
+         </padding></Label>
+        <Label prefHeight="17.0" prefWidth="400.0" text="Všetko čo je v balíčkoch gui, layouts, controllers" GridPane.rowIndex="4">
+         <padding>
+            <Insets left="20.0" />
+         </padding></Label>
     </children>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
 
 </GridPane>
