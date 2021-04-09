@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ 
+<project name="Storage App" default="default" basedir="."
+  xmlns:fx="javafx:com.sun.javafx.tools.ant">
+ 
+  <property name="src" value="src"/>
+  <property name="build" value="build"/>
+  <property name="dest" value="dest"/>
+
+ 
+  <target name="compile" depends="clean">
+
+
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dest}"/>
+
+    <javac includeantruntime="false"
+      srcdir="${src}"
+      destdir="${build}"
+      fork="yes"
+      source="1.8"
+      debug="on">
+      <classpath>
+        <fileset dir="lib">
+          <include name="**/*.jar"/>
+      </fileset>
+      </classpath>
+
+    </javac>
+
+    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+      uri="javafx:com.sun.javafx.tools.ant"
+      classpath="${java.home}/../lib/ant-javafx.jar"/>
+ 
+      <mkdir dir="${dest}/lib"/>
+      <copy todir="${dest}/lib">
+        <fileset dir="lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </copy>
+
+      <fx:application id="ija-appID"
+        name="JavaFXija-appApp"
+        mainClass="design.StorageApp"/>
+ 
+      <fx:resources id="appRes">
+        <fx:fileset dir="${dest}" includes="ija-app.jar"/>
+        <fx:fileset dir="${dest}" includes="lib/json-simple-1.1.jar"/>
+      </fx:resources>
+ 
+      <fx:jar destfile="${dest}/ija-app.jar">
+        <fx:application refid="ija-appID"/>
+        <fx:resources refid="appRes"/>
+        <fileset dir="${build}"/>
+        <fileset dir="src">
+          <include name="design/layouts/*.fxml"/>
+        </fileset>
+      </fx:jar>
+ 
+  </target>
+ 
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dest}"/>
+ 
+  </target>
+
+  <target name="run">
+    <java fork="true" jar="${dest}/ija-app.jar"></java>
+ 
+  </target>
+ 
+ 
+</project>
