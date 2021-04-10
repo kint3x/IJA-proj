@@ -1,3 +1,8 @@
+/**
+ * Súbor obsahuje triedu pre ovládanie mriežky.
+ * @author Martin Matějka
+ */
+
 package design.controllers;
 
 import design.StorageApp;
@@ -12,7 +17,7 @@ import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 
 /**
- * Trieda pre storageController, ovláda grid.
+ * Trieda pre ovladač mriežky.
  */
 public class StorageController {
     private ArrayList<GShelf> gShelfs; //všetky graficke shelfs

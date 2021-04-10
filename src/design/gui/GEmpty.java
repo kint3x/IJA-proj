@@ -1,3 +1,8 @@
+/**
+ * Súbor obsahuje definíciu triedy GEmpty.
+ * @author Martin Matějka
+ */
+
 package design.gui;
 
 import design.controllers.StorageController;

@@ -1,3 +1,8 @@
+/**
+ * Súbor obsahuje definíciu triedy ItemType.
+ * @author Simon Košina
+ */
+
 package design.model;
 
 import java.util.Objects;

@@ -1,3 +1,8 @@
+/**
+ * Súbor obsahuje definíciu triedy Shelf.
+ * @author Simon Košina
+ */
+
 package design.model;
 
 import java.util.ArrayList;

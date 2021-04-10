@@ -1,3 +1,8 @@
+/**
+ * Súbor obsahuje definíciu triedy Storage.
+ * @author Simon Košina
+ */
+
 package design.model;
 
 import org.json.simple.JSONArray;

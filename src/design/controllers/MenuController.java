@@ -1,3 +1,8 @@
+/**
+ * Ovladač menu.
+ * @author Martin Matějka
+ */
+
 package design.controllers;
 
 import design.StorageApp;
@@ -12,7 +17,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 
 /**
- * Trieda, ktorá kontroluje menu.
+ * Trieda, ktorá ovláda menu.
  */
 public class MenuController {
     @FXML
@@ -47,7 +52,7 @@ public class MenuController {
     }
 
     /**
-     * Inicializácia controlleru. Vloží svoju inštanciu do statickej premennej hlavného controllera.
+     * Inicializácia ovladača. Vloží svoju inštanciu do statickej premennej hlavného ovladača.
      */
     @FXML
     protected void initialize(){

@@ -1,3 +1,8 @@
+/**
+ * Súbor obsahuje definíciu triedy Item.
+ * @author Simon Košina
+ */
+
 package design.model;
 
 /**

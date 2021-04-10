@@ -1,3 +1,8 @@
+/**
+ * Súbor obsahuje definíciu triedy StorageApp s metodou main.
+ * @author Simon Košina
+ */
+
 package design;
 
 import design.controllers.Controller;
@@ -73,10 +78,18 @@ public class StorageApp extends Application {
         }
     }
 
+    /**
+     * Spustí aplikáciu.
+     * @param args parametre príkazovej riadky
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Vráti aktuálny stage.
+     * @return stage
+     */
     public static Stage getStage(){
         return act_stage;
     }

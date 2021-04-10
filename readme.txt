@@ -1,5 +1,5 @@
 
-Projekt StorageApp, využíva Java SE 11.
+Projekt StorageApp, využíva Java SE 8.
 
 AUTORI:
 
