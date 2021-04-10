@@ -7,34 +7,42 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane prefHeight="198.0" prefWidth="494.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane prefHeight="300.0" prefWidth="450.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 
     <children>
-        <Label alignment="CENTER" prefHeight="28.0" prefWidth="494.0" text="Popis k úlohe 2" textAlignment="CENTER" GridPane.rowIndex="0">
+        <Label alignment="CENTER" prefHeight="28.0" prefWidth="494.0" text="Úloha 2" textAlignment="CENTER" GridPane.rowIndex="1">
             <font>
                 <Font name="System Bold" size="15.0" />
             </font>
         </Label>
-        <Label prefHeight="26.0" prefWidth="515.0" text="Čo som vypracoval ja:" GridPane.rowIndex="1">
-            <font>
-                <Font size="17.0" />
-            </font>
-         <padding>
-            <Insets left="15.0" />
-         </padding>
-        </Label>
-        <Label prefHeight="17.0" prefWidth="400.0" text="GUI (ukážka možnosti ovládania cez F1)" GridPane.rowIndex="2">
+        <Label prefHeight="17.0" prefWidth="400.0" text="Na starosti som mal:" GridPane.rowIndex="3">
          <padding>
             <Insets left="20.0" />
          </padding></Label>
-        <Label prefHeight="17.0" prefWidth="400.0" text="Vykreslovanie skladu - klikanie na jednotlive regale" GridPane.rowIndex="3">
+        <Label prefHeight="17.0" prefWidth="400.0" text="   - vytvorenie tried v balíčku 'model'" GridPane.rowIndex="4">
          <padding>
             <Insets left="20.0" />
          </padding></Label>
-        <Label prefHeight="17.0" prefWidth="400.0" text="Všetko čo je v balíčkoch gui, layouts, controllers" GridPane.rowIndex="4">
+        <Label prefHeight="17.0" prefWidth="400.0" text="   - dokumentácia, readme.txt" GridPane.rowIndex="5">
          <padding>
             <Insets left="20.0" />
          </padding></Label>
+        <Label prefHeight="17.0" prefWidth="400.0" text="   - konfiguračné súbory v adresári 'data'" GridPane.rowIndex="6">
+            <padding>
+                <Insets left="20.0" />
+            </padding></Label>
+        <Label prefHeight="17.0" prefWidth="400.0" text="Po načítaní súborov je v konzoli výpis políčok s regálmi aj ich obsah." GridPane.rowIndex="8">
+            <padding>
+                <Insets left="20.0" />
+            </padding></Label>
+        <Label prefHeight="17.0" prefWidth="500.0" text="Toto je možné nakonfigurovať zmenou súborov v adresári 'data' podľa" GridPane.rowIndex="9">
+            <padding>
+                <Insets left="20.0" />
+            </padding></Label>
+        <Label prefHeight="17.0" prefWidth="500.0" text="návodu v 'readme.txt'." GridPane.rowIndex="10">
+            <padding>
+                <Insets left="20.0" />
+            </padding></Label>
     </children>
    <columnConstraints>
       <ColumnConstraints />

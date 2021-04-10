@@ -67,7 +67,7 @@ public class StorageApp extends Application {
         try {
             Parent a = FXMLLoader.load(getClass().getResource("/design/layouts/proj2.fxml"));
             Stage about = new Stage();
-            about.setTitle("Demonstrační třída");
+            about.setTitle("Informácie k 2. úlohe");
             about.initStyle(StageStyle.UTILITY);
             about.setScene(new Scene(a));
             about.show();
