@@ -6,6 +6,7 @@
   <property name="src" value="src"/>
   <property name="build" value="build"/>
   <property name="dest" value="dest"/>
+  <property name="doc" value="doc"/>
 
  
   <target name="compile" depends="clean">
@@ -56,6 +57,9 @@
           <include name="design/layouts/*.fxml"/>
         </fileset>
       </fx:jar>
+      
+   
+     <javadoc sourcepath="${src}" destdir="${doc}"/>
  
   </target>
  
