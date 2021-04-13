@@ -59,7 +59,11 @@
       </fx:jar>
       
    
-     <javadoc sourcepath="${src}" destdir="${doc}"/>
+     <javadoc sourcepath="${src}"
+              destdir="${doc}"
+              Encoding="utf8"
+              docencoding="utf8"
+              charset="utf8"/>
  
   </target>
  
