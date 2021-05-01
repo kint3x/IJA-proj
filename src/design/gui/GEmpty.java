@@ -16,7 +16,6 @@ public class GEmpty {
     private Rectangle rect;
     private StorageController controller;
 
-
     public int xPos;
     public int yPos;
 

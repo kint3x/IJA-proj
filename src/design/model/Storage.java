@@ -20,6 +20,7 @@ public class Storage {
     private ArrayList<Shelf> shelfs = new ArrayList<>();
     private int height = 0;
     private int width = 0;
+    private Path path = new Path();
 
     /**
      * Vráti hodnotu výšky skladu.
@@ -49,7 +50,16 @@ public class Storage {
             }
         }
 
-        System.err.format("Zadaná pozícia regálu je mimo hranice.\nx: %d, y: %d\n", shelf.getPosX(), shelf.getPosY());
+        System.err.format("Zadaná pozícia regálu je mimo hranice: [%d, %d]\n", shelf.getPosX(), shelf.getPosY());
+    }
+
+    /**
+     * Pridanie nového bodu do cesty.
+     * @param posX x-ová súrdnica bodu
+     * @param posY y-ová súrdnica bodu
+     */
+    public void addPathPoint(Integer posX, Integer posY) {
+        this.path.addPoint(posX, posY);
     }
 
     /**
@@ -83,6 +93,17 @@ public class Storage {
     }
 
     /**
+     * Parsuje daný súbor a vytvára potrebné objekty skladu.
+     * @param filename JSON súbor s popisom celé skladu (regále, položky, cesta)
+     * @throws Exception otvorenie a parsovanie súboru
+     */
+    public void importFile(String filename) throws Exception {
+        importShelfs(filename);
+        importItems(filename);
+        importPath(filename);
+    }
+
+    /**
      * Parsuje uvedený súbor, vytvára a vkladá regále na uvedených pozíciach.
      * @param filename JSON súbor obsahujúci popis regálov
      * @throws Exception otvorenie a parsovanie súboru
@@ -96,15 +117,17 @@ public class Storage {
 
         JSONArray shelfsArray = (JSONArray) jo.get("shelfs");
 
-        for (Object o : shelfsArray) {
-            Map m = (Map) o;
+        if (shelfsArray != null) {
+            for (Object o : shelfsArray) {
+                Map m = (Map) o;
 
-            int x1 = ((Long) m.get("x1")).intValue();
-            int y1 = ((Long) m.get("y1")).intValue();
-            int x2 = ((Long) m.get("x2")).intValue();
-            int y2 = ((Long) m.get("y2")).intValue();
+                int x1 = ((Long) m.get("x1")).intValue();
+                int y1 = ((Long) m.get("y1")).intValue();
+                int x2 = ((Long) m.get("x2")).intValue();
+                int y2 = ((Long) m.get("y2")).intValue();
 
-            this.createShelfs(x1, y1, x2, y2);
+                this.createShelfs(x1, y1, x2, y2);
+            }
         }
     }
 
@@ -118,24 +141,48 @@ public class Storage {
         JSONObject jo = (JSONObject) obj;
         JSONArray itemsArray = (JSONArray) jo.get("items");
 
-        for (Object o : itemsArray) {
-            Map m = (Map) o;
+        if (itemsArray != null) {
+            for (Object o : itemsArray) {
+                Map m = (Map) o;
 
-            String name = (String) m.get("name");
-            Item item = new Item(new ItemType(name));
+                String name = (String) m.get("name");
+                Item item = new Item(new ItemType(name));
 
-            int count = ((Long) m.get("count")).intValue();
-            int x = ((Long) m.get("x")).intValue();
-            int y = ((Long) m.get("y")).intValue();
+                int count = ((Long) m.get("count")).intValue();
+                int x = ((Long) m.get("x")).intValue();
+                int y = ((Long) m.get("y")).intValue();
 
-            Shelf shelf = getShelfByPosition(x,y);
+                Shelf shelf = getShelfByPosition(x, y);
 
-            if (shelf == null) {
-                System.err.format("Nenájdený regál na pozícii x: %d, y: %d\n", x, y);
-                continue;
+                if (shelf == null) {
+                    System.err.format("Nenájdený regál na pozícii [%d, %d]\n", x, y);
+                    continue;
+                }
+
+                this.getShelfByPosition(x, y).addItem(item, count);
             }
+        }
+    }
 
-            this.getShelfByPosition(x,y).addItem(item, count);
+    /**
+     * Parsuje daný súbor, načítané body pridáva do cesty v sklade.
+     * @param filename JSON súbor s popisom cesty
+     * @throws Exception otvorenie a parsovanie súboru
+     */
+    public void importPath(String filename) throws Exception {
+        Object obj = new JSONParser().parse(new FileReader(filename));
+        JSONObject jo = (JSONObject) obj;
+        JSONArray pointsArray = (JSONArray) jo.get("path");
+
+        if (pointsArray != null) {
+            for (Object o : pointsArray) {
+                Map m = (Map) o;
+
+                int posX = ((Long) m.get("x")).intValue();
+                int posY = ((Long) m.get("y")).intValue();
+
+                this.addPathPoint(posX, posY);
+            }
         }
     }
 
@@ -170,5 +217,7 @@ public class Storage {
         for (Shelf s : this.shelfs) {
             s.printShelf();
         }
+
+        this.path.printPath();
     }
 }
