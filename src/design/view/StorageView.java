@@ -6,10 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -47,17 +44,6 @@ public class StorageView {
         ScrollPane scrollPane = new ScrollPane();
         root.getChildren().add(scrollPane);
 
-        // nastavenie responzivity
-        scrollPane.setPrefWidth(info.getWidth());
-        scrollPane.setPrefHeight(info.getHeight());
-
-        info.widthProperty().addListener((obs,oldVal,newVal) ->{
-            scrollPane.setPrefWidth(info.getWidth());
-        });
-        info.heightProperty().addListener((obs,oldVal,newVal) ->{
-            scrollPane.setPrefHeight(info.getHeight());
-        });
-        //koniec nastavenia
 
         HashMap<String, Integer> hashMap=s.getShelf().getItemCounts();
 
@@ -127,15 +113,55 @@ public class StorageView {
         }
         //Generovanie pridavania
         TextField fmeno = new TextField();
+        fmeno.setPrefHeight(20);
         TextField fpocet = new TextField();
-        ImageView fplus = new ImageView("/design/res/plus.png");
-        fplus.setPreserveRatio(true);
-        fplus.setFitWidth(14);
-        fplus.setOnMouseClicked(event -> {
-            //storageController.addItemToShelf()
+        fpocet.setPrefHeight(20);
+        Button fadd = new Button();
+        fadd.setPrefHeight(20);
+        fadd.setText("Pridať položku");
+
+        Label lmeno = new Label();
+        lmeno.setText("Názov položky:");
+        Label lpocet = new Label();
+        lpocet.setText("Počet:");
+
+        fmeno.setPrefWidth(info.getWidth()-10);
+        fpocet.setPrefWidth(50);
+        fadd.setPrefWidth(info.getWidth()-10);
+
+        fadd.setOnMouseClicked(event -> {
+            int pocet = 0;
+            try{
+                pocet = Integer.valueOf(fpocet.getText());
+            }
+            catch (Exception e){
+                pocet =0;
+            }
+            storageController.addItemToShelf(fmeno.getText(),pocet,s.getShelf());
             drawScene_info(s,info,root,storageController);
         });
-        fplus.setStyle("-fx-cursor: hand;");
+        fadd.setStyle("-fx-cursor: hand;");
+        vbox.getChildren().add(lmeno);
+        vbox.getChildren().add(fmeno);
+        vbox.getChildren().add(lpocet);
+        vbox.getChildren().add(fpocet);
+        vbox.getChildren().add(fadd);
+
+
+        // nastavenie responzivity
+        scrollPane.setPrefWidth(info.getWidth());
+        scrollPane.setPrefHeight(info.getHeight());
+
+        info.widthProperty().addListener((obs,oldVal,newVal) ->{
+            scrollPane.setPrefWidth(info.getWidth());
+            fmeno.setPrefWidth(info.getWidth()-10);
+            fpocet.setPrefWidth(50);
+            fadd.setPrefWidth(info.getWidth()-10);
+        });
+        info.heightProperty().addListener((obs,oldVal,newVal) ->{
+            scrollPane.setPrefHeight(info.getHeight());
+        });
+        //koniec nastavenia
 
     }
 

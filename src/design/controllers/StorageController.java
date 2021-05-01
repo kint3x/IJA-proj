@@ -8,6 +8,7 @@ package design.controllers;
 import design.StorageApp;
 import design.gui.GEmpty;
 import design.gui.GShelf;
+import design.model.Item;
 import design.model.ItemType;
 import design.model.Shelf;
 import design.model.Storage;
@@ -192,7 +193,6 @@ public class StorageController {
      * @param s polička
      */
     public void increaseShelfItem(String key,Shelf s){
-        System.out.println(String.format("INCREASE %s",key));
         s.updateCounts(key,1);
     }
     /**
@@ -201,10 +201,23 @@ public class StorageController {
      * @param s polička
      */
     public void decreaseShelfItem(String key,Shelf s){
-        System.out.println(String.format("DECREASE %s",key));
         s.updateCounts(key,-1);
     }
 
+    /**
+     * Pridá item do poličky
+     * @param key názov itemu
+     * @param s inštancia poličky
+     */
+    public void addItemToShelf(String key,int pocet,Shelf s){
+        if(key == "") return;
+        if(pocet <= 0) return;
+
+        ItemType itemType = new ItemType(key);
+        Item item = new Item(itemType);
+        s.addItem(item,pocet);
+
+    }
 
     /**
      * Vráti aktuálnu velkosť políčka.
