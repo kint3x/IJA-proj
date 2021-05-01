@@ -15,4 +15,12 @@ public class Cart {
         this.pathPointIndex = pathPointIndex;
         this.maxItems = maxItems;
     }
+
+    /**
+     * Vráti nosnosť vozíka
+     * @return maximálne počet položiek
+     */
+    public int getMaxItems() {
+        return this.maxItems;
+    }
 }

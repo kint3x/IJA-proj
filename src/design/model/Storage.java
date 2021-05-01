@@ -11,7 +11,10 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.Math.min;
 
 /**
  * Trieda reprezentujúca sklad.
@@ -20,7 +23,8 @@ public class Storage {
     private ArrayList<Shelf> shelfs = new ArrayList<>();
     private int height = 0;
     private int width = 0;
-    private Path path = new Path();
+    private Path path = null;
+    private Request request = new Request();
 
     /**
      * Vráti hodnotu výšky skladu.
@@ -63,6 +67,14 @@ public class Storage {
     }
 
     /**
+     * Pridanie vozíka do objektu cesty.
+     * @param maxItems maximálny počet naložených kusov
+     */
+    public void addCart(int maxItems) {
+        this.path.addCart(maxItems);
+    }
+
+    /**
      * Vytvorí a pridá do skladu regále na pozíciach ohraníčených bodmi [x1,y1] a [x2, y2], vrátane.
      * @param x1    x-ová súradnica 1. bodu
      * @param y1    y-ová súradnica 1. bodu
@@ -101,6 +113,7 @@ public class Storage {
         importShelfs(filename);
         importItems(filename);
         importPath(filename);
+        importCarts(filename);
     }
 
     /**
@@ -116,10 +129,10 @@ public class Storage {
         try {
             this.width = ((Long) jo.get("width")).intValue();
             this.height = ((Long) jo.get("height")).intValue();
-
             shelfsArray = (JSONArray) jo.get("shelfs");
         } catch (NullPointerException e) {
             // neobsahuje popis regalov
+            System.err.format("Sklad nemá špecifikované rozmery alebo pole regálov.\n");
             return;
         }
 
@@ -151,6 +164,7 @@ public class Storage {
             itemsArray = (JSONArray) jo.get("items");
         } catch (NullPointerException e) {
             // neobsahuje popis poloziek
+            System.err.format("Chýba špecifikácia položiek v sklade.\n");
             return;
         }
 
@@ -185,12 +199,15 @@ public class Storage {
     public void importPath(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
         JSONObject jo = (JSONObject) obj;
+
         JSONArray pointsArray;
 
         try {
+            this.path = new Path(((Long) jo.get("cartsIndex")).intValue());
             pointsArray = (JSONArray) jo.get("path");
         } catch (NullPointerException e) {
             // neobsahuje popis cesty
+            System.err.format("Chýba špecifikácia cesty v sklade.\n");
             return;
         }
 
@@ -202,6 +219,33 @@ public class Storage {
                 int posY = ((Long) m.get("y")).intValue();
 
                 this.addPathPoint(posX, posY);
+            }
+        }
+    }
+    /**
+     * Parsuje daný súbor a pridáva uvedené vozíky.
+     * @param filename JSON súbor s popisom vozíkov
+     * @throws Exception otvorenie a parsovanie súboru
+     */
+    public void importCarts(String filename) throws Exception {
+        Object obj = new JSONParser().parse(new FileReader(filename));
+        JSONObject jo = (JSONObject) obj;
+        JSONArray cartsArray;
+
+        try {
+            cartsArray = (JSONArray) jo.get("carts");
+        } catch (NullPointerException e) {
+            // neobsahuje popis cesty
+            System.err.format("Chýba špecifikácia vozíkov v sklade.\n");
+            return;
+        }
+
+        if (cartsArray != null) {
+            for (Object o : cartsArray) {
+                Map m = (Map) o;
+
+                int maxItems = ((Long) m.get("maxItems")).intValue();
+                this.addCart(maxItems);
             }
         }
     }
@@ -238,6 +282,76 @@ public class Storage {
             s.printShelf();
         }
 
+        this.createRequest();
+        this.requestItem("polička", 2);
+        this.requestItem("vaňa", 1);
+        this.requestItem("bvrrrrrm", 2);
+        this.request.printRequest();
+
         this.path.printPath();
+    }
+
+    /**
+     * Vytvorí nový požiadavok.
+     */
+    public void createRequest() {
+        this.request = new Request();
+    }
+
+    /**
+     * Pridanie položky do aktuálneho požiadavku.
+     * @param itemName názov položky
+     * @param count počet vyžadovaných kusov
+     */
+    public void requestItem(String itemName, int count) {
+        if (this.request != null) {
+            ItemType itemType = new ItemType(itemName);
+            int pointIndex = -1;
+            int index = 0;
+            int foundCount = 0;
+
+            while (count > 0) {
+                index = this.findItems(itemType, index);
+
+                if (index == -1) {
+                    System.err.format("Nemožno kompletne vybaviť požiadavok z dôvodu nedostatku tovaru alebo neexistencie cesty k potrebným regálom.\n");
+                    System.err.format("Nebude doručených %d položiek typu '%s'.\n", count, itemType.getName());
+                    break;
+                }
+
+                foundCount = this.shelfs.get(index).countItems(itemType);
+                pointIndex = path.getClosestPoint(this.shelfs.get(index).getPosX(), this.shelfs.get(index).getPosY());
+
+                if (pointIndex != -1) {
+                    // regal je dostupny
+                    this.request.addRequestItem(this.shelfs.get(index), min(foundCount, count), itemType, pointIndex);
+                    count -= foundCount;
+                }
+
+                index += 1;
+            }
+
+        }
+    }
+
+    /**
+     * Vybavenie požiadavku.
+     */
+    public void processRequest() {
+        this.path.deliverRequest(request);
+    }
+
+    /**
+     * Vráti index regálu v zozname shelfs, ktorý obsahuje danú položku.
+     * @return index nájdeného regálu
+     */
+    public int findItems(ItemType itemType, int startIndex) {
+        for (int i = startIndex; i < shelfs.size(); i++) {
+            if (this.shelfs.get(i).countItems(itemType) > 0) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
