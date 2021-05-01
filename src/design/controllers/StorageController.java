@@ -111,13 +111,7 @@ public class StorageController {
         storage = new Storage();
 
         try {
-            storage.importShelfs(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            storage.importItems(path);
+            storage.importFile(path);
         } catch (Exception e) {
             e.printStackTrace();
         }

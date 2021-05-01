@@ -3,8 +3,8 @@ package design.model;
 import java.util.ArrayList;
 
 public class Path {
-    private ArrayList<PathPoint> points;
-    private ArrayList<Cart> carts;
+    private ArrayList<PathPoint> points = new ArrayList<>();
+    private ArrayList<Cart> carts = new ArrayList<>();
 
     /**
      * Pridanie nového bodu do cesty. Daný bod musí byť susedný s konečnými bodmi cesty.
@@ -70,5 +70,18 @@ public class Path {
         }
 
         return true;
+    }
+
+    /**
+     * Vypíše jednotlivé body cesty. Slúži pre testovanie.
+     */
+    public void printPath() {
+        if (this.points != null) {
+            System.out.format("Cesta:\n");
+
+            for (PathPoint p : this.points) {
+                System.out.format("\t[%d, %d]\n", p.getPosX(), p.getPosY());
+            }
+        }
     }
 }

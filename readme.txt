@@ -18,7 +18,7 @@ KONFIGURÁCIA:
 
 KONFIGURÁCIA REGÁLOV:
 
-    Objekt obsahuje následujúce atribúty, viz. 'data/shelfs.json':
+    Objekt obsahuje následujúce atribúty pre popis skladu, viz. 'data/storage.json':
 
         width   - šírka skladu
         height  - výška skladu
@@ -29,8 +29,8 @@ KONFIGURÁCIA REGÁLOV:
 
 KONFIGÚRACIA POLOŽIEK:
 
-    Objekt má jeden atribút 'items', ktorý je zoznamom objektov reprezentujúcich jednotlivé položky.
-    Dané objekty majú následujúce atribúty, viz. 'data/items.json':
+    Objekt má tiež atribút 'items', ktorý je zoznamom objektov reprezentujúcich jednotlivé položky.
+    Dané objekty majú následujúce atribúty, viz. 'data/storage.json':
 
         name    - názov položky
         count   - počet kusov
