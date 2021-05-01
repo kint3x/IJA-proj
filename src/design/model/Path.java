@@ -1,7 +1,6 @@
 package design.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static java.lang.Math.abs;
 
@@ -215,5 +214,9 @@ public class Path {
     public void addCart(int maxItems) {
         Cart cart = new Cart(cartsIndex, maxItems);
         this.carts.add(cart);
+    }
+
+    public ArrayList<PathPoint> getPoints(){
+        return this.points;
     }
 }

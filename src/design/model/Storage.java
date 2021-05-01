@@ -11,7 +11,6 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Math.min;
@@ -353,5 +352,9 @@ public class Storage {
         }
 
         return -1;
+    }
+
+    public Path getPath(){
+        return this.path;
     }
 }

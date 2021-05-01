@@ -7,11 +7,9 @@ package design.controllers;
 
 import design.StorageApp;
 import design.gui.GEmpty;
+import design.gui.GPathPoint;
 import design.gui.GShelf;
-import design.model.Item;
-import design.model.ItemType;
-import design.model.Shelf;
-import design.model.Storage;
+import design.model.*;
 import design.view.StorageView;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -27,6 +25,8 @@ import java.util.ArrayList;
 public class StorageController {
     private ArrayList<GShelf> gShelfs; //všetky graficke shelfs
     private ArrayList<GEmpty> gEmpty; // vsetky volne policka na mape
+    private ArrayList<GPathPoint> gPathPoints;
+
     private Storage storage;          // nacitany sklad
 
     private int rect_s;             // premenna pre velkost policok
@@ -52,6 +52,7 @@ public class StorageController {
 
         gShelfs = new ArrayList<GShelf>();
         gEmpty = new ArrayList<GEmpty>();
+        gPathPoints = new ArrayList<GPathPoint>();
 
         //loadStorage();
 
@@ -81,6 +82,9 @@ public class StorageController {
         }
         for(int i=0;i<gEmpty.size();i++){
             gEmpty.get(i).rectSize((int)rect_s,(int)rect_s);
+        }
+        for(int i=0;i<gPathPoints.size();i++){
+            gPathPoints.get(i).rectSize((int)rect_s,(int)rect_s);
         }
     }
 
@@ -140,6 +144,14 @@ public class StorageController {
             news.drawShelf();
             gShelfs.add(news);
         }
+
+
+        for(PathPoint p : storage.getPath().getPoints()){
+            GPathPoint newp = new GPathPoint(p.getPosX(),p.getPosY(),this);
+            newp.drawPoint();
+            gPathPoints.add(newp);
+        }
+
         storageGrid.setMaxSize(1,1); // defaultne nech je grid maly, pridanymi prvkami sa zvacsi
     }
 
