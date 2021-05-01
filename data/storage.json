@@ -1,6 +1,7 @@
 {
   "width": 40,
   "height": 20,
+  "cartsIndex": 0,
   "shelfs":
   [
       {
@@ -26,14 +27,20 @@
   [
     {
       "name": "stôl",
-      "count": 5,
+      "count": 2,
       "x": 4,
       "y": 12
     },
     {
+      "name": "stôl",
+      "count": 3,
+      "x": 4,
+      "y": 13
+    },
+    {
       "name": "polička",
       "count": 3,
-      "x": 10,
+      "x": 5,
       "y": 17
     },
     {
@@ -57,5 +64,11 @@
     {"x": 5, "y": 18},
     {"x": 6, "y": 18},
     {"x": 6, "y": 17}
+  ],
+  "carts": [
+    {"maxItems": 5},
+    {"maxItems": 5},
+    {"maxItems": 7},
+    {"maxItems": 10}
   ]
 }
