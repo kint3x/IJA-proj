@@ -20,6 +20,7 @@ public class Storage {
     private ArrayList<Shelf> shelfs = new ArrayList<>();
     private int height = 0;
     private int width = 0;
+    private Path path;
 
     /**
      * Vráti hodnotu výšky skladu.
@@ -49,7 +50,7 @@ public class Storage {
             }
         }
 
-        System.err.format("Zadaná pozícia regálu je mimo hranice.\nx: %d, y: %d\n", shelf.getPosX(), shelf.getPosY());
+        System.err.format("Zadaná pozícia regálu je mimo hranice: [%d, %d]\n", shelf.getPosX(), shelf.getPosY());
     }
 
     /**
@@ -131,7 +132,7 @@ public class Storage {
             Shelf shelf = getShelfByPosition(x,y);
 
             if (shelf == null) {
-                System.err.format("Nenájdený regál na pozícii x: %d, y: %d\n", x, y);
+                System.err.format("Nenájdený regál na pozícii [%d, %d]\n", x, y);
                 continue;
             }
 
