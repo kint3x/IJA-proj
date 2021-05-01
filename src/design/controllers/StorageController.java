@@ -8,6 +8,7 @@ package design.controllers;
 import design.StorageApp;
 import design.gui.GEmpty;
 import design.gui.GShelf;
+import design.model.ItemType;
 import design.model.Shelf;
 import design.model.Storage;
 import design.view.StorageView;
@@ -182,7 +183,8 @@ public class StorageController {
      * @param s polička
      */
     public void deleteShelfItem(String key,Shelf s){
-       System.out.println(String.format("DELETE %s",key));
+        ItemType itemType = new ItemType(key);
+        s.deleteItems(itemType);
     }
     /**
      * Funkcia zvyši počet produktu v poličke o 1

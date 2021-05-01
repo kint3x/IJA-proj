@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -58,7 +59,7 @@ public class StorageView {
         });
         //koniec nastavenia
 
-        HashMap<String, Integer> hashMap=s.getShelf().getHashMap();
+        HashMap<String, Integer> hashMap=s.getShelf().getItemCounts();
 
         VBox vbox = new VBox();
         vbox.setSpacing(5);
@@ -89,7 +90,7 @@ public class StorageView {
             cross.setPreserveRatio(true);
             cross.setFitWidth(14);
             cross.setOnMouseClicked(event -> {
-
+                storageController.deleteShelfItem(key,s.getShelf());
                 drawScene_info(s,info,root,storageController);
             });
             cross.setStyle("-fx-cursor: hand;");
@@ -123,8 +124,19 @@ public class StorageView {
             Separator sep = new Separator();
             sep.setOrientation(Orientation.HORIZONTAL);
             vbox.getChildren().add(sep);
-
         }
+        //Generovanie pridavania
+        TextField fmeno = new TextField();
+        TextField fpocet = new TextField();
+        ImageView fplus = new ImageView("/design/res/plus.png");
+        fplus.setPreserveRatio(true);
+        fplus.setFitWidth(14);
+        fplus.setOnMouseClicked(event -> {
+            //storageController.addItemToShelf()
+            drawScene_info(s,info,root,storageController);
+        });
+        fplus.setStyle("-fx-cursor: hand;");
+
     }
 
     /**
@@ -134,4 +146,5 @@ public class StorageView {
     public Stage getInfoShelfStage(){
         return this.info_shelf;
     }
+
 }

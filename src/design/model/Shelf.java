@@ -146,6 +146,8 @@ public class Shelf {
      * Vráti objekt reprezetujúci stav skladu. Kľúčami sú názvy položiek a hodnotami sú počty.
      */
     public HashMap<String, Integer> getItemCounts(){
+
         return this.itemCounts;
     }
+
 }
