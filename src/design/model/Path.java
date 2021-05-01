@@ -13,8 +13,8 @@ public class Path {
      * @param posX x-ová pozícia bodu
      * @param posY y-ová pozícia bodu
      */
-    public void addPoint(Integer posX, Integer posY) {
-        Boolean correct = false;
+    public void addPoint(int posX, int posY) {
+        boolean correct = false;
         PathPoint newPoint = new PathPoint(posX, posY);
 
         if (this.points.size() == 0) {
@@ -26,7 +26,7 @@ public class Path {
 
             // nesmie sa vratit na uz existujuci bod
             for (PathPoint point : this.points) {
-                correct = correct && isDifferent(point, newPoint);
+                correct = correct && !point.equals(newPoint);
             }
         }
 
@@ -44,13 +44,13 @@ public class Path {
      * @param posY y-ová súradnica hľadaného bodu
      * @return hľadaný bod alebo null, v prípade, že daný bod neexistuje
      */
-    public PathPoint findPoint(Integer posX, Integer posY) {
-        Integer l = 0;
-        Integer r = this.points.size() - 1;
+    public PathPoint findPoint(int posX, int posY) {
+        int l = 0;
+        int r = this.points.size() - 1;
 
         while (l<=r) {
-            Integer lDistance, rDistance;
-            Integer m = l + (r - l) / 2;
+            int lDistance, rDistance;
+            int m = l + (r - l) / 2;
             PathPoint mPoint = this.points.get(m);
 
             // nasiel sa dany bod
@@ -81,7 +81,7 @@ public class Path {
      * @param x2 x-ová súrdanica druhého bodu
      * @param y2 y-ová súrdanica druhého bodu
      */
-    public Integer distance(Integer x1, Integer y1, Integer x2, Integer y2) {
+    public int distance(int x1, int y1, int x2, int y2) {
         return abs(x1 - x2) + abs(y1 - y2);
     }
 
@@ -91,11 +91,11 @@ public class Path {
      * @param point2 druhý bod
      * @return true, ak sú spojité, inak false
      */
-    private Boolean isContinuous(PathPoint point1, PathPoint point2) {
-        Integer dx = point1.getPosX() - point2.getPosX();
-        Integer dy = point1.getPosY() - point2.getPosY();
+    private boolean isContinuous(PathPoint point1, PathPoint point2) {
+        int dx = point1.getPosX() - point2.getPosX();
+        int dy = point1.getPosY() - point2.getPosY();
 
-        // posunutie o 1 bud v ramci x alebo y osi
+        // posunutie o 1 v ramci x alebo y osi
         if (dx == 0 && (dy == 1 || dy == -1)) {
             return true;
         } else if (dy == 0 && (dx == 1 || dx == -1)) {
@@ -103,22 +103,6 @@ public class Path {
         }
 
         return false;
-    }
-
-    /**
-     * Overí, či dané 2 body nie sú rovnaké (majú rovnakú pozíciu).
-     * @param point1 prvý bod
-     * @param point2 druhý bod
-     * @return true, ak dané 2 body sú rozdielne, inak false
-     */
-    private Boolean isDifferent(PathPoint point1, PathPoint point2) {
-        if (point1.getPosX() == point2.getPosX()) {
-            if (point1.getPosY() == point2.getPosY()) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**

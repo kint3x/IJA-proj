@@ -50,6 +50,10 @@ public class Shelf {
      */
     public void updateCounts(String itemName, int diff) {
         this.itemCounts.put(itemName, this.itemCounts.getOrDefault(itemName, 0) + diff);
+
+        if (this.itemCounts.get(itemName) == 0) {
+            this.itemCounts.remove(itemName);
+        }
     }
 
     /**
@@ -69,6 +73,18 @@ public class Shelf {
     public void addItem(Item item, int count) {
         for (int i = 0; i < count; i++) {
             this.addItem(item);
+        }
+    }
+
+    /**
+     * Vymaže všetky položky daného typu.
+     * @param itemType typ položky
+     */
+    public void deleteItems(ItemType itemType) {
+        Item item = this.removeItem(itemType);
+
+        while (item != null) {
+            item = this.removeItem(itemType);
         }
     }
 
@@ -127,9 +143,9 @@ public class Shelf {
     }
 
     /**
-     * ZATIAL SI BERIEM TAKTO HASHMAPU KVOLU MENAM A POCTOM TYCH PRVKOV viď. StorageController.ClickedAction()
+     * Vráti objekt reprezetujúci stav skladu. Kľúčami sú názvy položiek a hodnotami sú počty.
      */
-    public HashMap<String, Integer> getHashMap(){
+    public HashMap<String, Integer> getItemCounts(){
         return this.itemCounts;
     }
 }

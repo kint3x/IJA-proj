@@ -111,11 +111,17 @@ public class Storage {
     public void importShelfs(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
         JSONObject jo = (JSONObject) obj;
+        JSONArray shelfsArray;
 
-        this.width = ((Long) jo.get("width")).intValue();
-        this.height = ((Long) jo.get("height")).intValue();
+        try {
+            this.width = ((Long) jo.get("width")).intValue();
+            this.height = ((Long) jo.get("height")).intValue();
 
-        JSONArray shelfsArray = (JSONArray) jo.get("shelfs");
+            shelfsArray = (JSONArray) jo.get("shelfs");
+        } catch (NullPointerException e) {
+            // neobsahuje popis regalov
+            return;
+        }
 
         if (shelfsArray != null) {
             for (Object o : shelfsArray) {
@@ -139,7 +145,14 @@ public class Storage {
     public void importItems(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
         JSONObject jo = (JSONObject) obj;
-        JSONArray itemsArray = (JSONArray) jo.get("items");
+        JSONArray itemsArray;
+
+        try {
+            itemsArray = (JSONArray) jo.get("items");
+        } catch (NullPointerException e) {
+            // neobsahuje popis poloziek
+            return;
+        }
 
         if (itemsArray != null) {
             for (Object o : itemsArray) {
@@ -172,7 +185,14 @@ public class Storage {
     public void importPath(String filename) throws Exception {
         Object obj = new JSONParser().parse(new FileReader(filename));
         JSONObject jo = (JSONObject) obj;
-        JSONArray pointsArray = (JSONArray) jo.get("path");
+        JSONArray pointsArray;
+
+        try {
+            pointsArray = (JSONArray) jo.get("path");
+        } catch (NullPointerException e) {
+            // neobsahuje popis cesty
+            return;
+        }
 
         if (pointsArray != null) {
             for (Object o : pointsArray) {

@@ -210,7 +210,7 @@ public class StorageController {
         });
         //koniec nastavenia
 
-        HashMap <String, Integer> hashMap=s.getShelf().getHashMap();
+        HashMap <String, Integer> hashMap=s.getShelf().getItemCounts();
 
         VBox vbox = new VBox();
         vbox.setSpacing(5);

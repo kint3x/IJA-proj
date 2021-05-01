@@ -1,21 +1,23 @@
 package design.model;
 
+import java.util.Objects;
+
 public class PathPoint {
-    private Integer posX;
-    private Integer posY;
+    private int posX;
+    private int posY;
     private Boolean isBlocked;
 
-    public PathPoint(Integer posX, Integer posY) {
+    public PathPoint(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
         this.isBlocked = false;
     }
 
-    public Integer getPosX() {
+    public int getPosX() {
         return this.posX;
     }
 
-    public Integer getPosY() {
+    public int getPosY() {
         return this.posY;
     }
 
@@ -29,5 +31,18 @@ public class PathPoint {
 
     public void printPoint() {
         System.out.format("[%d, %d]\n", this.getPosX(), this.getPosY());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PathPoint point = (PathPoint) o;
+        return getPosX() == point.getPosX() && getPosY() == point.getPosY();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPosX(), getPosY());
     }
 }
