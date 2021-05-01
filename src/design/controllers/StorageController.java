@@ -198,9 +198,6 @@ public class StorageController {
      */
     private void drawScene_info(GShelf s,Scene info, Group root){
 
-
-        info_shelf.setScene(info);
-
         ScrollPane scrollPane = new ScrollPane();
         root.getChildren().add(scrollPane);
 
