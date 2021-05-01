@@ -19,7 +19,15 @@ public class PathPoint {
         return this.posY;
     }
 
+    public void switchBlocked() {
+        this.isBlocked = !this.isBlocked();
+    }
+
     public Boolean isBlocked() {
         return this.isBlocked;
+    }
+
+    public void printPoint() {
+        System.out.format("[%d, %d]\n", this.getPosX(), this.getPosY());
     }
 }
