@@ -11,9 +11,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -28,6 +30,7 @@ public class MenuController {
     @FXML void handleAboutAction(){
         provideAboutFunctionality();
     }
+    @FXML void handleNacitatAction(){ provideNacitatFunctionality();}
 
     /**
      * Dodá funkčnosť po kliknutí na "O aplikácií".
@@ -49,6 +52,21 @@ public class MenuController {
         }
 
 
+    }
+
+    @FXML void provideNacitatFunctionality(){
+        FileChooser load = new FileChooser();
+        load.setTitle("Načítať sklad");
+        try {
+            File f = load.showOpenDialog(StorageApp.getStage());
+            //aplikacia cerpa z tohoto suboru
+            if (f == null) return;
+            StorageApp.file_path = f.getAbsolutePath();
+            Controller.storage.loadStorage(StorageApp.file_path);
+        }
+        catch (Exception e) {
+            System.out.println("Nastalo zatvorenie pri načítaní súborov: "+e.getMessage());
+        }
     }
 
     /**

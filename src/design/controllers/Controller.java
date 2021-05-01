@@ -15,6 +15,7 @@ public class Controller {
     @FXML
     private AnchorPane AppPane;
     public static MenuController menu;
+    public static StorageController storage;
 
     /**
      * Funkcia volaná po inicializácií aplikácie.

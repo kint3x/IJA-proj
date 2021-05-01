@@ -14,7 +14,7 @@
 <menus>
     <Menu text="Súbor">
         <items>
-            <MenuItem text="Otvoriť"/>
+            <MenuItem text="Načítať sklad" onAction="#handleNacitatAction"/>
             <MenuItem text="Uložiť"/>
         </items>
     </Menu>

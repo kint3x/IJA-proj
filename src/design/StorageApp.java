@@ -13,9 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
-import java.io.IOException;
 
 /**
  * Trieda reprezentujúca aplikáciu.
@@ -26,11 +23,14 @@ public class StorageApp extends Application {
 
     public static boolean DragLock;
 
+    public static String file_path;
+
     /**
      * Volaná po štarte aplikácie.
      */
     @Override
     public void start(Stage primaryStage) throws Exception{
+        init_vars();
         act_stage = primaryStage;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("layouts/sample.fxml"));
         Parent root = loader.load();
@@ -63,7 +63,7 @@ public class StorageApp extends Application {
 
         primaryStage.setScene(mainScene);
         primaryStage.show();
-        // Ukážka čo sme vypracovali
+        /*// Ukážka čo sme vypracovali
         try {
             Parent a = FXMLLoader.load(getClass().getResource("/design/layouts/proj2.fxml"));
             Stage about = new Stage();
@@ -75,7 +75,8 @@ public class StorageApp extends Application {
         }
         catch (IOException e) {
             System.out.println(e);
-        }
+        }*/
+
     }
 
     /**
@@ -94,4 +95,7 @@ public class StorageApp extends Application {
         return act_stage;
     }
 
+    private void init_vars(){
+        this.file_path = "";
+    }
 }

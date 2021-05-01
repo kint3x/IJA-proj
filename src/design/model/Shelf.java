@@ -125,4 +125,11 @@ public class Shelf {
 
         System.out.println("------------------------------");
     }
+
+    /**
+     * ZATIAL SI BERIEM TAKTO HASHMAPU KVOLU MENAM A POCTOM TYCH PRVKOV viď. StorageController.ClickedAction()
+     */
+    public HashMap<String, Integer> getHashMap(){
+        return this.itemCounts;
+    }
 }
