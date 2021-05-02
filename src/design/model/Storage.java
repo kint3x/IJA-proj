@@ -23,7 +23,6 @@ public class Storage {
     private int height = 0;
     private int width = 0;
     private Path path = null;
-    private Request request = new Request();
 
     /**
      * Vráti hodnotu výšky skladu.
@@ -202,7 +201,7 @@ public class Storage {
         JSONArray pointsArray;
 
         try {
-            this.path = new Path(((Long) jo.get("cartsIndex")).intValue());
+            this.path = new Path(((Long) jo.get("startPoint")).intValue());
             pointsArray = (JSONArray) jo.get("path");
         } catch (NullPointerException e) {
             // neobsahuje popis cesty
@@ -217,7 +216,7 @@ public class Storage {
                 int posX = ((Long) m.get("x")).intValue();
                 int posY = ((Long) m.get("y")).intValue();
 
-                this.addPathPoint(posX, posY);
+                this.path.addControlPoint(posX, posY);
             }
         }
     }
@@ -281,63 +280,40 @@ public class Storage {
             s.printShelf();
         }
 
-        this.createRequest();
-        this.requestItem("polička", 2);
-        this.requestItem("vaňa", 1);
-        this.requestItem("bvrrrrrm", 2);
-        this.request.printRequest();
+        this.addRequest("polička", 2);
+        this.addRequest("vaňa", 1);
+        this.addRequest("bvrrrrrm", 2);
 
         this.path.printPath();
     }
 
-    /**
-     * Vytvorí nový požiadavok.
-     */
-    public void createRequest() {
-        this.request = new Request();
-    }
 
     /**
      * Pridanie položky do aktuálneho požiadavku.
      * @param itemName názov položky
      * @param count počet vyžadovaných kusov
      */
-    public void requestItem(String itemName, int count) {
-        if (this.request != null) {
-            ItemType itemType = new ItemType(itemName);
-            int pointIndex = -1;
-            int index = 0;
-            int foundCount = 0;
+    public void addRequest(String itemName, int count) {
+        ItemType itemType = new ItemType(itemName);
+        int index = 0;
+        int foundCount = 0;
 
-            while (count > 0) {
-                index = this.findItems(itemType, index);
+        while (count > 0) {
+            index = this.findItems(itemType, index);
 
-                if (index == -1) {
-                    System.err.format("Nemožno kompletne vybaviť požiadavok z dôvodu nedostatku tovaru alebo neexistencie cesty k potrebným regálom.\n");
-                    System.err.format("Nebude doručených %d položiek typu '%s'.\n", count, itemType.getName());
-                    break;
-                }
-
-                foundCount = this.shelfs.get(index).countItems(itemType);
-                pointIndex = path.getClosestPoint(this.shelfs.get(index).getPosX(), this.shelfs.get(index).getPosY());
-
-                if (pointIndex != -1) {
-                    // regal je dostupny
-                    this.request.addRequestItem(this.shelfs.get(index), min(foundCount, count), itemType, pointIndex);
-                    count -= foundCount;
-                }
-
-                index += 1;
+            if (index == -1) {
+                System.err.format("Nemožno kompletne vybaviť požiadavok z dôvodu nedostatku tovaru. ");
+                System.err.format("Nebude doručených %d položiek typu '%s'.\n", count, itemType.getName());
+                break;
             }
 
-        }
-    }
+            foundCount = this.shelfs.get(index).countItems(itemType);
 
-    /**
-     * Vybavenie požiadavku.
-     */
-    public void processRequest() {
-        this.path.deliverRequest(request);
+            this.path.addRequest(new Request(this.shelfs.get(index), min(foundCount, count), itemType));
+
+            count -= foundCount;
+            index += 1;
+        }
     }
 
     /**

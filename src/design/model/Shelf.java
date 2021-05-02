@@ -106,7 +106,9 @@ public class Shelf {
             return null;
         } else {
             Item item =  this.items.remove(i);
+
             this.updateCounts(item.getType().getName(), -1);
+
             return item;
         }
     }

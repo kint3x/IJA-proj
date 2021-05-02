@@ -1,60 +1,66 @@
 package design.model;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-
+/**
+ * Trieda predstavuje položku na zozname požiadavkov.
+ *
+ */
 public class Request {
-    private ArrayList<RequestItem> requestItems = new ArrayList<>();
-    private int cost = 0;
+    /**
+     * Regál, z ktorého bude prevzatá položka.
+     */
+    private Shelf shelf;
 
     /**
-     * Pridanie položky do zoznamu.
-     * @param shelf regál, kde sa položka nachádza
-     * @param count počet položiek
-     * @param itemType typ položky
-     * @param pointIndex index bodu na ceste, na ktorý sa musí dostaviť vozík
+     * Počet odobratých položiek z daného regálu.
      */
-    public void addRequestItem(Shelf shelf, int count, ItemType itemType, int pointIndex) {
-        this.requestItems.add(new RequestItem(shelf, count, itemType, pointIndex));
-        this.increaseCost(count);
+    private int count;
+
+    /**
+     * Typ odoberanej položky.
+     */
+    private ItemType itemType;
+
+    /**
+     * Konštruktor
+     * @param shelf regál pre odobratie položky
+     * @param count počet odobratých položiek
+     * @param itemType typ odobraných položiek
+     */
+    public Request(Shelf shelf, int count, ItemType itemType) {
+        this.shelf = shelf;
+        this.count = count;
+        this.itemType = itemType;
     }
 
     /**
-     * Zvýšenie ceny (počtu položiek).
-     * @param n počet
+     * Získa počet položiek, ktoré treba doručiť
+     * @return počet položiek
      */
-    public void increaseCost(int n) {
-        this.cost += n;
+    public int getCount() {
+        return this.count;
     }
 
     /**
-     * Zníženie ceny (počtu položiek).
-     * @param n počet
+     * Získa cieľový regál.
+     * @return regál
      */
-    public void decreaseCost(int n) {
-        this.cost -= n;
+    public Shelf getShelf() {
+        return this.shelf;
     }
 
     /**
-     * Zoradí položky podľa indexu do pola bodov cesty.
+     * Získa typ položiek.
+     * @return typ položiek
      */
-    public void orderRequestItems() {
-        requestItems.sort(new Comparator<RequestItem>() {
-            @Override
-            public int compare(RequestItem o1, RequestItem o2) {
-                return o1.getPointIndex() - o2.getPointIndex();
-            }
-        });
+    public ItemType getItemType() {
+        return this.itemType;
     }
 
     /**
-     * Výpis požiadavku. Slúži najmä pre testovanie.
+     * Výpis objektu. Slúži najmä pre testovanie.
      */
-    public void printRequest() {
-        if (this.requestItems != null) {
-            for (RequestItem requestItem : this.requestItems) {
-                requestItem.printRequestItem();
-            }
-        }
+    public void printRequestItem() {
+        System.out.format("regal: [%d, %d], polozka: '%s', pocet: %d\n",
+                shelf.getPosX(), shelf.getPosY(), this.itemType.getName(), this.count);
     }
 }
