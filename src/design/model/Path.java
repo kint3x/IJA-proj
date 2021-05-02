@@ -6,7 +6,10 @@ import java.util.Comparator;
 import static java.lang.Math.abs;
 
 public class Path {
+    private int changeCounter = 0;
+    private final Object changeCounterLock = new Object();
     private final ArrayList<PathPoint> points = new ArrayList<>();
+    private final Object pointsLock = new Object();
     private final ArrayList<Cart> carts = new ArrayList<>();
     private final int dropIndex;
     private int prevX = -1;
@@ -21,36 +24,59 @@ public class Path {
     }
 
     /**
+     * Vráti hodnotu čítača zmien cesty.
+     * @return hodnota čítača
+     */
+    public int getChangeCounter() {
+        synchronized (changeCounterLock) {
+            return changeCounter;
+        }
+    }
+
+    /**
+     * Inkrementuje hodnotu čítača zmien.
+     */
+    public void incrementCounter() {
+        synchronized (changeCounterLock) {
+            this.changeCounter += 1;
+        }
+    }
+
+    /**
      * Pridanie nového bodu do cesty. Daný bod musí byť susedný s konečnými bodmi cesty.
      * @param posX x-ová pozícia bodu
      * @param posY y-ová pozícia bodu
      */
     public void addPoint(int posX, int posY) {
-        boolean correct = false;
-        PathPoint newPoint = new PathPoint(posX, posY);
+        synchronized (pointsLock) {
+            boolean correct = false;
+            PathPoint newPoint = new PathPoint(posX, posY);
 
-        if (this.points.size() == 0) {
-            correct = true;
-        } else {
-            // musi navazovat bud na koncovy alebo pociatocny bod
-            correct = isContinuous(this.points.get(this.points.size() - 1), newPoint);
-            correct = correct || isContinuous(this.points.get(0), newPoint);
+            if (this.getPoints().size() == 0) {
+                correct = true;
+            } else {
+                // musi navazovat bud na koncovy alebo pociatocny bod
+                correct = isContinuous(this.getPoints().get(this.getPoints().size() - 1), newPoint);
+                correct = correct || isContinuous(this.getPoints().get(0), newPoint);
 
-            // nesmie sa vratit na uz existujuci bod
-            for (PathPoint point : this.points) {
-                // preskocenie uz existujuich bodov
-                if (point.equals(newPoint)) {
-                    return;
+                // nesmie sa vratit na uz existujuci bod
+                for (PathPoint point : this.getPoints()) {
+                    // preskocenie uz existujuich bodov
+                    if (point.equals(newPoint)) {
+                        return;
+                    }
                 }
             }
+
+            if (!correct) {
+                System.err.format("Neplatný bod cesty: [%d, %d]\n", posX, posY);
+                return;
+            }
+
+            this.getPoints().add(newPoint);
         }
 
-        if (!correct) {
-            System.err.format("Neplatný bod cesty: [%d, %d]\n", posX, posY);
-            return;
-        }
-
-        this.points.add(newPoint);
+        this.incrementCounter();
     }
 
     /**
@@ -91,11 +117,15 @@ public class Path {
      * @param posY y-ová súradnica bodu
      */
     public void blockPoint(int posX, int posY) {
-        PathPoint point = findPoint(posX, posY);
+        synchronized (pointsLock) {
+            PathPoint point = findPoint(posX, posY);
 
-        if (point != null) {
-            point.switchBlocked();
+            if (point != null) {
+                point.switchBlocked();
+            }
         }
+
+        this.incrementCounter();
     }
 
     /**
@@ -105,33 +135,35 @@ public class Path {
      * @return hľadaný bod alebo null, v prípade, že daný bod neexistuje
      */
     public PathPoint findPoint(int posX, int posY) {
-        int l = 0;
-        int r = this.points.size() - 1;
+        synchronized (pointsLock) {
+            int l = 0;
+            int r = this.getPoints().size() - 1;
 
-        while (l<=r) {
-            int lDistance, rDistance;
-            int m = l + (r - l) / 2;
-            PathPoint mPoint = this.points.get(m);
+            while (l <= r) {
+                int lDistance, rDistance;
+                int m = l + (r - l) / 2;
+                PathPoint mPoint = this.getPoints().get(m);
 
-            // nasiel sa dany bod
-            if (mPoint.getPosX() == posX && mPoint.getPosY() == posY) {
-                return mPoint;
+                // nasiel sa dany bod
+                if (mPoint.getPosX() == posX && mPoint.getPosY() == posY) {
+                    return mPoint;
+                }
+
+                // vypocet Manhattatnovskych vzdialenost od laveho a praveho konca intervalu
+                lDistance = distance(posX, posY, this.getPoints().get(l).getPosX(), this.getPoints().get(l).getPosY());
+                rDistance = distance(posX, posY, this.getPoints().get(r).getPosX(), this.getPoints().get(r).getPosY());
+
+                if (lDistance < rDistance) {
+                    // lava polovica
+                    r = m - 1;
+                } else {
+                    // prava polovica
+                    l = m + 1;
+                }
             }
 
-            // vypocet Manhattatnovskych vzdialenost od laveho a praveho konca intervalu
-            lDistance = distance(posX, posY, this.points.get(l).getPosX(), this.points.get(l).getPosY());
-            rDistance = distance(posX, posY, this.points.get(r).getPosX(), this.points.get(r).getPosY());
-
-            if (lDistance < rDistance) {
-                // lava polovica
-                r = m - 1;
-            } else {
-                // prava polovica
-                l = m + 1;
-            }
+            return null;
         }
-
-        return null;
     }
 
     /**
@@ -141,33 +173,35 @@ public class Path {
      * @return index hľadaného bodu, alebo -1, ak sa bod nenašiel
      */
     public int findPointIndex(int posX, int posY) {
-        int l = 0;
-        int r = this.points.size() - 1;
+        synchronized (pointsLock) {
+            int l = 0;
+            int r = this.getPoints().size() - 1;
 
-        while (l<=r) {
-            int lDistance, rDistance;
-            int m = l + (r - l) / 2;
-            PathPoint mPoint = this.points.get(m);
+            while (l<=r) {
+                int lDistance, rDistance;
+                int m = l + (r - l) / 2;
+                PathPoint mPoint = this.getPoints().get(m);
 
-            // nasiel sa dany bod
-            if (mPoint.getPosX() == posX && mPoint.getPosY() == posY) {
-                return m;
+                // nasiel sa dany bod
+                if (mPoint.getPosX() == posX && mPoint.getPosY() == posY) {
+                    return m;
+                }
+
+                // vypocet Manhattatnovskych vzdialenost od laveho a praveho konca intervalu
+                lDistance = distance(posX, posY, this.getPoints().get(l).getPosX(), this.getPoints().get(l).getPosY());
+                rDistance = distance(posX, posY, this.getPoints().get(r).getPosX(), this.getPoints().get(r).getPosY());
+
+                if (lDistance < rDistance) {
+                    // lava polovica
+                    r = m - 1;
+                } else {
+                    // prava polovica
+                    l = m + 1;
+                }
             }
 
-            // vypocet Manhattatnovskych vzdialenost od laveho a praveho konca intervalu
-            lDistance = distance(posX, posY, this.points.get(l).getPosX(), this.points.get(l).getPosY());
-            rDistance = distance(posX, posY, this.points.get(r).getPosX(), this.points.get(r).getPosY());
-
-            if (lDistance < rDistance) {
-                // lava polovica
-                r = m - 1;
-            } else {
-                // prava polovica
-                l = m + 1;
-            }
+            return -1;
         }
-
-        return -1;
     }
 
     /**
@@ -205,55 +239,57 @@ public class Path {
      * Vypočíta cestu k poličke a naspäť.
      * @param posX x-ová pozícia regálu
      * @param posY y-ová pozícia regálu
-     * @param start index do points (pozicia vozíka)
+     * @oaram startX x-ová pozícia vozíka na ceste
+     * @param startY y-ová pozícia vozíka na ceste
      * @param path zoznam bodov, ktorý bude modifikovaný, nesmie byť null
      * @return index v ceste, kde je nutné vyzdvihnúť náklad
      */
-    public int calculatePath(int posX, int posY, int start, ArrayList<PathPoint> path) {
-        if (path == null) {
-            return -1;
-        }
+    public int calculatePath(int posX, int posY, int startX, int startY, ArrayList<PathPoint> path) {
+        synchronized (pointsLock) {
+            if (path == null) {
+                return -1;
+            }
 
-        int minIndex = -1;
-        int[] resIndexes = {-1, -1, -1, -1};
-        int[] dx = {+1, -1, +0, +0};
-        int[] dy = {+0, +0, -1, +1};
+            int startIndex = this.findPointIndex(startX, startY);
+            int minIndex = -1;
+            int[] resIndexes = {-1, -1, -1, -1};
+            int[] dx = {+1, -1, +0, +0};
+            int[] dy = {+0, +0, -1, +1};
 
-        // Najde mnozinu moznych pristupovych bodov k regalu
-        for (int i = 0; i < 4; i++) {
-            resIndexes[i] = this.findPointIndex(posX + dx[i], posY + dy[i]);
-        }
+            // Najde mnozinu moznych pristupovych bodov k regalu
+            for (int i = 0; i < 4; i++) {
+                resIndexes[i] = this.findPointIndex(posX + dx[i], posY + dy[i]);
+            }
 
-        // Najde minimum z danej mnoziny
-        for (int i = 0; i < 4; i++) {
-            if (resIndexes[i] != -1) {
-                if (this.pathBlocked(start, resIndexes[i])) {
-                    // cesta je zablokovana
-                    resIndexes[i] = -1;
-                } else {
-                    // cesta je volna, najdi najblizsi bod
-                    if ((abs(resIndexes[i] - start) < abs(minIndex - start)) || minIndex == -1) {
+            // Najde minimum z danej mnoziny
+            for (int i = 0; i < 4; i++) {
+                if (resIndexes[i] != -1) {
+                    if((abs(resIndexes[i] - startIndex) < abs(minIndex - startIndex)) || minIndex == -1) {
                         minIndex = resIndexes[i];
                     }
                 }
             }
+
+            if (minIndex == -1) {
+                return minIndex;
+            }
+
+            // Vytvor cestu
+            ArrayList<PathPoint> path2Shelf, path2Drop;
+
+            path2Shelf = createPathBetweenPoints(startIndex, minIndex);
+            path2Drop = createPathBetweenPoints(minIndex, this.dropIndex);
+
+            if (path2Shelf == null || path2Drop == null) {
+                return -1;
+            }
+
+            path.addAll(path2Shelf);
+            path.remove(path.size()-1);
+            path.addAll(path2Drop);
+
+            return path.indexOf(this.getPoints().get(minIndex));
         }
-
-        if (minIndex == -1) {
-            return minIndex;
-        }
-
-        // Vytvor cestu
-        ArrayList<PathPoint> path2Shelf, path2Drop;
-
-        path2Shelf = createPathBetweenPoints(start, minIndex);
-        path2Drop = createPathBetweenPoints(minIndex, this.dropIndex);
-
-        path.addAll(path2Shelf);
-        path.remove(path.size()-1);
-        path.addAll(path2Drop);
-
-        return minIndex;
     }
 
     /**
@@ -263,45 +299,57 @@ public class Path {
      * @return zoznam bodov v ceste
      */
     public ArrayList<PathPoint> createPathBetweenPoints(int index1, int index2) {
-        int dist1, dist2;
-        ArrayList<PathPoint> path = new ArrayList<>();
+        synchronized (this.pointsLock) {
+            int dist1, dist2;
+            boolean blocked = false;
+            ArrayList<PathPoint> path = new ArrayList<>();
 
-        int diff = index1 < index2 ? 1 : -1;
+            int diff = index1 < index2 ? 1 : -1;
 
-        if (this.pathConnected()) {
-            // vzdialenost ak ide priamo
-            dist1 = abs(index2 - index1);
-            // vzdialenost ak prejde cez start
-            dist2 = index1 < index2 ? index1 + this.points.size() - index2 : this.points.size() - index1 + index2;
+            if (this.pathConnected()) {
+                // vzdialenost ak ide priamo
+                dist1 = abs(index2 - index1);
+                // vzdialenost ak prejde cez start
+                dist2 = index1 < index2 ? index1 + this.getPoints().size() - index2 : this.getPoints().size() - index1 + index2;
 
-            if (dist2 < dist1) {
-                diff *= -1;
+                if (dist2 < dist1) {
+                    diff *= -1;
+                }
             }
-        }
 
-        for (int i = index1; i != index2 + diff; i += diff) {
-            path.add(this.points.get(abs(i) % this.points.size()));
-        }
+            int stop = ((index2 + diff) < 0 ? this.getPoints().size() + (index2 + diff) : (index2 + diff)) % this.getPoints().size();
 
-        return path;
-    }
-
-    /**
-     * Zistí či daný usek cesty je zablokovaný.
-     * @param start počiatočný index úseku
-     * @param end konečný index úseku
-     * @return true, ak daný úsek cesty je zablokovaný, inak false
-     */
-    public boolean pathBlocked(int start, int end) {
-        int diff = start < end ? 1 : -1;
-
-        for (int i = start; i != end + diff; i += diff) {
-            if (this.points.get(i).isBlocked()) {
-                return true;
+            // Cyklus cez zoznam bodov, ak je spojeny je mozne ist aj dozadu
+            for (int i = index1; (i < 0 ? this.getPoints().size() + i : i) % this.getPoints().size() != stop; i += diff) {
+                PathPoint p = this.getPoints().get((i < 0 ? this.getPoints().size() + i : i) % this.getPoints().size());
+                if (p.isBlocked()) {
+                    blocked = true;
+                    break;
+                }
+                path.add(p);
             }
-        }
 
-        return false;
+            // Zablokovana cesta, skusime opacny smer
+            if (blocked) {
+                if (this.pathConnected()) {
+                    path = new ArrayList<>();
+                    diff *= -1;
+
+                    for (int i = index1; (i < 0 ? this.getPoints().size() + i : i) % this.getPoints().size() != stop; i += diff) {
+                        PathPoint p = this.getPoints().get((i < 0 ? this.getPoints().size() + i : i) % this.getPoints().size());
+                        if (p.isBlocked()) {
+                            return null;
+                        }
+                        path.add(p);
+                    }
+
+                } else {
+                    return null;
+                }
+            }
+
+            return path;
+        }
     }
 
     /**
@@ -309,14 +357,16 @@ public class Path {
      * @return true, ak je cesta spojená, inak false
      */
     public boolean pathConnected() {
-        if (this.points.size() > 1) {
-            PathPoint start = this.points.get(0);
-            PathPoint end = this.points.get(this.points.size() - 1);
+        synchronized (pointsLock) {
+            if (this.getPoints().size() > 1) {
+                PathPoint start = this.getPoints().get(0);
+                PathPoint end = this.getPoints().get(this.getPoints().size() - 1);
 
-            return (abs(start.getPosX() - end.getPosX()) + abs(start.getPosY() - end.getPosY()) == 1);
+                return (abs(start.getPosX() - end.getPosX()) + abs(start.getPosY() - end.getPosY()) == 1);
+            }
+
+            return false;
         }
-
-        return false;
     }
 
     /**
@@ -336,7 +386,7 @@ public class Path {
      * Vypíše cestu v danom objekte triedy Path.
      */
     public void printPath() {
-        Path.printPath(this.points);
+        Path.printPath(this.getPoints());
     }
 
     /**
@@ -372,6 +422,8 @@ public class Path {
     }
 
     public ArrayList<PathPoint> getPoints(){
-        return this.points;
+        synchronized (pointsLock) {
+            return this.points;
+        }
     }
 }

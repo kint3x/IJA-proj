@@ -12,6 +12,8 @@ import org.json.simple.parser.JSONParser;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.Math.min;
 
@@ -276,15 +278,15 @@ public class Storage {
      * Vypísanie informácií o sklade na štandardný výstup. Slúži na testovanie.
      */
     public void printStorage() {
-        for (Shelf s : this.shelfs) {
-            s.printShelf();
-        }
+//        for (Shelf s : this.shelfs) {
+//            s.printShelf();
+//        }
 
-        this.addRequest("polička", 2);
         this.addRequest("vaňa", 1);
-        this.addRequest("bvrrrrrm", 2);
+        this.addRequest("polička", 2);
 
-        this.path.printPath();
+        //this.addRequest("bvrrrrrm", 2);
+
     }
 
 

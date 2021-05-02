@@ -1,6 +1,8 @@
 package design.model;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Cart {
     private int maxItems;
@@ -9,6 +11,17 @@ public class Cart {
     private boolean busy;
     private final Object busyLock = new Object();
 
+    /**
+     * Cesta pre všetky vozíky.
+     */
+    private Path path;
+
+    /**
+     * Zoznam bodov predstavujúci cestu vozíka pre náklad a späť.
+     */
+    private ArrayList<PathPoint> pathPoints;
+
+    private Request request;
 
     /**
      * Konštruktor triedy Cart.
@@ -47,36 +60,92 @@ public class Cart {
         }
     }
 
+    /**
+     * Vráti index do zoznamu bodov, reprezentujúci aktuálnu polohu vozíka.
+     * @return index
+     */
+    public int getCartPosIndex() {
+        return cartPosIndex;
+    }
+
+    /**
+     * Nastavenie nového indexu
+     * @param index index
+     */
+    public void setCartPosIndex(int index) {
+        this.cartPosIndex = index;
+    }
+
     public void deliverRequest(Request request, Path path) {
         this.setBusy(true);
-
-        new Thread(new CartThread(path, request, cartPosIndex));
+        this.path = path;
+        this.request = request;
+        new Thread(new CartThread(path, request)).start();
     }
 
     class CartThread implements Runnable {
-        private Path path;
-        private ArrayList<PathPoint> pathPoints;
-        private Request request;
-        private int pointIndex;
-        private int pickupIndex;
+        public CartThread(Path path, Request request) {
+            pathPoints = new ArrayList<>();
+            pathPoints.add(path.getPoints().get(getCartPosIndex())); // pridanie poc. bodu
+        }
 
-        public CartThread(Path path, Request request, int startIndex) {
-            this.path = path;
-            this.request = request;
+        private int calculatePath() {
+            int pickupIndex;
 
             Shelf shelf = request.getShelf();
-            this.pathPoints = new ArrayList<>();
-            this.pickupIndex = this.path.calculatePath(shelf.getPosX(), shelf.getPosY(), startIndex, this.pathPoints);
+            PathPoint point = pathPoints.get(getCartPosIndex());
+            pathPoints = new ArrayList<>();
 
-            if (this.pickupIndex == -1) {
+            pickupIndex = path.calculatePath(shelf.getPosX(), shelf.getPosY(), point.getPosX(), point.getPosY(), pathPoints);
+
+            if (pickupIndex == -1) {
                 System.err.format("Nemožno doručiť %d kusov tovaru '%s' z dôvodu neexistujúcej cesty.\n", request.getCount(), request.getItemType().getName());
+                return -1;
             } else {
-                Path.printPath(this.pathPoints);
+                return pickupIndex;
             }
         }
 
         @Override
         public void run() {
+            int pickupIndex;
+            int changeCounter;
+
+            changeCounter = path.getChangeCounter();
+            pickupIndex = this.calculatePath();
+
+            while (getCartPosIndex() < pathPoints.size()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (path.getChangeCounter() != changeCounter) {
+                    System.out.println("zmena cesty");
+                    changeCounter = path.getChangeCounter();
+                    pickupIndex = this.calculatePath();
+
+                    if (pickupIndex == -1) {
+                        return;
+                    }
+
+                    continue;
+                }
+
+
+                System.out.format("pi: %d, ci: %d\n", pickupIndex, getCartPosIndex());
+                if (getCartPosIndex() == pickupIndex) {
+                    System.out.format("nakladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
+                }
+
+                pathPoints.get(getCartPosIndex()).printPoint();
+                setCartPosIndex(getCartPosIndex() + 1);
+            }
+
+            System.out.format("vykladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
+
+            setBusy(false);
             return;
         }
     }
