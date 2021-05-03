@@ -2,6 +2,7 @@ package design.gui;
 
 import design.controllers.StorageController;
 import design.model.Cart;
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
@@ -22,21 +23,19 @@ public class GCart implements PropertyChangeListener {
     private int y;
 
 
+
     public GCart(Cart c, StorageController con){
         controller = con;
         cart=c;
 
-        this.x = c.getStartPosX();
-        this.y = c.getStartPosY();
+        c.addPropertyChangeListener(this);
+
+        this.x = lNewX = c.getStartPosX();
+        this.y = lNewY = c.getStartPosY();
 
         cartIcon = new ImageView("/design/res/cart.png");
 
         this.setDefStyle();
-        int index = cart.getCartPosIndex();
-        x = cart.getPathPoints().get(index).getPosX();
-        y = cart.getPathPoints().get(index).getPosY();
-
-
     }
 
     private void setDefStyle(){
@@ -45,15 +44,26 @@ public class GCart implements PropertyChangeListener {
 
 
     public void drawCart(){
-        GridPane grid = controller.getStorageGrid();
-        grid.add(cartIcon,x,y);
+        Platform.runLater(
+                () -> {
+                    GridPane grid = controller.getStorageGrid();
+                    cartIcon.setFitWidth(controller.getRect_s());
+                    grid.getChildren().remove(cartIcon);
+                    grid.add(cartIcon,lNewX,lNewY);
+                }
+        );
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName()=="posX"){
-
+            this.x=this.lNewX;
+            this.lNewX= (int) evt.getNewValue();
+            this.drawCart();
         }
         else if(evt.getPropertyName()=="posY"){
+            this.y=this.lNewY;
+            this.lNewY=(int)evt.getNewValue();
+            this.drawCart();
 
         }
         else if(evt.getPropertyName()=="load"){

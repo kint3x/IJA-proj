@@ -68,9 +68,6 @@
     {"x": 1, "y": 17}
   ],
   "carts": [
-    {"maxItems": 5},
-    {"maxItems": 5},
-    {"maxItems": 7},
-    {"maxItems": 10}
+    {"maxItems": 5}
   ]
 }
