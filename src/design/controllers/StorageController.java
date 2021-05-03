@@ -147,7 +147,7 @@ public class StorageController {
 
 
         for(PathPoint p : storage.getPath().getPoints()){
-            GPathPoint newp = new GPathPoint(p.getPosX(),p.getPosY(),this);
+            GPathPoint newp = new GPathPoint(p.getPosX(),p.getPosY(),this,p);
             newp.drawPoint();
             gPathPoints.add(newp);
         }
@@ -229,6 +229,9 @@ public class StorageController {
         Item item = new Item(itemType);
         s.addItem(item,pocet);
 
+    }
+    public void blockPoint(int x, int y){
+        this.storage.getPath().blockPoint(x,y);
     }
 
     /**
