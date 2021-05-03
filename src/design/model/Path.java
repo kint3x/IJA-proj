@@ -129,38 +129,19 @@ public class Path {
     }
 
     /**
-     * Metóda nájde bod cesty na daných súradniciach, pomocou metódy binárneho hľadania.
+     * Metóda nájde bod cesty na daných súradniciach.
      * @param posX x-ová súradnica hľadaného bodu
      * @param posY y-ová súradnica hľadaného bodu
      * @return hľadaný bod alebo null, v prípade, že daný bod neexistuje
      */
     public PathPoint findPoint(int posX, int posY) {
         synchronized (pointsLock) {
-            int l = 0;
-            int r = this.getPoints().size() - 1;
+                PathPoint goal = new PathPoint(posX, posY);
 
-            while (l <= r) {
-                int lDistance, rDistance;
-                int m = l + (r - l) / 2;
-                PathPoint mPoint = this.getPoints().get(m);
-
-                System.out.format("[%d, %d]\n", mPoint.getPosX(), mPoint.getPosY());
-                // nasiel sa dany bod
-                if (mPoint.getPosX() == posX && mPoint.getPosY() == posY) {
-                    return mPoint;
-                }
-
-                // vypocet Manhattatnovskych vzdialenost od laveho a praveho konca intervalu
-                lDistance = distance(posX, posY, this.getPoints().get(l).getPosX(), this.getPoints().get(l).getPosY());
-                rDistance = distance(posX, posY, this.getPoints().get(r).getPosX(), this.getPoints().get(r).getPosY());
-
-                if (lDistance < rDistance) {
-                    // lava polovica
-                    r = m - 1;
-                } else {
-                    // prava polovica
-                    l = m + 1;
-                }
+                for (PathPoint p: this.getPoints()) {
+                    if (p.equals(goal)) {
+                        return p;
+                    }
             }
 
             return null;
@@ -175,29 +156,11 @@ public class Path {
      */
     public int findPointIndex(int posX, int posY) {
         synchronized (pointsLock) {
-            int l = 0;
-            int r = this.getPoints().size() - 1;
+            PathPoint goal = new PathPoint(posX, posY);
 
-            while (l<=r) {
-                int lDistance, rDistance;
-                int m = l + (r - l) / 2;
-                PathPoint mPoint = this.getPoints().get(m);
-
-                // nasiel sa dany bod
-                if (mPoint.getPosX() == posX && mPoint.getPosY() == posY) {
-                    return m;
-                }
-
-                // vypocet Manhattatnovskych vzdialenost od laveho a praveho konca intervalu
-                lDistance = distance(posX, posY, this.getPoints().get(l).getPosX(), this.getPoints().get(l).getPosY());
-                rDistance = distance(posX, posY, this.getPoints().get(r).getPosX(), this.getPoints().get(r).getPosY());
-
-                if (lDistance < rDistance) {
-                    // lava polovica
-                    r = m - 1;
-                } else {
-                    // prava polovica
-                    l = m + 1;
+            for (int i = 0; i < this.getPoints().size(); i++) {
+                if (this.getPoints().get(i).equals(goal)) {
+                    return i;
                 }
             }
 
