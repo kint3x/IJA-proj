@@ -1,5 +1,7 @@
 package design.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +12,8 @@ public class Cart {
     private ArrayList<Item> load;
     private boolean busy;
     private final Object busyLock = new Object();
+    private PropertyChangeSupport support;
+    private CartLoad cartLoad;
 
     /**
      * Cesta pre všetky vozíky.
@@ -30,6 +34,8 @@ public class Cart {
     public Cart(int cartPosIndex, int maxItems) {
         this.cartPosIndex = cartPosIndex;
         this.maxItems = maxItems;
+        this.support = new PropertyChangeSupport(this);
+        this.cartLoad = null;
     }
 
     /**
@@ -69,18 +75,61 @@ public class Cart {
     }
 
     /**
-     * Nastavenie nového indexu
+     * Nastavenie nového indexu a notifikácia observerov.
      * @param index index
      */
     public void setCartPosIndex(int index) {
+        if (index < pathPoints.size()) {
+            support.firePropertyChange("posX", this.pathPoints.get(this.cartPosIndex).getPosX(), this.pathPoints.get(index).getPosX());
+            support.firePropertyChange("posY", this.pathPoints.get(this.cartPosIndex).getPosY(), this.pathPoints.get(index).getPosY());
+        }
+
         this.cartPosIndex = index;
     }
 
+    public void load() {
+        if (request.getCount() <= maxItems) {
+            CartLoad cartLoad = new CartLoad(request.getCount(), new Item(request.getItemType()));
+            support.firePropertyChange("load", this.getCartLoad(), cartLoad);
+            this.cartLoad = cartLoad;
+        }
+    }
+
+    public void unload() {
+        support.firePropertyChange("load", this.getCartLoad(), null);
+        this.cartLoad = null;
+    }
+
+    public CartLoad getCartLoad() {
+        return this.cartLoad;
+    }
+
+    /**
+     * Pošle vozík vybaviť objednávku.
+     * @param request objednávka
+     * @param path objekt cesty, po ktorom môže vozík chodiť
+     */
     public void deliverRequest(Request request, Path path) {
         this.setBusy(true);
         this.path = path;
         this.request = request;
         new Thread(new CartThread(path, request)).start();
+    }
+
+    /**
+     * Pridanie observera.
+     * @param pcl observer
+     */
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        this.support.addPropertyChangeListener(pcl);
+    }
+
+    /**
+     * Odobranie observera.
+     * @param pcl observer
+     */
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        this.support.removePropertyChangeListener(pcl);
     }
 
     class CartThread implements Runnable {
@@ -133,9 +182,8 @@ public class Cart {
                     continue;
                 }
 
-
-                System.out.format("pi: %d, ci: %d\n", pickupIndex, getCartPosIndex());
                 if (getCartPosIndex() == pickupIndex) {
+                    load();
                     System.out.format("nakladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
                 }
 
@@ -143,6 +191,7 @@ public class Cart {
                 setCartPosIndex(getCartPosIndex() + 1);
             }
 
+            unload();
             System.out.format("vykladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
 
             setBusy(false);

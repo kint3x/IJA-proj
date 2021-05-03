@@ -144,6 +144,7 @@ public class Path {
                 int m = l + (r - l) / 2;
                 PathPoint mPoint = this.getPoints().get(m);
 
+                System.out.format("[%d, %d]\n", mPoint.getPosX(), mPoint.getPosY());
                 // nasiel sa dany bod
                 if (mPoint.getPosX() == posX && mPoint.getPosY() == posY) {
                     return mPoint;
@@ -206,10 +207,10 @@ public class Path {
 
     /**
      * Vypočíta Manhattanovskú vzdialenosť medzi bodmi [x1, y1] a [x2, y2].
-     * @param x1 x-ová súrdanica prvého bodu
-     * @param y1 y-ová súrdanica prvého bodu
-     * @param x2 x-ová súrdanica druhého bodu
-     * @param y2 y-ová súrdanica druhého bodu
+     * @param x1 x-ová súradnica prvého bodu
+     * @param y1 y-ová súradnica prvého bodu
+     * @param x2 x-ová súradnica druhého bodu
+     * @param y2 y-ová súradnica druhého bodu
      */
     public static int distance(int x1, int y1, int x2, int y2) {
         return abs(x1 - x2) + abs(y1 - y2);

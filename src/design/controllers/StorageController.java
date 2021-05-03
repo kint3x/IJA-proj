@@ -205,7 +205,7 @@ public class StorageController {
      * @param s polička
      */
     public void increaseShelfItem(String key,Shelf s){
-        s.updateCounts(key,1);
+        s.addItem(new Item(new ItemType(key)));
     }
     /**
      * Funkcia zníži počet produktu v poličke o 1
@@ -213,7 +213,7 @@ public class StorageController {
      * @param s polička
      */
     public void decreaseShelfItem(String key,Shelf s){
-        s.updateCounts(key,-1);
+        s.removeItem(new ItemType(key));
     }
 
     /**

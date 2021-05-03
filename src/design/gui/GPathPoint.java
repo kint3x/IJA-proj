@@ -25,15 +25,15 @@ public class GPathPoint {
         controller=c;
         circle = new Circle();
         circle.setOnMouseClicked(event -> {
-            System.out.println("MOUSEEVENT");
             if(pathPoint.isBlocked()){
                 controller.blockPoint(this.x,this.y);
                 circle.setStyle("-fx-fill: #8ced97");
-                System.out.println(String.format("ODBLOKOVAVAM: %d",pathPoint.isBlocked() ? 1 : 0));
+                System.out.println("UVOLNUJEM");
             }
             else{
                 controller.blockPoint(this.x,this.y);
                 circle.setStyle("-fx-fill: #f27983");
+                System.out.println("BLOKUJEM");
             }
         });
         rectDefaultstyle();

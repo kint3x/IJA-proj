@@ -282,8 +282,10 @@ public class Storage {
 //            s.printShelf();
 //        }
 
-        this.addRequest("vaňa", 1);
-        this.addRequest("polička", 2);
+
+
+        //this.addRequest("vaňa", 1);
+        //this.addRequest("polička", 2);
 
         //this.addRequest("bvrrrrrm", 2);
 
