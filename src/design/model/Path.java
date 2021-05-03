@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.min;
 
 public class Path {
     private int changeCounter = 0;
@@ -11,6 +12,7 @@ public class Path {
     private final ArrayList<PathPoint> points = new ArrayList<>();
     private final Object pointsLock = new Object();
     private final ArrayList<Cart> carts = new ArrayList<>();
+    private final int startIndex;
     private final int dropIndex;
     private int prevX = -1;
     private int prevY = -1;
@@ -21,6 +23,7 @@ public class Path {
      */
     public Path(int dropIndex) {
         this.dropIndex = dropIndex;
+        this.startIndex = dropIndex;
     }
 
     /**
@@ -200,59 +203,100 @@ public class Path {
     }
 
     /**
-     * Vypočíta cestu k poličke a naspäť.
+     * Vráti index najbližšieho prístupového bodu cesty s indexom pIndex k bodu [posX, posY].
+     * @param pIndex index bodu cesty
+     * @param posX x-ová súraanica bodu
+     * @param posY y-ová súradnica bodu
+     * @return index najbližšieho bodu
+     */
+    public int findClosestPointIndex(int pIndex, int posX, int posY) {
+        int minIndex = -1;
+        int[] resIndexes = {-1, -1, -1, -1};
+        int[] dx = {+1, -1, +0, +0};
+        int[] dy = {+0, +0, -1, +1};
+
+        // Najde mnozinu moznych pristupovych bodov k regalu
+        for (int i = 0; i < 4; i++) {
+            resIndexes[i] = this.findPointIndex(posX + dx[i], posY + dy[i]);
+        }
+
+        // Najde minimum z danej mnoziny
+        for (int i = 0; i < 4; i++) {
+            if (resIndexes[i] != -1) {
+                if((abs(resIndexes[i] - pIndex) < abs(minIndex - pIndex)) || minIndex == -1) {
+                    minIndex = resIndexes[i];
+                }
+            }
+        }
+
+        return minIndex;
+    }
+
+    /**
+     * Vypočíta cestu k poličke.
      * @param posX x-ová pozícia regálu
      * @param posY y-ová pozícia regálu
-     * @oaram startX x-ová pozícia vozíka na ceste
-     * @param startY y-ová pozícia vozíka na ceste
+     * @oaram cartX x-ová pozícia vozíka na ceste
+     * @param cartY y-ová pozícia vozíka na ceste
      * @param path zoznam bodov, ktorý bude modifikovaný, nesmie byť null
      * @return index v ceste, kde je nutné vyzdvihnúť náklad
      */
-    public int calculatePath(int posX, int posY, int startX, int startY, ArrayList<PathPoint> path) {
+    public int calculatePath2Shelf(int posX, int posY, int cartX, int cartY, ArrayList<PathPoint> path) {
         synchronized (pointsLock) {
             if (path == null) {
                 return -1;
             }
 
-            int startIndex = this.findPointIndex(startX, startY);
-            int minIndex = -1;
-            int[] resIndexes = {-1, -1, -1, -1};
-            int[] dx = {+1, -1, +0, +0};
-            int[] dy = {+0, +0, -1, +1};
-
-            // Najde mnozinu moznych pristupovych bodov k regalu
-            for (int i = 0; i < 4; i++) {
-                resIndexes[i] = this.findPointIndex(posX + dx[i], posY + dy[i]);
-            }
-
-            // Najde minimum z danej mnoziny
-            for (int i = 0; i < 4; i++) {
-                if (resIndexes[i] != -1) {
-                    if((abs(resIndexes[i] - startIndex) < abs(minIndex - startIndex)) || minIndex == -1) {
-                        minIndex = resIndexes[i];
-                    }
-                }
-            }
+            int cartIndex = this.findPointIndex(cartX, cartY);
+            int minIndex = this.findClosestPointIndex(cartIndex, posX, posY);
 
             if (minIndex == -1) {
                 return minIndex;
             }
 
             // Vytvor cestu
-            ArrayList<PathPoint> path2Shelf, path2Drop;
+            ArrayList<PathPoint> path2Shelf;
 
-            path2Shelf = createPathBetweenPoints(startIndex, minIndex);
-            path2Drop = createPathBetweenPoints(minIndex, this.dropIndex);
+            path2Shelf = createPathBetweenPoints(cartIndex, minIndex);
 
-            if (path2Shelf == null || path2Drop == null) {
+            if (path2Shelf == null) {
                 return -1;
             }
 
             path.addAll(path2Shelf);
-            path.remove(path.size()-1);
+
+            return path.size() - 1;
+        }
+    }
+
+    /**
+     * Vypočíta cestu k miestu pre vyzdvihnutie tovaru.
+     * @oaram cartX x-ová pozícia vozíka na ceste
+     * @param cartY y-ová pozícia vozíka na ceste
+     * @param path zoznam bodov, ktorý bude modifikovaný, nesmie byť null
+     * @return index v ceste, kde je nutné vyzdvihnúť náklad
+     */
+    public int calculatePath2Drop(int cartX, int cartY, ArrayList<PathPoint> path) {
+        synchronized (pointsLock) {
+            if (path == null) {
+                return -1;
+            }
+
+            int cartIndex = this.findPointIndex(cartX, cartY);
+            int endIndex = this.dropIndex;
+
+            // Vytvor cestu
+            ArrayList<PathPoint> path2Drop;
+
+            path2Drop = createPathBetweenPoints(cartIndex, endIndex);
+
+            if (path2Drop == null) {
+                return -1;
+            }
+
             path.addAll(path2Drop);
 
-            return path.indexOf(this.getPoints().get(minIndex));
+            return path.size() - 1;
         }
     }
 
@@ -299,6 +343,8 @@ public class Path {
                     path = new ArrayList<>();
                     diff *= -1;
 
+                    stop = ((index2 + diff) < 0 ? this.getPoints().size() + (index2 + diff) : (index2 + diff)) % this.getPoints().size();
+
                     for (int i = index1; (i < 0 ? this.getPoints().size() + i : i) % this.getPoints().size() != stop; i += diff) {
                         PathPoint p = this.getPoints().get((i < 0 ? this.getPoints().size() + i : i) % this.getPoints().size());
                         if (p.isBlocked()) {
@@ -338,6 +384,12 @@ public class Path {
      * @param request požiadavka
      */
     public void addRequest(Request request) {
+        if (findClosestPointIndex(startIndex, request.getShelf().getPosX(), request.getShelf().getPosY()) == -1) {
+            // k regalu neexistuje cesta
+            System.err.format("Nemožno naložiť %d kusov tovaru '%s' z dôvodu neexistujúcej cesty.\n", request.getCount(), request.getItemType().getName());
+            return;
+        }
+
         for (Cart cart: this.carts) {
             if (cart.getMaxItems() >= request.getCount() && !cart.getBusy()) {
                 cart.deliverRequest(request);

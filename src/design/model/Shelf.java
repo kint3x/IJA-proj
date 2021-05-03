@@ -16,6 +16,7 @@ public class Shelf {
     private HashMap<String, Integer> itemCounts = new HashMap<>();
     private int posX;
     private int posY;
+    private int heatCounter;
 
     /**
      * Konštruktor.
@@ -25,6 +26,7 @@ public class Shelf {
     public Shelf(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
+        this.heatCounter = 0;
     }
 
     /**
@@ -41,6 +43,21 @@ public class Shelf {
      */
     public int getPosY() {
         return this.posY;
+    }
+
+    /**
+     * Vráti čítač návštevnosti poličky.
+     * @return čítač
+     */
+    public int getHeatCounter() {
+        return this.heatCounter;
+    }
+
+    /**
+     * Inkrementuje hodnotu čítača návštevnosti.
+     */
+    public void incrementHeatCounter() {
+        this.heatCounter += 1;
     }
 
     /**
