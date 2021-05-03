@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="design.controllers.AnimationController">
+   <children>
+      <Label layoutX="5.0" text="Rýchlosť" />
+      <Slider layoutX="59.0" layoutY="2.0" max="10.0" min="0.1" prefHeight="14.0" prefWidth="123.0" fx:id="slider" />
+      <Label layoutX="190.0" layoutY="1.0" text="0.1" fx:id="val" />
+   </children>
+</AnchorPane>

@@ -5,7 +5,7 @@ public class CartLoad {
     private Item item;
 
     public CartLoad(int Count, Item item) {
-        this.count = count;
+        this.count = Count;
         this.item = item;
     }
 

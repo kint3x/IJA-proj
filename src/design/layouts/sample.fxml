@@ -8,7 +8,8 @@
         <VBox>
             <children>
                 <fx:include source="menu.fxml"/>
-                <fx:include source="storage.fxml" />
+                <fx:include source="animation.fxml"/>
+                <fx:include source="storage.fxml"/>
             </children>
         </VBox>
 

@@ -235,7 +235,7 @@ public class Storage {
         try {
             cartsArray = (JSONArray) jo.get("carts");
         } catch (NullPointerException e) {
-            // neobsahuje popis cesty
+            // neobsahuje popis cesta
             System.err.format("Chýba špecifikácia vozíkov v sklade.\n");
             return;
         }

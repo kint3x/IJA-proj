@@ -5,9 +5,12 @@ import design.model.Cart;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Random;
 
 public class GCart implements PropertyChangeListener {
 
@@ -15,6 +18,9 @@ public class GCart implements PropertyChangeListener {
     private Cart cart;
 
     private ImageView cartIcon;
+    private Circle farba;
+
+    private String randColor;
 
     private int lNewX;
     private int lNewY;
@@ -24,9 +30,11 @@ public class GCart implements PropertyChangeListener {
 
 
 
+
+
     public GCart(Cart c, StorageController con){
         controller = con;
-        cart=c;
+        this.cart=c;
 
         c.addPropertyChangeListener(this);
 
@@ -34,14 +42,34 @@ public class GCart implements PropertyChangeListener {
         this.y = lNewY = c.getStartPosY();
 
         cartIcon = new ImageView("/design/res/cart.png");
+        this.farba = new Circle();
+
+        Random obj = new Random();
+        int rand_num = obj.nextInt(0xffffff + 1);
+        this.randColor = String.format("#%06x", rand_num);
 
         this.setDefStyle();
     }
 
     private void setDefStyle(){
         cartIcon.setPreserveRatio(true);
+        System.out.println("-fx-background-color: "+this.randColor+";");
+        farba.setFill(Paint.valueOf(this.randColor));
+        farba.setOnMouseClicked(event -> {
+            controller.clickedGCart(this);
+
+        });
+
+    }
+    public Cart getCart(){
+        return this.cart;
     }
 
+    public void cartSize(int size){
+        cartIcon.setFitWidth(size);
+        this.farba.setRadius(size/4.0);
+
+    }
 
     public void drawCart(){
         Platform.runLater(
@@ -50,6 +78,10 @@ public class GCart implements PropertyChangeListener {
                     cartIcon.setFitWidth(controller.getRect_s());
                     grid.getChildren().remove(cartIcon);
                     grid.add(cartIcon,lNewX,lNewY);
+                    this.farba.setRadius(controller.getRect_s()/4.0);
+                    grid.getChildren().remove(farba);
+                    grid.add(farba,lNewX,lNewY);
+
                 }
         );
     }

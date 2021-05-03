@@ -11,6 +11,7 @@ import design.gui.GEmpty;
 import design.gui.GPathPoint;
 import design.gui.GShelf;
 import design.model.*;
+import design.view.CartView;
 import design.view.StorageView;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -37,6 +38,9 @@ public class StorageController {
     private double initial_coordY;  //premenna pre drag na uchovavanie predoslej pozicie
 
     private StorageView storageView;
+    private CartView cartView;
+
+    public static float speed;
 
     @FXML
     private GridPane storageGrid;
@@ -48,7 +52,7 @@ public class StorageController {
     protected void initialize(){
         Controller.storage = this;
         storageView = new StorageView();
-
+        cartView = new CartView();
 
         rect_s = 30; //default rect s = 30
 
@@ -56,6 +60,8 @@ public class StorageController {
         gEmpty = new ArrayList<GEmpty>();
         gPathPoints = new ArrayList<GPathPoint>();
         gCarts = new ArrayList<GCart>();
+
+        this.speed=1;
 
 
         //loadStorage();
@@ -90,6 +96,9 @@ public class StorageController {
         for(int i=0;i<gPathPoints.size();i++){
             gPathPoints.get(i).rectSize((int)rect_s,(int)rect_s);
         }
+        for(int i=0;i<gCarts.size();i++){
+            gCarts.get(i).cartSize((int)rect_s);
+        }
     }
 
     /**
@@ -115,7 +124,7 @@ public class StorageController {
         try {
             storage.importFile(path);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e);
         }
 
         storage.printStorage();
@@ -252,4 +261,27 @@ public class StorageController {
         return rect_s;
     }
 
+    public void clickedGCart(GCart gCart) {
+        System.out.println("Kliknutie na vozik: \n");
+
+
+        try {
+
+            cartView.prepareStage_info(gCart);
+            Group root = new Group();
+            Scene info = new Scene(root,400,300);
+            cartView.drawScene_cart(gCart,root);
+            cartView.getStage().setScene(info);
+            cartView.getStage().show();
+
+        }
+        catch (Exception e) {
+            System.out.println("EXCEPT");
+            System.out.println(e);
+        }
+    }
+
+    public void setCartSpeed(float sp){
+        this.speed=sp;
+    }
 }
