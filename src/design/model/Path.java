@@ -340,7 +340,7 @@ public class Path {
     public void addRequest(Request request) {
         for (Cart cart: this.carts) {
             if (cart.getMaxItems() >= request.getCount() && !cart.getBusy()) {
-                cart.deliverRequest(request, this);
+                cart.deliverRequest(request);
                 break;
             }
         }
@@ -373,7 +373,7 @@ public class Path {
      * @param maxItems maximálny počet naložených kusov
      */
     public void addCart(int maxItems) {
-        Cart cart = new Cart(dropIndex, maxItems);
+        Cart cart = new Cart(dropIndex, maxItems, this);
         this.carts.add(cart);
 
         // vzostupne zoradenie vozikov podla nosnosti

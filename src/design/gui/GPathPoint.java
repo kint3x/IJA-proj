@@ -28,12 +28,10 @@ public class GPathPoint {
             if(pathPoint.isBlocked()){
                 controller.blockPoint(this.x,this.y);
                 circle.setStyle("-fx-fill: #8ced97");
-                System.out.println("UVOLNUJEM");
             }
             else{
                 controller.blockPoint(this.x,this.y);
                 circle.setStyle("-fx-fill: #f27983");
-                System.out.println("BLOKUJEM");
             }
         });
         rectDefaultstyle();
