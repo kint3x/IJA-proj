@@ -392,6 +392,7 @@ public class Path {
 
         for (Cart cart: this.carts) {
             if (cart.getMaxItems() >= request.getCount() && !cart.getBusy()) {
+                request.getShelf().removeItem(request.getItemType(), request.getCount());
                 cart.deliverRequest(request);
                 break;
             }

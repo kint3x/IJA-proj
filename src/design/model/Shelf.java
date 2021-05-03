@@ -106,6 +106,17 @@ public class Shelf {
     }
 
     /**
+     * Odobratie niekoľkých položiek z regálu.
+     * @param itemType typ položky
+     * @param count počet položiek
+     */
+    public void removeItem(ItemType itemType, int count) {
+        for (int i = 0; i < count; i++) {
+            this.removeItem(itemType);
+        }
+    }
+
+    /**
      * Odstráni z poličky ľubovolnú položku daného typu.
      * @param itemType  typ položky
      * @return          odobraná položka
