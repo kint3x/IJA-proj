@@ -390,4 +390,8 @@ public class Path {
             return this.points;
         }
     }
+
+    public ArrayList<Cart> getCarts(){
+        return this.carts;
+    }
 }

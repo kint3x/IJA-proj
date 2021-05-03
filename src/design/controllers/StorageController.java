@@ -6,6 +6,7 @@
 package design.controllers;
 
 import design.StorageApp;
+import design.gui.GCart;
 import design.gui.GEmpty;
 import design.gui.GPathPoint;
 import design.gui.GShelf;
@@ -26,6 +27,7 @@ public class StorageController {
     private ArrayList<GShelf> gShelfs; //všetky graficke shelfs
     private ArrayList<GEmpty> gEmpty; // vsetky volne policka na mape
     private ArrayList<GPathPoint> gPathPoints;
+    private ArrayList<GCart> gCarts;
 
     private Storage storage;          // nacitany sklad
 
@@ -53,6 +55,8 @@ public class StorageController {
         gShelfs = new ArrayList<GShelf>();
         gEmpty = new ArrayList<GEmpty>();
         gPathPoints = new ArrayList<GPathPoint>();
+        gCarts = new ArrayList<GCart>();
+
 
         //loadStorage();
 
@@ -150,6 +154,12 @@ public class StorageController {
             GPathPoint newp = new GPathPoint(p.getPosX(),p.getPosY(),this,p);
             newp.drawPoint();
             gPathPoints.add(newp);
+        }
+
+        for(Cart c : storage.getPath().getCarts()){
+            GCart newc = new GCart(c,this);
+            newc.drawCart();
+            gCarts.add(newc);
         }
 
         storageGrid.setMaxSize(1,1); // defaultne nech je grid maly, pridanymi prvkami sa zvacsi

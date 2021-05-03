@@ -57,6 +57,8 @@ public class Cart {
         return this.maxItems;
     }
 
+    public ArrayList<PathPoint> getPathPoints(){ return this.pathPoints;}
+
     /**
      * Zistí či vozík akurát doručuje zásielku
      * @return true, ak vozík práve doručuje zásielku, inak false

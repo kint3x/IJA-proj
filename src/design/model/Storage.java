@@ -12,8 +12,6 @@ import org.json.simple.parser.JSONParser;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.lang.Math.min;
 
@@ -41,6 +39,7 @@ public class Storage {
     public int getWidth() {
         return this.width;
     }
+
 
     /**
      * Pridanie regálu do skladu.
@@ -284,7 +283,7 @@ public class Storage {
 
 
 
-        this.addRequest("vaňa", 1);
+        //this.addRequest("vaňa", 1);
         //this.addRequest("polička", 2);
 
         //this.addRequest("bvrrrrrm", 2);
