@@ -20,13 +20,15 @@ public class GShelf {
     private Rectangle rect;
     private StorageController controller;
 
+    private int usedHeatmap;
+
     /**
      * Pri inicializácií sa zapíše inštancia kontroleru a inštancia regálu ktorý táto trieda predstavuje.
      * @param s inštancia regálu
      * @param c inštancia kontroleru
      */
     public GShelf(Shelf s, StorageController c){
-
+        this.usedHeatmap=0;
         controller=c;
         shelf = s;
         rect = new Rectangle();
