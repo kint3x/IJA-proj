@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.Math.min;
+
 public class Cart {
     private int maxItems;
     private int cartPosIndex;
@@ -14,6 +16,7 @@ public class Cart {
     private final Object busyLock = new Object();
     private PropertyChangeSupport support;
     private CartLoad cartLoad;
+    private ArrayList<Request> requests = new ArrayList<>();
 
     /**
      * Cesta pre všetky vozíky.
@@ -29,7 +32,6 @@ public class Cart {
      * Zoznam bodov predstavujúci cestu vozíka na miesto výkladu.
      */
     private ArrayList<PathPoint> path2Drop;
-
 
     private Request request;
 
@@ -53,6 +55,26 @@ public class Cart {
      */
     public int getStartPosX() {
         return path.getPoints().get(getCartPosIndex()).getPosX();
+    }
+
+    /**
+     * Pridanie požiadavku do zoznamu a prípadné rozdelenie na viacero požiadakov.
+     * @param request požiadavok
+     */
+    public void addRequest(Request request) {
+        int reqCount = request.getCount();
+
+        while (reqCount > 0) {
+            Request partialReq = new Request(request.getShelf(), min(reqCount, this.getMaxItems()), request.getItemType());
+            this.getRequests().add(partialReq);
+            reqCount -= this.getMaxItems();
+        }
+
+        this.request = request;
+    }
+
+    public ArrayList<Request> getRequests() {
+        return requests;
     }
 
     /**
@@ -312,6 +334,10 @@ public class Cart {
             System.out.format("vykladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
 
             setBusy(false);
+
+            // skusi vybavit dalsie cakajuce poziadavky
+            path.deliverRequests();
+
             return;
         }
     }

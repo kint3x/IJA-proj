@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.min;
+import static java.lang.Math.random;
 
 public class Path {
     private int changeCounter = 0;
@@ -12,10 +12,11 @@ public class Path {
     private final ArrayList<PathPoint> points = new ArrayList<>();
     private final Object pointsLock = new Object();
     private final ArrayList<Cart> carts = new ArrayList<>();
-    private final int startIndex;
     private final int dropIndex;
     private int prevX = -1;
     private int prevY = -1;
+    private ArrayList<Request> waitingRequests = new ArrayList<>();
+    private ArrayList<Request> openRequests = new ArrayList<>();
 
     /**
      * Konštruktor.
@@ -23,7 +24,6 @@ public class Path {
      */
     public Path(int dropIndex) {
         this.dropIndex = dropIndex;
-        this.startIndex = dropIndex;
     }
 
     /**
@@ -34,6 +34,18 @@ public class Path {
         synchronized (changeCounterLock) {
             return changeCounter;
         }
+    }
+
+    public int getDropIndex() {
+        return this.dropIndex;
+    }
+
+    public ArrayList<Request> getWaitingRequests() {
+        return this.waitingRequests;
+    }
+
+    public ArrayList<Request> getOpenRequests() {
+        return openRequests;
     }
 
     /**
@@ -169,17 +181,6 @@ public class Path {
 
             return -1;
         }
-    }
-
-    /**
-     * Vypočíta Manhattanovskú vzdialenosť medzi bodmi [x1, y1] a [x2, y2].
-     * @param x1 x-ová súradnica prvého bodu
-     * @param y1 y-ová súradnica prvého bodu
-     * @param x2 x-ová súradnica druhého bodu
-     * @param y2 y-ová súradnica druhého bodu
-     */
-    public static int distance(int x1, int y1, int x2, int y2) {
-        return abs(x1 - x2) + abs(y1 - y2);
     }
 
     /**
@@ -380,22 +381,62 @@ public class Path {
     }
 
     /**
-     * Doručenie položiek. Vozíku pridá požiadavok
-     * @param request požiadavka
+     * Pridá požiadavok na zoznam nevybavených požiadavkov.
+     * @param request požiadavok
      */
     public void addRequest(Request request) {
-        if (findClosestPointIndex(startIndex, request.getShelf().getPosX(), request.getShelf().getPosY()) == -1) {
-            // k regalu neexistuje cesta
-            System.err.format("Nemožno naložiť %d kusov tovaru '%s' z dôvodu neexistujúcej cesty.\n", request.getCount(), request.getItemType().getName());
-            return;
-        }
 
-        for (Cart cart: this.carts) {
-            if (cart.getMaxItems() >= request.getCount() && !cart.getBusy()) {
-                request.getShelf().removeItem(request.getItemType(), request.getCount());
-                cart.deliverRequest(request);
+        System.out.println("bimAdd");
+        this.getOpenRequests().add(request);
+    }
+
+    /**
+     * Nevybavené požiadavok pridá na zoznam spracovývaných požiadavkov.
+     */
+    public void processRequests() {
+        this.waitingRequests.addAll(this.getOpenRequests());
+        this.openRequests = null;
+        this.deliverRequests();
+    }
+
+    public void deliverRequests() {
+        int i = 0;
+
+        while (this.getWaitingRequests().size() > 0) {
+            int freeCarts = 0;
+            boolean added = false;
+
+            // pridaj objednavku najmensiemu moznemu voziku
+            for (Cart c : this.getCarts()) {
+                if (!c.getBusy()) {
+                    freeCarts += 1;
+
+                    if (c.getMaxItems() >= this.getWaitingRequests().get(i).getCount()) {
+                        // pridaj objednavku voziku a odober zo zoznamu
+                        //c.addRequest(this.getWaitingRequests().get(i));
+                        c.deliverRequest(this.getWaitingRequests().get(i));
+                        this.getWaitingRequests().remove(this.getWaitingRequests().get(i));
+                        added = true;
+                        break;
+                    }
+                }
+            }
+
+            if (added) {
+                i += 1;
+                continue;
+            }
+
+            // ziaden volny vozik
+            if (freeCarts == 0) {
                 break;
             }
+
+            // prida objednavku nahodnemu voziku zo zoznamu
+            this.getCarts().get((int) (random()*(this.getCarts().size()-1)));
+            this.getWaitingRequests().remove(this.getWaitingRequests().get(i));
+
+            i += 1;
         }
     }
 

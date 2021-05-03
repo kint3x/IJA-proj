@@ -11,8 +11,10 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
 /**
@@ -40,8 +42,7 @@ public class Storage {
         return this.width;
     }
 
-
-    /**
+        /**
      * Pridanie regálu do skladu.
      * @param shelf regál
      */
@@ -281,9 +282,9 @@ public class Storage {
 //            s.printShelf();
 //        }
 
+        this.addRequest("polička", 2);
         this.addRequest("vaňa", 1);
-
-
+        this.path.processRequests();
     }
 
 
@@ -293,40 +294,49 @@ public class Storage {
      * @param count počet vyžadovaných kusov
      */
     public void addRequest(String itemName, int count) {
-        ItemType itemType = new ItemType(itemName);
-        int index = 0;
         int foundCount = 0;
+        ItemType itemType = new ItemType(itemName);
+        ArrayList<Shelf> containingShelfs = this.findShelfsContaining(itemType);
 
-        while (count > 0) {
-            index = this.findItems(itemType, index);
+        // zoradenie podla vzdialenosti
+        Comparator<Shelf> c =
+                Comparator.comparingInt(s -> abs(this.getPath().getDropIndex() -
+                        this.getPath().findClosestPointIndex(this.getPath().getDropIndex(), s.getPosX(), s.getPosY())));
 
-            if (index == -1) {
-                System.err.format("Nemožno kompletne vybaviť požiadavok z dôvodu nedostatku tovaru. ");
-                System.err.format("Nebude doručených %d položiek typu '%s'.\n", count, itemType.getName());
+        containingShelfs.sort(c);
+
+        for (Shelf s: containingShelfs) {
+            foundCount = s.countItems(itemType);
+            this.path.addRequest(new Request(s, min(foundCount, count), itemType));
+            count -= foundCount;
+
+            if (count <= 0) {
                 break;
             }
+        }
 
-            foundCount = this.shelfs.get(index).countItems(itemType);
-
-            this.path.addRequest(new Request(this.shelfs.get(index), min(foundCount, count), itemType));
-
-            count -= foundCount;
-            index += 1;
+        if (count > 0) {
+            System.err.format("Nebude doručených %d položiek typu '%s' z dôvodu nedostatku tovaru alebo neprístupných regálov.\n",
+                    count, itemType.getName());
         }
     }
 
     /**
-     * Vráti index regálu v zozname shelfs, ktorý obsahuje danú položku.
-     * @return index nájdeného regálu
+     * Vráti zoznam regálov, ktoré obsahujú aspoň 1 kus daného typu tovaru a sú dosiahnuteľné danou cestou.
+     * @return vybraných zoznam regálov
      */
-    public int findItems(ItemType itemType, int startIndex) {
-        for (int i = startIndex; i < shelfs.size(); i++) {
-            if (this.shelfs.get(i).countItems(itemType) > 0) {
-                return i;
+    public ArrayList<Shelf> findShelfsContaining(ItemType itemType) {
+        ArrayList<Shelf> res = new ArrayList<>();
+
+        for (Shelf s : this.shelfs) {
+            if (s.countItems(itemType) > 0) {
+                if (this.getPath().findClosestPointIndex(this.getPath().getDropIndex(), s.getPosX(), s.getPosY()) != -1) {
+                    res.add(s);
+                }
             }
         }
 
-        return -1;
+        return res;
     }
 
     public Path getPath(){
