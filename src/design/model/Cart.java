@@ -29,13 +29,24 @@ public class Cart {
 
     /**
      * Konštruktor triedy Cart.
+     * @param cartPosIndex počiatočný index
      * @param maxItems maximálny počet položiek, ktoré vozík naraz odnesie
+     * @param path objekt cesty, po ktorom môže vozík chodiť
      */
-    public Cart(int cartPosIndex, int maxItems) {
+    public Cart(int cartPosIndex, int maxItems, Path path) {
         this.cartPosIndex = cartPosIndex;
+        this.path = path;
         this.maxItems = maxItems;
         this.support = new PropertyChangeSupport(this);
-        this.cartLoad = null;
+        this.cartLoad = null; // pridanie poc. bodu
+    }
+
+    public int getStartPosX() {
+        return path.getPoints().get(getCartPosIndex()).getPosX();
+    }
+
+    public int getStartPosY() {
+        return path.getPoints().get(getCartPosIndex()).getPosY();
     }
 
     /**
@@ -107,13 +118,15 @@ public class Cart {
     /**
      * Pošle vozík vybaviť objednávku.
      * @param request objednávka
-     * @param path objekt cesty, po ktorom môže vozík chodiť
      */
-    public void deliverRequest(Request request, Path path) {
+    public void deliverRequest(Request request) {
         this.setBusy(true);
-        this.path = path;
         this.request = request;
-        new Thread(new CartThread(path, request)).start();
+        new Thread(new CartThread(request)).start();
+    }
+
+    public Path getPath() {
+        return this.path;
     }
 
     /**
@@ -133,9 +146,9 @@ public class Cart {
     }
 
     class CartThread implements Runnable {
-        public CartThread(Path path, Request request) {
+        public CartThread(Request request) {
             pathPoints = new ArrayList<>();
-            pathPoints.add(path.getPoints().get(getCartPosIndex())); // pridanie poc. bodu
+            pathPoints.add(path.getPoints().get(getCartPosIndex()));
         }
 
         private int calculatePath() {
@@ -160,7 +173,7 @@ public class Cart {
             int pickupIndex;
             int changeCounter;
 
-            changeCounter = path.getChangeCounter();
+            changeCounter = getPath().getChangeCounter();
             pickupIndex = this.calculatePath();
 
             while (getCartPosIndex() < pathPoints.size()) {
@@ -170,9 +183,9 @@ public class Cart {
                     Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                if (path.getChangeCounter() != changeCounter) {
+                if (getPath().getChangeCounter() != changeCounter) {
                     System.out.println("zmena cesty");
-                    changeCounter = path.getChangeCounter();
+                    changeCounter = getPath().getChangeCounter();
                     pickupIndex = this.calculatePath();
 
                     if (pickupIndex == -1) {
