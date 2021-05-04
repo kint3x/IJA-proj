@@ -29,4 +29,13 @@ public class AnimationController {
         val.setText(String.format("%f", (float) slider.getValue()));
     }
 
+    @FXML
+    public void handlePlayBtn(){
+        System.out.println("TEST");
+    }
+
+    @FXML
+    public void handlePauseBtn(){
+        System.out.println("TEST2");
+    }
 }
