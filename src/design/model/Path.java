@@ -385,8 +385,7 @@ public class Path {
      * @param request požiadavok
      */
     public void addRequest(Request request) {
-
-        System.out.println("bimAdd");
+        request.getShelf().removeItem(request.getItemType(), request.getCount());
         this.getOpenRequests().add(request);
     }
 
@@ -395,12 +394,12 @@ public class Path {
      */
     public void processRequests() {
         this.waitingRequests.addAll(this.getOpenRequests());
-        this.openRequests = null;
+        this.openRequests = new ArrayList<>();
+
         this.deliverRequests();
     }
 
     public void deliverRequests() {
-        int i = 0;
 
         while (this.getWaitingRequests().size() > 0) {
             int freeCarts = 0;
@@ -411,19 +410,30 @@ public class Path {
                 if (!c.getBusy()) {
                     freeCarts += 1;
 
-                    if (c.getMaxItems() >= this.getWaitingRequests().get(i).getCount()) {
+                    if (c.getMaxItems() >= this.getWaitingRequests().get(0).getCount()) {
                         // pridaj objednavku voziku a odober zo zoznamu
-                        //c.addRequest(this.getWaitingRequests().get(i));
-                        c.deliverRequest(this.getWaitingRequests().get(i));
-                        this.getWaitingRequests().remove(this.getWaitingRequests().get(i));
+                        c.addRequest(this.getWaitingRequests().get(0));
+                        this.getWaitingRequests().remove(0);
                         added = true;
+
+                        // skusi pridat co najviac objednavok
+                        while (this.getWaitingRequests().size() > 0) {
+                            if (c.getMaxItems() - c.getRequestsItemsCount() >= this.getWaitingRequests().get(0).getCount()) {
+                                c.addRequest(this.getWaitingRequests().get(0));
+                                this.getWaitingRequests().remove(0);
+                            } else {
+                                break;
+                            }
+
+                        }
+
+                        c.deliverRequests();
                         break;
                     }
                 }
             }
 
             if (added) {
-                i += 1;
                 continue;
             }
 
@@ -434,9 +444,7 @@ public class Path {
 
             // prida objednavku nahodnemu voziku zo zoznamu
             this.getCarts().get((int) (random()*(this.getCarts().size()-1)));
-            this.getWaitingRequests().remove(this.getWaitingRequests().get(i));
-
-            i += 1;
+            this.getWaitingRequests().remove(this.getWaitingRequests().get(0));
         }
     }
 

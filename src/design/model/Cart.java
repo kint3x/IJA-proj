@@ -10,12 +10,12 @@ import static java.lang.Math.min;
 
 public class Cart {
     private int maxItems;
+    private int loadedItems = 0;
     private int cartPosIndex;
-    private ArrayList<Item> load;
     private boolean busy;
     private final Object busyLock = new Object();
     private PropertyChangeSupport support;
-    private CartLoad cartLoad;
+    private ArrayList<CartLoad> cartLoad = new ArrayList<>();
     private ArrayList<Request> requests = new ArrayList<>();
 
     /**
@@ -46,7 +46,6 @@ public class Cart {
         this.path = path;
         this.maxItems = maxItems;
         this.support = new PropertyChangeSupport(this);
-        this.cartLoad = null; // pridanie poc. bodu
     }
 
     /**
@@ -55,6 +54,10 @@ public class Cart {
      */
     public int getStartPosX() {
         return path.getPoints().get(getCartPosIndex()).getPosX();
+    }
+
+    public int getLoadedItems() {
+        return loadedItems;
     }
 
     /**
@@ -69,12 +72,20 @@ public class Cart {
             this.getRequests().add(partialReq);
             reqCount -= this.getMaxItems();
         }
-
-        this.request = request;
     }
 
     public ArrayList<Request> getRequests() {
         return requests;
+    }
+
+    public int getRequestsItemsCount() {
+        int sum = 0;
+
+        for (Request r : this.getRequests()) {
+            sum += r.getCount();
+        }
+
+        return sum;
     }
 
     /**
@@ -141,31 +152,31 @@ public class Cart {
         this.cartPosIndex = index;
     }
 
-    public void load() {
-        if (request.getCount() <= maxItems) {
+    public void load(Request request) {
+        if (request.getCount() <= getMaxItems() - getLoadedItems()) {
             CartLoad cartLoad = new CartLoad(request.getCount(), new Item(request.getItemType()));
             support.firePropertyChange("load", this.getCartLoad(), cartLoad);
-            this.cartLoad = cartLoad;
+            this.getCartLoad().add(cartLoad);
+            this.loadedItems += request.getCount();
         }
     }
 
     public void unload() {
-        support.firePropertyChange("load", this.getCartLoad(), null);
-        this.cartLoad = null;
+        support.firePropertyChange("load", this.getCartLoad(), new ArrayList<>());
+        this.loadedItems = 0;
+        this.cartLoad = new ArrayList<>();
     }
 
-    public CartLoad getCartLoad() {
+    public ArrayList<CartLoad> getCartLoad() {
         return this.cartLoad;
     }
 
     /**
-     * Pošle vozík vybaviť objednávku.
-     * @param request objednávka
+     * Pošle vozík vybaviť objednávky.
      */
-    public void deliverRequest(Request request) {
+    public void deliverRequests() {
         this.setBusy(true);
-        this.request = request;
-        new Thread(new CartThread(request)).start();
+        new Thread(new CartThread()).start();
     }
 
     public Path getPath() {
@@ -189,9 +200,6 @@ public class Cart {
     }
 
     class CartThread implements Runnable {
-        public CartThread(Request request) {
-            path2Shelf = new ArrayList<>();
-        }
 
         private int calculatePath2Drop() {
             int dropIndex;
@@ -211,7 +219,7 @@ public class Cart {
             }
         }
 
-        private int calculatePath2Shelf() {
+        private int calculatePath2Shelf(Request request) {
             int pickupIndex;
 
             Shelf shelf = request.getShelf();
@@ -237,57 +245,72 @@ public class Cart {
             int dropIndex = -1;
             int changeCounter;
 
-            changeCounter = getPath().getChangeCounter() - 1;
             path2Shelf = new ArrayList<>();
             path2Shelf.add(path.getPoints().get(getCartPosIndex()));
-            setCartPosIndex(0, false);
 
-            // nalozenie tovaru
-            while (getCartPosIndex() < path2Shelf.size()) {
-                // cestovanie vozika
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+            while (getRequests().size() > 0) {
+                Request request = getRequests().get(0);
+
+
+                if (request.getCount() > getMaxItems() - getLoadedItems()) {
+                    // prekrocena kapacita
+                    break;
                 }
 
-                // kontrola zmeny cesty
-                if (getPath().getChangeCounter() != changeCounter) {
-                    changeCounter = getPath().getChangeCounter();
-                    pickupIndex = this.calculatePath2Shelf();
-                    setCartPosIndex(0, false);
-
-                    while (pickupIndex == -1) {
-                        // caka na opatovnu zmenu cesty
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        // ak sa zmenila, skusi znovu prepocitat
-                        if (getPath().getChangeCounter() != changeCounter) {
-                            changeCounter = getPath().getChangeCounter();
-                            pickupIndex = this.calculatePath2Shelf();
-                        }
-                    }
-
-                    continue;
-                }
+                PathPoint startPoint = path2Shelf.get(path2Shelf.size()-1);
+                changeCounter = getPath().getChangeCounter() - 1;
+                path2Shelf = new ArrayList<>();
+                path2Shelf.add(startPoint);
+                setCartPosIndex(0, false);
 
                 // nalozenie tovaru
-                if (getCartPosIndex() == pickupIndex) {
+                while (getCartPosIndex() < path2Shelf.size()) {
+                    // cestovanie vozika
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    request.getShelf().incrementHeatCounter();
-                    load();
-                    System.out.format("nakladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
-                }
 
-                setCartPosIndex(getCartPosIndex() + 1, false);
+                    // kontrola zmeny cesty
+                    if (getPath().getChangeCounter() != changeCounter) {
+                        changeCounter = getPath().getChangeCounter();
+                        pickupIndex = this.calculatePath2Shelf(request);
+                        setCartPosIndex(0, false);
+
+                        while (pickupIndex == -1) {
+                            // caka na opatovnu zmenu cesty
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            // ak sa zmenila, skusi znovu prepocitat
+                            if (getPath().getChangeCounter() != changeCounter) {
+                                changeCounter = getPath().getChangeCounter();
+                                pickupIndex = this.calculatePath2Shelf(request);
+                            }
+                        }
+
+                        continue;
+                    }
+
+                    // nalozenie tovaru
+                    if (getCartPosIndex() == pickupIndex) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        request.getShelf().incrementHeatCounter();
+                        load(request);
+                        getRequests().remove(0);
+                        System.out.format("nakladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
+                    }
+
+                    setCartPosIndex(getCartPosIndex() + 1, false);
+                }
             }
 
             changeCounter = getPath().getChangeCounter() - 1;
@@ -330,8 +353,16 @@ public class Cart {
                 setCartPosIndex(getCartPosIndex() + 1, true);
             }
 
+            for (CartLoad cl : getCartLoad()) {
+                System.out.format("vykladam %d ks '%s'\n", cl.getCount(), cl.getItem().getType().getName());
+            }
+
             unload();
-            System.out.format("vykladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
+
+            // reset pozicie
+            path2Shelf = new ArrayList<>();
+            path2Shelf.add(path2Drop.get(path2Drop.size()-1));
+            setCartPosIndex(0, false);
 
             setBusy(false);
 

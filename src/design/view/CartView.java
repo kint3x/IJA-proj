@@ -51,23 +51,25 @@ public class CartView {
         nadpis.setText("Názov položky, počet");
         nadpis.setPadding(new Insets(0, 0, 10, 0));
         vbox.getChildren().add(nadpis);
-        cartLoad = gc.getCart().getCartLoad();
-        if(cartLoad == null) {
-            return;
-        }
-        //for (int i=0;i<cartLoad.getCount();i++) {
-            HBox hbox = new HBox();
-            hbox.setSpacing(20);
-            Label nazov = new Label();
-            nazov.setText(cartLoad.getItem().getType().getName());
-            nazov.setFont(f_nadpis);
-            Label pocet = new Label();
-            pocet.setFont(f_nadpis);
-            pocet.setText(String.format("%d", cartLoad.getCount()));
-            hbox.getChildren().add(nazov);
-            hbox.getChildren().add(pocet);
-            vbox.getChildren().add(hbox);
-       // }
+
+        // TODO
+//        cartLoad = gc.getCart().getCartLoad();
+//        if(cartLoad == null) {
+//            return;
+//        }
+//        //for (int i=0;i<cartLoad.getCount();i++) {
+//            HBox hbox = new HBox();
+//            hbox.setSpacing(20);
+//            Label nazov = new Label();
+//            nazov.setText(cartLoad.getItem().getType().getName());
+//            nazov.setFont(f_nadpis);
+//            Label pocet = new Label();
+//            pocet.setFont(f_nadpis);
+//            pocet.setText(String.format("%d", cartLoad.getCount()));
+//            hbox.getChildren().add(nazov);
+//            hbox.getChildren().add(pocet);
+//            vbox.getChildren().add(hbox);
+//       // }
 
     }
     public Stage getStage(){

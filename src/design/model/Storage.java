@@ -192,6 +192,67 @@ public class Storage {
     }
 
     /**
+     * Parsuje daný súbor a zadáva objednávky.
+     * @param filename JSON súbor s popisom objednávok
+     * @throws Exception otvorenie a parsovanie súboru
+     */
+    public void importRequests(String filename) throws Exception {
+        Object obj = new JSONParser().parse(new FileReader(filename));
+        JSONObject jo = (JSONObject) obj;
+        JSONArray requestsArray;
+
+        try {
+            requestsArray = (JSONArray) jo.get("requests");
+        } catch (NullPointerException e) {
+            // neobsahuje popis poloziek
+            System.err.format("Chýba špecifikácia objednávok.\n");
+            return;
+        }
+
+        if (requestsArray != null) {
+            for (Object o : requestsArray) {
+                Map m = (Map) o;
+
+                JSONArray itemsArray;
+
+                try {
+                    itemsArray = (JSONArray) m.get("items");
+                } catch (NullPointerException e) {
+                    // neobsahuje popis poloziek
+                    System.err.format("Chýba špecifikácia položiek v objednávke.\n");
+                    return;
+                }
+
+
+                JSONArray countsArray;
+
+                try {
+                    countsArray = (JSONArray) m.get("counts");
+                } catch (NullPointerException e) {
+                    // neobsahuje popis poloziek
+                    System.err.format("Chýba špecifikácia počtov kusov v objednávke.\n");
+                    return;
+                }
+
+                if (countsArray.size() != itemsArray.size()) {
+                    System.err.format("Rozdielny počet názvov položiek a počtov kusov v objednávke. Budú pridané iba záznamy obsahujúce aj názov položky aj počet kusov.\n");
+                }
+
+                int stop = min(countsArray.size(), itemsArray.size());
+
+                for (int i = 0; i < stop; i++) {
+                    int count = ((Long) countsArray.get(i)).intValue();
+                    String name = (String) itemsArray.get(i);
+
+                    this.addRequest(name, count);
+                }
+
+                this.path.processRequests();
+            }
+        }
+    }
+
+    /**
      * Parsuje daný súbor, načítané body pridáva do cesty v sklade.
      * @param filename JSON súbor s popisom cesty
      * @throws Exception otvorenie a parsovanie súboru
@@ -282,9 +343,11 @@ public class Storage {
 //            s.printShelf();
 //        }
 
-        this.addRequest("polička", 2);
-        this.addRequest("vaňa", 1);
-        this.path.processRequests();
+        try {
+            this.importRequests("C:\\Users\\simon\\IdeaProjects\\IJA-proj\\data\\reqeusts.json");
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
     }
 
 

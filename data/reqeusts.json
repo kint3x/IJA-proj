@@ -1,0 +1,13 @@
+{
+  "requests":
+  [
+    {
+      "items": ["polička", "vaňa"],
+      "counts": [2,1]
+    },
+    {
+      "items": ["vaňa"],
+      "counts": [3]
+    }
+  ]
+}
