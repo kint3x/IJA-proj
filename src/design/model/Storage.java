@@ -10,6 +10,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
@@ -283,6 +285,7 @@ public class Storage {
             }
         }
     }
+
     /**
      * Parsuje daný súbor a pridáva uvedené vozíky.
      * @param filename JSON súbor s popisom vozíkov
@@ -308,6 +311,85 @@ public class Storage {
                 int maxItems = ((Long) m.get("maxItems")).intValue();
                 this.addCart(maxItems);
             }
+        }
+    }
+
+    /**
+     * Vytvorí alebo prepíše daný súbor a uloží do neho aktuálnu konfiguráciu skladu, t.j. šírku skladu, výšku skladu,
+     * cestu, všetky regále, položky v daných regáloch a existujúce vozíky.
+     * @param filename názov súboru
+     * @throws Exception otvorenie a zapisovanie do súboru
+     */
+    public void exportStorage(String filename) throws Exception {
+        JSONObject storage = new JSONObject();
+        storage.put("width", this.getWidth());
+        storage.put("height", this.getHeight());
+        storage.put("startPoint", this.getPath().getDropIndex());
+
+
+        // pridanie cesty
+
+        JSONArray pathPoints = new JSONArray();
+
+        for (PathPoint pathPoint : this.getPath().getPoints()) {
+            JSONObject pointObject = new JSONObject();
+            pointObject.put("x", pathPoint.getPosX());
+            pointObject.put("y", pathPoint.getPosY());
+            pathPoints.add(pointObject);
+        }
+
+        storage.put("path", pathPoints);
+
+        // pridanie vozikov
+
+        JSONArray carts = new JSONArray();
+
+        for (Cart cart : this.getPath().getCarts()) {
+            JSONObject cartObject = new JSONObject();
+            cartObject.put("maxItems", cart.getMaxItems());
+            carts.add(cartObject);
+        }
+
+        storage.put("carts", carts);
+
+        // pridanie regalov a poloziek
+
+        JSONArray shelfs = new JSONArray();
+        JSONArray items = new JSONArray();
+
+        for (Shelf shelf : this.getAllShelfs()) {
+            // spracovanie regalu
+            JSONObject shelfObject = new JSONObject();
+
+            shelfObject.put("x1", shelf.getPosX());
+            shelfObject.put("x2", shelf.getPosX());
+            shelfObject.put("y1", shelf.getPosY());
+            shelfObject.put("y2", shelf.getPosY());
+
+            shelfs.add(shelfObject);
+
+            // spracovanie poloziek v regale
+
+            for (String itemName : shelf.getItemCounts().keySet()) {
+                JSONObject itemObject = new JSONObject();
+
+                itemObject.put("name", itemName);
+                itemObject.put("count", shelf.countItems(itemName));
+                itemObject.put("x", shelf.getPosX());
+                itemObject.put("y", shelf.getPosY());
+
+                items.add(itemObject);
+            }
+        }
+
+        storage.put("shelfs", shelfs);
+        storage.put("items", items);
+
+        try (FileWriter file = new FileWriter(filename)) {
+            file.write(storage.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -339,14 +421,14 @@ public class Storage {
      * Vypísanie informácií o sklade na štandardný výstup. Slúži na testovanie.
      */
     public void printStorage() {
-//        for (Shelf s : this.shelfs) {
-//            s.printShelf();
-//        }
+        for (Shelf s : this.shelfs) {
+            s.printShelf();
+        }
 
         try {
-            this.importRequests("C:\\Users\\simon\\IdeaProjects\\IJA-proj\\data\\reqeusts.json");
+            this.exportStorage("C:\\Users\\simon\\IdeaProjects\\IJA-proj\\data\\config.json");
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
         }
     }
 

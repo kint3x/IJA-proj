@@ -45,7 +45,6 @@ public class MenuController {
             about.initStyle(StageStyle.UTILITY);
             about.setScene(new Scene(a));
             about.show();
-
         }
         catch (IOException e) {
             System.out.println(e);

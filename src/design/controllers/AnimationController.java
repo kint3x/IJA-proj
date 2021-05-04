@@ -18,11 +18,8 @@ public class AnimationController {
         val.setText("1.0");
         slider.setOnMouseDragged(event -> {
             untilRelease();
+            StorageController.setCartSpeed((float)slider.getValue());
         });
-        slider.setOnDragDone(event -> {
-            Controller.storage.setCartSpeed((float)slider.getValue());
-        });
-
     }
 
     private void untilRelease(){
@@ -31,11 +28,11 @@ public class AnimationController {
 
     @FXML
     public void handlePlayBtn(){
-        System.out.println("TEST");
+        Controller.storage.getStorage().getPath().startCarts();
     }
 
     @FXML
     public void handlePauseBtn(){
-        System.out.println("TEST2");
+        Controller.storage.getStorage().getPath().stopCarts();
     }
 }

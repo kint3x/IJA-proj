@@ -43,7 +43,7 @@ public class StorageController {
     private CartView cartView;
     private RequestView requestView;
 
-    public static float speed;
+    public static float speed = 1;
 
     @FXML
     private GridPane storageGrid;
@@ -64,8 +64,6 @@ public class StorageController {
         gEmpty = new ArrayList<GEmpty>();
         gPathPoints = new ArrayList<GPathPoint>();
         gCarts = new ArrayList<GCart>();
-
-        this.speed=1;
 
 
         //loadStorage();
@@ -177,6 +175,7 @@ public class StorageController {
 
         storageGrid.setMaxSize(1,1); // defaultne nech je grid maly, pridanymi prvkami sa zvacsi
     }
+
     public void showHeatMap(){
         HeatmapView mapa = new HeatmapView();
 
@@ -286,22 +285,16 @@ public class StorageController {
     }
 
     public void clickedGCart(GCart gCart) {
-        //System.out.println("Kliknutie na vozik: \n");
-
-
         try {
-
             cartView.prepareStage_info(gCart);
             Group root = new Group();
             Scene info = new Scene(root,400,300);
             cartView.drawScene_cart(gCart,root);
             cartView.getStage().setScene(info);
             cartView.getStage().show();
-
         }
         catch (Exception e) {
-            System.out.println("EXCEPT");
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
     public void importMenuRequests(String path){
@@ -312,8 +305,13 @@ public class StorageController {
             System.err.println("Nefunguje nacitavanie requestov");
         }
     }
-    public void setCartSpeed(float sp){
-        this.speed=sp;
+
+    static public void setCartSpeed(float sp){
+        StorageController.speed = sp;
+    }
+
+    static public float getSpeed() {
+        return StorageController.speed;
     }
 
     public void requestMenuClick(){

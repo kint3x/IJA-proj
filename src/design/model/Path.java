@@ -2,6 +2,10 @@ package design.model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.random;
@@ -9,14 +13,15 @@ import static java.lang.Math.random;
 public class Path {
     private int changeCounter = 0;
     private final Object changeCounterLock = new Object();
-    private final ArrayList<PathPoint> points = new ArrayList<>();
+    private ArrayList<PathPoint> points = new ArrayList<>();
     private final Object pointsLock = new Object();
-    private final ArrayList<Cart> carts = new ArrayList<>();
-    private final int dropIndex;
+    private ArrayList<Cart> carts = new ArrayList<>();
+    private int dropIndex;
     private int prevX = -1;
     private int prevY = -1;
     private ArrayList<Request> waitingRequests = new ArrayList<>();
     private ArrayList<Request> openRequests = new ArrayList<>();
+    private ReentrantLock cartsLock = new ReentrantLock();
 
     /**
      * Konštruktor.
@@ -453,6 +458,28 @@ public class Path {
      */
     public void printPath() {
         Path.printPath(this.getPoints());
+    }
+
+    /**
+     * Zastavenie vozíkov.
+     */
+    public void stopCarts() {
+        this.cartsLock.lock();
+    }
+
+    /**
+     * Putenie vozíkov.
+     */
+    public void startCarts() {
+        this.cartsLock.unlock();
+    }
+
+    /**
+     * Získanie zámku pre pohyb vozíkov.
+     * @return zámok
+     */
+    public ReentrantLock getCartsLock() {
+        return this.cartsLock;
     }
 
     /**

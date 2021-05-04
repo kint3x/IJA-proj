@@ -1,5 +1,7 @@
 package design.model;
 
+import design.controllers.StorageController;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ public class Cart {
     private PropertyChangeSupport support;
     private ArrayList<CartLoad> cartLoad = new ArrayList<>();
     private ArrayList<Request> requests = new ArrayList<>();
+    private PathPoint cartPoint;
 
     /**
      * Cesta pre všetky vozíky.
@@ -33,7 +36,7 @@ public class Cart {
      */
     private ArrayList<PathPoint> path2Drop;
 
-    private Request request;
+    private ArrayList<PathPoint> travelledPoints = new ArrayList<>();
 
     /**
      * Konštruktor triedy Cart.
@@ -46,6 +49,7 @@ public class Cart {
         this.path = path;
         this.maxItems = maxItems;
         this.support = new PropertyChangeSupport(this);
+        this.cartPoint = this.path.getPoints().get(this.cartPosIndex);
     }
 
     /**
@@ -104,8 +108,24 @@ public class Cart {
         return this.maxItems;
     }
 
+    /**
+     * Vráti aktuálnu plánovanú cestu vozíka.
+     * @return zoznam bodov cesty
+     */
     public ArrayList<PathPoint> getPathPoints(){
-        return this.path2Shelf;
+        ArrayList<PathPoint> pathPoints = new ArrayList<>(this.travelledPoints);
+
+        if (path2Shelf.size() == 0) {
+            for (int i = cartPosIndex; i < path2Shelf.size(); i++) {
+                pathPoints.add(path2Shelf.get(i));
+            }
+        } else if (path2Drop.size() == 0) {
+            for (int i = cartPosIndex; i < path2Drop.size(); i++) {
+                pathPoints.add(path2Drop.get(i));
+            }
+        }
+
+        return pathPoints;
     }
 
     /**
@@ -142,9 +162,13 @@ public class Cart {
      */
     public void setCartPosIndex(int index, boolean drop) {
         if (!drop && index < path2Shelf.size()) {
+            this.travelledPoints.add(this.cartPoint);
+            this.cartPoint = path2Shelf.get(index);
             support.firePropertyChange("posX", -1, this.path2Shelf.get(index).getPosX());
             support.firePropertyChange("posY", -1, this.path2Shelf.get(index).getPosY());
         } else if (drop && index < path2Drop.size()) {
+            this.travelledPoints.add(this.cartPoint);
+            this.cartPoint = path2Drop.get(index);
             support.firePropertyChange("posX", -1, this.path2Drop.get(index).getPosX());
             support.firePropertyChange("posY", -1, this.path2Drop.get(index).getPosY());
         }
@@ -176,7 +200,10 @@ public class Cart {
      */
     public void deliverRequests() {
         this.setBusy(true);
-        new Thread(new CartThread()).start();
+
+        Thread t = new Thread(new CartThread());
+        t.setDaemon(true);
+        t.start();
     }
 
     public Path getPath() {
@@ -204,15 +231,11 @@ public class Cart {
         private int calculatePath2Drop() {
             int dropIndex;
 
-            PathPoint point = path2Drop.get(getCartPosIndex());
             path2Drop = new ArrayList<>();
-            dropIndex = path.calculatePath2Drop(point.getPosX(), point.getPosY(), path2Drop);
+            dropIndex = path.calculatePath2Drop(cartPoint.getPosX(), cartPoint.getPosY(), path2Drop);
 
             if (dropIndex == -1) {
-                // pridanie aktualnej pozicie
-                path2Drop = new ArrayList<>();
-                path2Drop.add(point);
-                System.err.format("Nemožno vyložiť %d kusov tovaru '%s' z dôvodu zablokovanej cesty. Vozík čaká na uvoľnenie cesty.\n", request.getCount(), request.getItemType().getName());
+                System.err.format("Nemožno vyložiť %d kusov tovaru.\n", getLoadedItems());
                 return -1;
             } else {
                 return dropIndex;
@@ -223,15 +246,10 @@ public class Cart {
             int pickupIndex;
 
             Shelf shelf = request.getShelf();
-            PathPoint point = path2Shelf.get(getCartPosIndex());
             path2Shelf = new ArrayList<>();
-
-            pickupIndex = path.calculatePath2Shelf(shelf.getPosX(), shelf.getPosY(), point.getPosX(), point.getPosY(), path2Shelf);
+            pickupIndex = path.calculatePath2Shelf(shelf.getPosX(), shelf.getPosY(), cartPoint.getPosX(), cartPoint.getPosY(), path2Shelf);
 
             if (pickupIndex == -1) {
-                // pridanie aktualnej pozicie
-                path2Shelf = new ArrayList<>();
-                path2Shelf.add(point);
                 System.err.format("Nemožno naložiť %d kusov tovaru '%s' z dôvodu zablokovanej cesty. Vozík čaká na uvoľnenie cesty.\n", request.getCount(), request.getItemType().getName());
                 return -1;
             } else {
@@ -245,32 +263,34 @@ public class Cart {
             int dropIndex = -1;
             int changeCounter;
 
+            path2Drop = new ArrayList<>();
             path2Shelf = new ArrayList<>();
-            path2Shelf.add(path.getPoints().get(getCartPosIndex()));
 
             while (getRequests().size() > 0) {
                 Request request = getRequests().get(0);
-
 
                 if (request.getCount() > getMaxItems() - getLoadedItems()) {
                     // prekrocena kapacita
                     break;
                 }
 
-                PathPoint startPoint = path2Shelf.get(path2Shelf.size()-1);
                 changeCounter = getPath().getChangeCounter() - 1;
                 path2Shelf = new ArrayList<>();
-                path2Shelf.add(startPoint);
+                path2Shelf.add(cartPoint);
                 setCartPosIndex(0, false);
 
                 // nalozenie tovaru
                 while (getCartPosIndex() < path2Shelf.size()) {
                     // cestovanie vozika
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep((long) (500 / StorageController.getSpeed()));
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
+                    // pauza?
+                    getPath().getCartsLock().lock();
+                    getPath().getCartsLock().unlock();
 
                     // kontrola zmeny cesty
                     if (getPath().getChangeCounter() != changeCounter) {
@@ -281,10 +301,14 @@ public class Cart {
                         while (pickupIndex == -1) {
                             // caka na opatovnu zmenu cesty
                             try {
-                                Thread.sleep(5000);
+                                Thread.sleep((long) (5000 / StorageController.getSpeed()));
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                             }
+
+                            // pauza?
+                            getPath().getCartsLock().lock();
+                            getPath().getCartsLock().unlock();
 
                             // ak sa zmenila, skusi znovu prepocitat
                             if (getPath().getChangeCounter() != changeCounter) {
@@ -299,10 +323,15 @@ public class Cart {
                     // nalozenie tovaru
                     if (getCartPosIndex() == pickupIndex) {
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep((long) (1000 / StorageController.getSpeed()));
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                         }
+
+                        // pauza?
+                        getPath().getCartsLock().lock();
+                        getPath().getCartsLock().unlock();
+
                         request.getShelf().incrementHeatCounter();
                         load(request);
                         getRequests().remove(0);
@@ -313,18 +342,23 @@ public class Cart {
                 }
             }
 
+            path2Shelf = new ArrayList<>();
+
             changeCounter = getPath().getChangeCounter() - 1;
-            path2Drop = new ArrayList<>();
-            path2Drop.add(path2Shelf.get(path2Shelf.size()-1));
+            path2Drop.add(cartPoint);
             setCartPosIndex(0, true);
 
             while (getCartPosIndex() < path2Drop.size()) {
                 // cestovanie vozika
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep((long) (500 / StorageController.getSpeed()));
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
+                // pauza?
+                getPath().getCartsLock().lock();
+                getPath().getCartsLock().unlock();
 
                 // kontrola zmeny cesty
                 if (getPath().getChangeCounter() != changeCounter) {
@@ -335,10 +369,14 @@ public class Cart {
                     while (dropIndex == -1) {
                         // caka na opatovnu zmenu cesty
                         try {
-                            Thread.sleep(5000);
+                            Thread.sleep((long) (5000 / StorageController.getSpeed()));
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                         }
+
+                        // pauza?
+                        getPath().getCartsLock().lock();
+                        getPath().getCartsLock().unlock();
 
                         // ak sa zmenila, skusi znovu prepocitat
                         if (getPath().getChangeCounter() != changeCounter) {
@@ -353,23 +391,30 @@ public class Cart {
                 setCartPosIndex(getCartPosIndex() + 1, true);
             }
 
+            // pauza?
+            getPath().getCartsLock().lock();
+            getPath().getCartsLock().unlock();
+
             for (CartLoad cl : getCartLoad()) {
                 System.out.format("vykladam %d ks '%s'\n", cl.getCount(), cl.getItem().getType().getName());
+            }
+
+            try {
+                Thread.sleep((long) (1000 / StorageController.getSpeed()));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             unload();
 
             // reset pozicie
-            path2Shelf = new ArrayList<>();
-            path2Shelf.add(path2Drop.get(path2Drop.size()-1));
             setCartPosIndex(0, false);
+            travelledPoints = new ArrayList<>();
 
             setBusy(false);
 
             // skusi vybavit dalsie cakajuce poziadavky
             path.deliverRequests();
-
-            return;
         }
     }
 }
