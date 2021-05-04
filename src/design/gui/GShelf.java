@@ -5,12 +5,15 @@
 
 package design.gui;
 
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import design.controllers.StorageController;
 import design.model.Shelf;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+
+import java.awt.*;
 
 /**
  * Trieda, pre uchovanie grafickej podoby regálu.
@@ -77,4 +80,11 @@ public class GShelf {
         ev.consume();
     };
 
+    public void drawHeat(GridPane grid){
+        grid.add(rect,shelf.getPosX(),shelf.getPosY());
+    }
+    public void setColor(Color color){
+        rect.setStyle("-fx-fill: "+  String.format("rgb(%d,%d,%d)",color.getRed(),color.getGreen(),color.getBlue())+"; -fx-stroke: black; -fx-stroke-width: 0.5;");
+
+    }
 }

@@ -22,6 +22,7 @@
     <Menu text="Ovládanie">
         <items>
             <MenuItem text="Pridať požiadavku" onAction="#handleRequestAction"/>
+            <MenuItem text="Zobraziť Heatmap" onAction="#handleHeatmapAction"/>
         </items>
     </Menu>
     <Menu text="Pomoc">

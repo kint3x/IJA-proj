@@ -12,6 +12,7 @@ import design.gui.GPathPoint;
 import design.gui.GShelf;
 import design.model.*;
 import design.view.CartView;
+import design.view.HeatmapView;
 import design.view.RequestView;
 import design.view.StorageView;
 import javafx.fxml.FXML;
@@ -175,6 +176,19 @@ public class StorageController {
         }
 
         storageGrid.setMaxSize(1,1); // defaultne nech je grid maly, pridanymi prvkami sa zvacsi
+    }
+    public void showHeatMap(){
+        HeatmapView mapa = new HeatmapView();
+
+        Group root = new Group();
+        Scene info = new Scene(root,700,700);
+
+        mapa.drawHeatmap(root,info,this.gShelfs,storage.getWidth(),storage.getHeight());
+        mapa.getStage().setScene(info);
+        mapa.getStage().setMinWidth(700);
+        mapa.getStage().setMinHeight(700);
+        mapa.getStage().show();
+
     }
 
     /**

@@ -60,4 +60,10 @@ public class GEmpty {
         GridPane grid = controller.getStorageGrid();
         grid.add(rect,x,y);
     }
+    public void drawEmptyHeat(int x, int y,GridPane grid){
+        xPos=x;
+        yPos=y;
+
+        grid.add(rect,x,y);
+    }
 }

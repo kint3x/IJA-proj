@@ -90,6 +90,11 @@ public class MenuController {
         if(StorageApp.file_path == null) return;
         Controller.storage.requestMenuClick();
     }
+    @FXML
+    void handleHeatmapAction(){
+        if(StorageApp.file_path == null) return;
+        Controller.storage.showHeatMap();
+    }
 
     /**
      * Inicializácia ovladača. Vloží svoju inštanciu do statickej premennej hlavného ovladača.
