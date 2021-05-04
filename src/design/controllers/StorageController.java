@@ -292,9 +292,38 @@ public class StorageController {
             cartView.drawScene_cart(gCart,root);
             cartView.getStage().setScene(info);
             cartView.getStage().show();
+
+
         }
         catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void hoverGCart(GCart gCart){
+        ArrayList<PathPoint> PathPoints = new ArrayList<PathPoint>();
+        PathPoints = gCart.getCart().getPathPoints();
+        for (PathPoint p : PathPoints){
+            int x = p.getPosX();
+            int y = p.getPosY();
+            for(GPathPoint j : this.gPathPoints){
+                if(j.x == x && j.y == y){
+                    j.setColorClicked(gCart.getColor());
+                }
+            }
+        }
+    }
+    public void endHoverGCart(GCart gCart){
+        ArrayList<PathPoint> PathPoints = new ArrayList<PathPoint>();
+        PathPoints = gCart.getCart().getPathPoints();
+        for (PathPoint p : PathPoints){
+            int x = p.getPosX();
+            int y = p.getPosY();
+            for(GPathPoint j : this.gPathPoints){
+                if(j.x == x && j.y == y){
+                    j.rectDefaultstyle();
+                }
+            }
         }
     }
     public void importMenuRequests(String path){

@@ -83,6 +83,22 @@ public class MenuController {
             System.out.println("Nastalo zatvorenie pri načítaní súborov: "+e.getMessage());
         }
     }
+    @FXML
+    void handleSaveAction(){
+        if(StorageApp.file_path == null) return;
+        FileChooser load = new FileChooser();
+        load.setTitle("Uložiť do súboru");
+        try {
+            File f = load.showOpenDialog(StorageApp.getStage());
+            //aplikacia cerpa z tohoto suboru
+            if (f == null) return;
+            Controller.storage.getStorage().exportStorage(f.getAbsolutePath());
+        }
+        catch (Exception e) {
+            System.out.println("Nastalo zatvorenie pri ukladaní súborov: "+e.getMessage());
+        }
+
+    }
 
     @FXML
     void handleRequestAction(){
