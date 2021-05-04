@@ -15,7 +15,13 @@
     <Menu text="Súbor">
         <items>
             <MenuItem text="Načítať sklad" onAction="#handleNacitatAction"/>
+            <MenuItem text="Načítať požiadavky" onAction="#handlePoziadavkyAction"/>
             <MenuItem text="Uložiť"/>
+        </items>
+    </Menu>
+    <Menu text="Ovládanie">
+        <items>
+            <MenuItem text="Pridať požiadavku" onAction="#handleRequestAction"/>
         </items>
     </Menu>
     <Menu text="Pomoc">

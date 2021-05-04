@@ -12,6 +12,7 @@ import design.gui.GPathPoint;
 import design.gui.GShelf;
 import design.model.*;
 import design.view.CartView;
+import design.view.RequestView;
 import design.view.StorageView;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -39,6 +40,7 @@ public class StorageController {
 
     private StorageView storageView;
     private CartView cartView;
+    private RequestView requestView;
 
     public static float speed;
 
@@ -53,6 +55,7 @@ public class StorageController {
         Controller.storage = this;
         storageView = new StorageView();
         cartView = new CartView();
+        requestView = new RequestView();
 
         rect_s = 30; //default rect s = 30
 
@@ -183,6 +186,13 @@ public class StorageController {
     }
 
     /**
+     * Vráti inštanciu skladu.
+     */
+    public Storage getStorage(){
+        return  this.storage;
+    }
+
+    /**
      * Akcia volaná ak sa klikne na shelfu.
      * @param s Gshelfa ktorá akciu zavolala
      */
@@ -262,7 +272,7 @@ public class StorageController {
     }
 
     public void clickedGCart(GCart gCart) {
-        System.out.println("Kliknutie na vozik: \n");
+        //System.out.println("Kliknutie na vozik: \n");
 
 
         try {
@@ -280,8 +290,32 @@ public class StorageController {
             System.out.println(e);
         }
     }
-
+    public void importMenuRequests(String path){
+        try {
+            storage.importRequests(path);
+        }
+        catch (Exception e){
+            System.err.println("Nefunguje nacitavanie requestov");
+        }
+    }
     public void setCartSpeed(float sp){
         this.speed=sp;
+    }
+
+    public void requestMenuClick(){
+        try {
+
+            requestView.prepareStage_info();
+            Group root = new Group();
+            Scene info = new Scene(root,400,300);
+            requestView.drawScene_info(info,root);
+            requestView.getStage().setScene(info);
+            requestView.getStage().show();
+
+        }
+        catch (Exception e) {
+            System.out.println("EXCEPT");
+            System.out.println(e);
+        }
     }
 }

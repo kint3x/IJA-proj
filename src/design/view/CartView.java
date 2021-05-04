@@ -11,10 +11,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class CartView {
 
     private Stage cart_stage;
-    private CartLoad cartLoad;
+    private ArrayList<CartLoad> cartLoad;
 
     public CartView(){
         this.cart_stage=new Stage();
@@ -52,25 +54,27 @@ public class CartView {
         nadpis.setPadding(new Insets(0, 0, 10, 0));
         vbox.getChildren().add(nadpis);
 
-        // TODO
-//        cartLoad = gc.getCart().getCartLoad();
-//        if(cartLoad == null) {
-//            return;
-//        }
-//        //for (int i=0;i<cartLoad.getCount();i++) {
-//            HBox hbox = new HBox();
-//            hbox.setSpacing(20);
-//            Label nazov = new Label();
-//            nazov.setText(cartLoad.getItem().getType().getName());
-//            nazov.setFont(f_nadpis);
-//            Label pocet = new Label();
-//            pocet.setFont(f_nadpis);
-//            pocet.setText(String.format("%d", cartLoad.getCount()));
-//            hbox.getChildren().add(nazov);
-//            hbox.getChildren().add(pocet);
-//            vbox.getChildren().add(hbox);
-//       // }
-
+        cartLoad = gc.getCart().getCartLoad();
+        if(cartLoad == null) {
+            return;
+        }
+        for (int i=0;i<cartLoad.size();i++) {
+            HBox hbox = new HBox();
+            hbox.setSpacing(20);
+            Label nazov = new Label();
+            nazov.setText(cartLoad.get(i).getItem().getType().getName());
+            nazov.setFont(f_nadpis);
+            Label pocet = new Label();
+            pocet.setFont(f_nadpis);
+            pocet.setText(String.format("%d", cartLoad.get(i).getCount()));
+            hbox.getChildren().add(nazov);
+            hbox.getChildren().add(pocet);
+            vbox.getChildren().add(hbox);
+        }
+        scrollPane.setPrefWidth(cart_stage.getWidth());
+        cart_stage.widthProperty().addListener((obs,oldVal,newVal) ->{
+            scrollPane.setPrefWidth(cart_stage.getWidth());
+        });
     }
     public Stage getStage(){
         return this.cart_stage;

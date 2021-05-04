@@ -64,7 +64,7 @@ public class StorageApp extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
-
+        file_path=null;
     }
 
     /**

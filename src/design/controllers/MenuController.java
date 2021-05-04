@@ -69,6 +69,28 @@ public class MenuController {
         }
     }
 
+    @FXML
+    void handlePoziadavkyAction(){
+        if(StorageApp.file_path == null) return;
+        FileChooser load = new FileChooser();
+        load.setTitle("Načítať požiadavky");
+        try {
+            File f = load.showOpenDialog(StorageApp.getStage());
+            //aplikacia cerpa z tohoto suboru
+            if (f == null) return;
+            Controller.storage.importMenuRequests(f.getAbsolutePath());
+        }
+        catch (Exception e) {
+            System.out.println("Nastalo zatvorenie pri načítaní súborov: "+e.getMessage());
+        }
+    }
+
+    @FXML
+    void handleRequestAction(){
+        if(StorageApp.file_path == null) return;
+        Controller.storage.requestMenuClick();
+    }
+
     /**
      * Inicializácia ovladača. Vloží svoju inštanciu do statickej premennej hlavného ovladača.
      */
