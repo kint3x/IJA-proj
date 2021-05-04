@@ -18,12 +18,12 @@ public class AnimationController {
         val.setText("1.0");
         slider.setOnMouseDragged(event -> {
             untilRelease();
-            StorageController.setCartSpeed((float)slider.getValue());
+            StorageController.setCartSpeed((float) slider.getValue());
         });
     }
 
     private void untilRelease(){
-        val.setText(String.format("%f", (float) slider.getValue()));
+        val.setText(String.format("%.3f", (float) slider.getValue()));
     }
 
     @FXML

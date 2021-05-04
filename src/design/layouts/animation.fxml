@@ -8,9 +8,9 @@
 <AnchorPane prefHeight="37.0" prefWidth="333.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="design.controllers.AnimationController">
    <children>
       <Label layoutX="8.0" layoutY="9.0" text="Rýchlosť" />
-      <Slider fx:id="slider" layoutX="60.0" layoutY="10.0" max="10.0" min="0.1" prefHeight="14.0" prefWidth="123.0" />
-      <Label fx:id="val" layoutX="190.0" layoutY="9.0" text="0.1" />
-      <Button layoutX="224.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#handlePlayBtn" text="Play" />
-      <Button layoutX="276.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#handlePauseBtn" text="Pause" />
+      <Slider fx:id="slider" layoutX="60.0" layoutY="10.0" max="10.0" min="0.1" prefHeight="14.0" prefWidth="150.0" />
+      <Label fx:id="val" layoutX="220.0" layoutY="9.0" text="0.1" />
+      <Button layoutX="270.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#handlePlayBtn" text="Play" />
+      <Button layoutX="322.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#handlePauseBtn" text="Pause" />
    </children>
 </AnchorPane>
