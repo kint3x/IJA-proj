@@ -19,7 +19,13 @@ public class GPathPoint implements PropertyChangeListener {
 
     private PathPoint pathPoint;
 
-
+    /**
+     * Konštruktor triedy Grafického zobrazenia bodu cesty
+     * @param x X pozícia
+     * @param y Y pozícia
+     * @param c Controller skladu
+     * @param p Bod cesty pre ktorý má byť vytvorený
+     */
     public GPathPoint(int x, int y,StorageController c,PathPoint p){
         this.x = x;
         this.y =y;
@@ -41,6 +47,9 @@ public class GPathPoint implements PropertyChangeListener {
         rectDefaultstyle();
     }
 
+    /**
+     * Nastaví východzí štýl bodu cesty
+     */
     public void rectDefaultstyle(){
         circle.setRadius(controller.getRect_s()/3.0);
         if(pathPoint.isBlocked()){
@@ -52,10 +61,18 @@ public class GPathPoint implements PropertyChangeListener {
 
     }
 
+    /**
+     * Nastaví bodu cesty zadanú farbu
+     * @param color farba
+     */
     public  void setColorClicked(String color){
         circle.setStyle("-fx-fill: "+color+";");
     }
 
+    /**
+     * Pri blokovaní cesty sa bod vyfarbí na červeno
+     * @param evt event
+     */
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName()=="block"){
             if ((boolean) evt.getNewValue()) {

@@ -36,24 +36,38 @@ public class AnimationController {
         history=false;
     }
 
+    /**
+     * Funkcia vykresľuje hodnotu slideru
+     */
     private void untilRelease(){
         val.setText(String.format("%.3f", (float) slider.getValue()));
     }
 
+    /**
+     * Funkcia obslúži tlačítko Play
+     */
     @FXML
     public void handlePlayBtn(){
         Controller.storage.getStorage().getPath().startCarts();
     }
-
+    /**
+     * Funkcia obslúži tlačítko Pause
+     */
     @FXML
     public void handlePauseBtn(){
         Controller.storage.getStorage().getPath().stopCarts();
     }
+    /**
+     * Funkcia obslúži tlačítko Record
+     */
     @FXML
     public void handleRecordBtn(){
         Controller.storage.getStorage().getCareTaker().saveState();
         addState();
     }
+    /**
+     * Funkcia obslúži tlačítko Prev
+     */
     @FXML
     public void handlePrevBtn(){
         if(currIndex-1 < 0) return;
@@ -62,6 +76,9 @@ public class AnimationController {
         Controller.storage.getStorage().getCareTaker().setState(currIndex);
         drawState();
     }
+    /**
+     * Funkcia obslúži tlačítko Next
+     */
     @FXML
     public void handleNextBtn(){
         if(!history){
@@ -75,11 +92,17 @@ public class AnimationController {
         drawState();
     }
 
+    /**
+     * Funkcia obnoví počet nahraných stavov
+     */
     public void addState(){
         if(StorageApp.file_path == null) return;
         allStates++;
         drawState();
     }
+    /**
+     * Funkcia vykreslí label so stavmi
+     */
     public void drawState(){
         recordCounter.setText(currState + "/" + allStates);
     }

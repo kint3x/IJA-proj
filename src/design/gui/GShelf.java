@@ -79,10 +79,18 @@ public class GShelf {
         ev.consume();
     };
 
+    /**
+     * Vykreslí Heatmapu na zadanom gride
+     * @param grid grid
+     */
     public void drawHeat(GridPane grid){
         grid.add(rect,shelf.getPosX(),shelf.getPosY());
     }
 
+    /**
+     * Nastavuje farbu políčka na zadanú farbu
+     * @param color farba
+     */
     public void setColor(Color color){
         rect.setStyle("-fx-fill: "+  String.format("rgb(%d,%d,%d)",color.getRed(),color.getGreen(),color.getBlue())+"; -fx-stroke: black; -fx-stroke-width: 0.5;");
 

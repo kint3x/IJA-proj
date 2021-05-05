@@ -83,6 +83,9 @@ public class StorageApp extends Application {
         return act_stage;
     }
 
+    /**
+     * Inicializuje všetky premenné
+     */
     private void init_vars(){
         this.file_path = "";
     }

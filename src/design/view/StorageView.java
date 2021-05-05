@@ -19,6 +19,9 @@ public class StorageView  {
 
     private Stage info_shelf; // obsahuje view okno na vykreslenie obsahu poličky
 
+    /**
+     * Konštruktor pre triedu, ktorá vykresľuje obsah poličky
+     */
     public StorageView(){
         this.info_shelf = new Stage();
 

@@ -28,7 +28,11 @@ public class GCart implements PropertyChangeListener {
     private int x;
     private int y;
 
-
+    /**
+     * Konštruktor triedy Grafického vozíka obsahuje tvar vozíka, jeho farbu
+     * @param c vykreslovaný košík
+     * @param con inštancia storage controlleru
+     */
     public GCart(Cart c, StorageController con){
         controller = con;
         this.cart=c;
@@ -48,6 +52,9 @@ public class GCart implements PropertyChangeListener {
         this.setDefStyle();
     }
 
+    /**
+     * Nastaví východzí štýl vozíka
+     */
     private void setDefStyle(){
         cartIcon.setPreserveRatio(true);
 
@@ -65,19 +72,36 @@ public class GCart implements PropertyChangeListener {
         });
 
     }
+
+    /**
+     * Vráti hexa farbu košíka
+     * @return farba košíka
+     */
     public String getColor(){
         return this.randColor;
     }
+
+    /**
+     * Vráti košík pre ktorý bola trieda vytvorená
+     * @return košík
+     */
     public Cart getCart(){
         return this.cart;
     }
 
+    /**
+     * Nastaví veľkosť obrázka košíka na danú veľkosť
+     * @param size veľkosť košíka
+     */
     public void cartSize(int size){
         cartIcon.setFitWidth(size);
         this.farba.setRadius(size/4.0);
 
     }
 
+    /**
+     * Vykreslí košík do mriežky skladu
+     */
     public void drawCart(){
         Platform.runLater(
                 () -> {
@@ -93,6 +117,10 @@ public class GCart implements PropertyChangeListener {
         );
     }
 
+    /**
+     * Funkcia volaná pri zmene pozície košíka
+     * @param evt Zmena stavu
+     */
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName()=="posX"){
             this.x=this.lNewX;

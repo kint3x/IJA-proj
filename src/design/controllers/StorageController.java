@@ -181,6 +181,9 @@ public class StorageController {
         storageGrid.setMaxSize(1,1); // defaultne nech je grid maly, pridanymi prvkami sa zvacsi
     }
 
+    /**
+     * Funkcia vykreslí HeatMapu skladu
+     */
     public void showHeatMap(){
         HeatmapView mapa = new HeatmapView();
 
@@ -273,6 +276,12 @@ public class StorageController {
         s.addItem(item,pocet);
 
     }
+
+    /**
+     * Zablokuje cestu na pozícií x y
+     * @param x
+     * @param y
+     */
     public void blockPoint(int x, int y){
         this.storage.getPath().blockPoint(x,y);
     }
@@ -285,6 +294,10 @@ public class StorageController {
         return rect_s;
     }
 
+    /**
+     * Vykreslí obsah kliknutého košíka pomocou CartView
+     * @param gCart grafická inštancia košíka
+     */
     public void clickedGCart(GCart gCart) {
         try {
             cartView.prepareStage_info(gCart);
@@ -301,6 +314,10 @@ public class StorageController {
         }
     }
 
+    /**
+     * Vykreslí cestu vozíka
+     * @param gCart grafická inštancia vozíka
+     */
     public void hoverGCart(GCart gCart){
         ArrayList<PathPoint> PathPoints = new ArrayList<PathPoint>();
         PathPoints = gCart.getCart().getPathPoints();
@@ -314,6 +331,11 @@ public class StorageController {
             }
         }
     }
+
+    /**
+     * Prekreslí cesty do pôvodného stavu keď skončí hover na vozíku
+     * @param gCart grafická inštancia vozíku
+     */
     public void endHoverGCart(GCart gCart){
         ArrayList<PathPoint> PathPoints = new ArrayList<PathPoint>();
         PathPoints = gCart.getCart().getPathPoints();
@@ -327,6 +349,11 @@ public class StorageController {
             }
         }
     }
+
+    /**
+     * Funkcia zavolá funkciu, pre importovanie requestov
+     * @param path cesta k súboru
+     */
     public void importMenuRequests(String path){
         try {
             storage.importRequests(path);
@@ -336,14 +363,24 @@ public class StorageController {
         }
     }
 
+    /**
+     * Nastaví rýchlosť vozíkov na danú hodnotu
+     * @param sp rýchlosť vozíkov
+     */
     static public void setCartSpeed(float sp){
         StorageController.speed = sp;
     }
 
+    /**
+     * Vráti násobok rýchlosti pohybu vozíkov
+     * @return rýchlosť
+     */
     static public float getSpeed() {
         return StorageController.speed;
     }
-
+    /**
+     * Volá funkciu pre vykreslenie pridania požiadavky
+     */
     public void requestMenuClick(){
         try {
 

@@ -60,6 +60,10 @@ public class GEmpty {
         GridPane grid = controller.getStorageGrid();
         grid.add(rect,x,y);
     }
+
+    /**
+     * Vykreslí prázdne políčka do heatmapy
+     */
     public void drawEmptyHeat(int x, int y,GridPane grid){
         xPos=x;
         yPos=y;

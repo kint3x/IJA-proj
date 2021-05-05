@@ -21,6 +21,9 @@ public class CartView {
     private GCart last_cart;
     private Group last_group;
 
+    /**
+     * Konštuktor pre triedu, ktorá zobrazuje obsah košíka
+     */
     public CartView(){
         this.cart_stage=new Stage();
         last_cart=null;
@@ -37,6 +40,11 @@ public class CartView {
         this.cart_stage.setHeight(300);
     }
 
+    /**
+     * Vykreslí scénu zadaného košíka
+     * @param gc inštancia grafického košíka
+     * @param root skupina, do ktorej je scéna vykreslovaná
+     */
     public void drawScene_cart(GCart gc, Group root) {
 
         this.last_cart = gc;
@@ -86,10 +94,19 @@ public class CartView {
             scrollPane.setPrefWidth(cart_stage.getWidth());
         });
     }
+
+    /**
+     * Vráti Stage, ktorý inštancia používa
+     * @return Stage
+     */
     public Stage getStage(){
         return this.cart_stage;
     }
 
+    /**
+     * Prekreslí obsah košíka znova
+     * @param g košík
+     */
     public void refreshCart(GCart g){
         if(g.equals(this.last_cart)){
             this.drawScene_cart(last_cart,last_group);

@@ -52,7 +52,9 @@ public class MenuController {
 
 
     }
-
+    /**
+     * Obslúži tlačidlo pre načítanie skladu zo súboru
+     */
     @FXML void provideNacitatFunctionality(){
         FileChooser load = new FileChooser();
         load.setTitle("Načítať sklad");
@@ -67,7 +69,9 @@ public class MenuController {
             System.out.println("Nastalo zatvorenie pri načítaní súborov: "+e.getMessage());
         }
     }
-
+    /**
+     * Obslúži tlačidlo pre načítanie požiadaviek zo súboru
+     */
     @FXML
     void handlePoziadavkyAction(){
         if(StorageApp.file_path == null) return;
@@ -83,6 +87,9 @@ public class MenuController {
             System.out.println("Nastalo zatvorenie pri načítaní súborov: "+e.getMessage());
         }
     }
+    /**
+     * Obslúži tlačidlo pre Uloženie do súboru
+     */
     @FXML
     void handleSaveAction(){
         if(StorageApp.file_path == null) return;
@@ -99,12 +106,18 @@ public class MenuController {
         }
 
     }
-
+    /**
+     * Obslúži tlačidlo pre Request
+     */
     @FXML
     void handleRequestAction(){
         if(StorageApp.file_path == null) return;
         Controller.storage.requestMenuClick();
     }
+
+    /**
+     * Obslúži tlačidlo pre Heatmapu
+     */
     @FXML
     void handleHeatmapAction(){
         if(StorageApp.file_path == null) return;

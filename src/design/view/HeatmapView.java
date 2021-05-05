@@ -24,6 +24,9 @@ public class HeatmapView {
 
     private GridPane heatm;
 
+    /**
+     * Konštruktor triedy zobrazujúcej heatmapu
+     */
     public HeatmapView(){
         this.heatmap = new Stage();
         heatmap.setTitle("HeatMap");
@@ -36,6 +39,11 @@ public class HeatmapView {
         gempties = new ArrayList<GEmpty>();
     }
 
+    /**
+     * Získa maximálnu hodnotu z heatmapy
+     * @param sh pole s regálmi
+     * @return maximálna hodnota
+     */
     public int getMaxVal(ArrayList<GShelf> sh){
         int cnt=0;
         for(GShelf s : sh){
@@ -45,6 +53,11 @@ public class HeatmapView {
         }
     return cnt;
     }
+    /**
+     * Získa minimálnu hodnotu z heatmapy
+     * @param sh pole s regálmi
+     * @return minimálna hodnota
+     */
     public int getMinVal(ArrayList<GShelf> sh){
         int cnt=Integer.MAX_VALUE;
         for(GShelf s : sh){
@@ -55,6 +68,14 @@ public class HeatmapView {
     return cnt;
     }
 
+    /**
+     * Vykreslí heatmapu a zmestí ju do okna 700*700px
+     * @param root Skupina kde sa bude vykreslovať
+     * @param info Scéna do ktorej sa bude vykreslovať
+     * @param shelfs Pole s regálmi
+     * @param x šírka skladu
+     * @param y výška skladu
+     */
     public void drawHeatmap(Group root, Scene info,ArrayList<GShelf> shelfs,int x, int y){
 
         VBox vbox= new VBox();
@@ -64,8 +85,6 @@ public class HeatmapView {
         float maxVal = (float) getMaxVal(shelfs);
         float minVal = (float) getMinVal(shelfs);
 
-        System.out.println("MAX: "+maxVal);
-        System.out.println("MIN: "+minVal);
 
         for(int i=0;i<y;i++){
             for(int j=0;j<x;j++){
@@ -114,6 +133,10 @@ public class HeatmapView {
     }
 
 
+    /**
+     * Vráti inštanciu Stageu s ktorým trieda pracuje
+     * @return Stage
+     */
     public Stage getStage(){
         return this.heatmap;
     }
