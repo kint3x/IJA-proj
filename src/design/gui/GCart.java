@@ -29,9 +29,6 @@ public class GCart implements PropertyChangeListener {
     private int y;
 
 
-
-
-
     public GCart(Cart c, StorageController con){
         controller = con;
         this.cart=c;

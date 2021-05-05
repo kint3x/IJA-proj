@@ -32,7 +32,7 @@ public class StorageController {
     private ArrayList<GPathPoint> gPathPoints;
     private ArrayList<GCart> gCarts;
 
-    private Storage storage;          // nacitany sklad
+    private Storage storage = new Storage(); // nacitany sklad
 
     private int rect_s;             // premenna pre velkost policok
 
@@ -302,7 +302,7 @@ public class StorageController {
             storage.importRequests(path);
         }
         catch (Exception e){
-            System.err.println("Nefunguje nacitavanie requestov");
+            e.printStackTrace();
         }
     }
 

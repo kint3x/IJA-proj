@@ -28,11 +28,13 @@ public class AnimationController {
 
     @FXML
     public void handlePlayBtn(){
-        Controller.storage.getStorage().getPath().startCarts();
+        Controller.storage.getStorage().getCareTaker().setState(0);
+        //Controller.storage.getStorage().getPath().startCarts();
     }
 
     @FXML
     public void handlePauseBtn(){
-        Controller.storage.getStorage().getPath().stopCarts();
+        Controller.storage.getStorage().getCareTaker().saveState();
+        //Controller.storage.getStorage().getPath().stopCarts();
     }
 }

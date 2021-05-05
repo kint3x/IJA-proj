@@ -5,21 +5,21 @@ import design.controllers.StorageController;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.Math.min;
 
 public class Cart {
+    private CartCareTaker cartCareTaker = new CartCareTaker();
     private int maxItems;
-    private int loadedItems = 0;
-    private int cartPosIndex;
-    private boolean busy;
     private final Object busyLock = new Object();
     private PropertyChangeSupport support;
-    private ArrayList<CartLoad> cartLoad = new ArrayList<>();
-    private ArrayList<Request> requests = new ArrayList<>();
-    private PathPoint cartPoint;
+    private ArrayList<PathPoint> travelledPoints = new ArrayList<>();
+    private CartState state;
+    private final Object stateLock = new Object();
+    private CartThread cartThread;
 
     /**
      * Cesta pre všetky vozíky.
@@ -36,8 +36,6 @@ public class Cart {
      */
     private ArrayList<PathPoint> path2Drop;
 
-    private ArrayList<PathPoint> travelledPoints = new ArrayList<>();
-
     /**
      * Konštruktor triedy Cart.
      * @param cartPosIndex počiatočný index
@@ -45,11 +43,11 @@ public class Cart {
      * @param path objekt cesty, po ktorom môže vozík chodiť
      */
     public Cart(int cartPosIndex, int maxItems, Path path) {
-        this.cartPosIndex = cartPosIndex;
+        this.state = new CartState(path.getPoints().get(cartPosIndex), new ArrayList<CartLoad>(), new ArrayList<Request>(),
+                false, cartPosIndex, new ArrayList<PathPoint>());
         this.path = path;
         this.maxItems = maxItems;
         this.support = new PropertyChangeSupport(this);
-        this.cartPoint = this.path.getPoints().get(this.cartPosIndex);
     }
 
     /**
@@ -60,8 +58,26 @@ public class Cart {
         return path.getPoints().get(getCartPosIndex()).getPosX();
     }
 
+    public CartCareTaker getCartCareTaker() {
+        return this.cartCareTaker;
+    }
+
+    /**
+     * Vráti y-ovú pozícia vozíka. Možné zavolať len ak vozík ešte necestoval.
+     * @return y-ová súradnica
+     */
+    public int getStartPosY() {
+        return path.getPoints().get(getCartPosIndex()).getPosY();
+    }
+
     public int getLoadedItems() {
-        return loadedItems;
+        int sum = 0;
+
+        for (CartLoad load : this.getCartLoad()) {
+            sum += load.getCount();
+        }
+
+        return sum;
     }
 
     /**
@@ -78,8 +94,35 @@ public class Cart {
         }
     }
 
+    public void setState(CartState state) {
+        synchronized (stateLock) {
+            cartThread.stop();
+
+            if (state.busy) {
+                this.state = (CartState) state.clone();
+                deliverRequests();
+            }
+        }
+    }
+
+    public CartState getState() {
+        synchronized (stateLock) {
+            return (CartState) this.state.clone();
+        }
+    }
+
+    public CartMemento saveStateToMemento() {
+        return new CartMemento(this.getState());
+    }
+
+    public void setStateFromMemento(CartMemento memento) {
+        this.setState(memento.getState());
+    }
+
     public ArrayList<Request> getRequests() {
-        return requests;
+        synchronized (stateLock) {
+            return this.state.requests;
+        }
     }
 
     public int getRequestsItemsCount() {
@@ -92,12 +135,10 @@ public class Cart {
         return sum;
     }
 
-    /**
-     * Vráti y-ovú pozícia vozíka. Možné zavolať len ak vozík ešte necestoval.
-     * @return y-ová súradnica
-     */
-    public int getStartPosY() {
-        return path.getPoints().get(getCartPosIndex()).getPosY();
+    public void removeRequest() {
+        synchronized (stateLock) {
+            this.state.requests.remove(0);
+        }
     }
 
     /**
@@ -108,6 +149,42 @@ public class Cart {
         return this.maxItems;
     }
 
+    public ArrayList<PathPoint> getPath2Shelf() {
+        return this.path2Shelf;
+    }
+
+    public void addPath2Shelf(PathPoint point) {
+        this.path2Shelf.add(point);
+    }
+
+    public ArrayList<PathPoint> getPath2Drop() {
+        return  this.path2Drop;
+    }
+
+    public void addPath2Drop(PathPoint point) {
+        this.path2Drop.add(point);
+    }
+
+    public void setPath2Shelf(ArrayList<PathPoint> path2Shelf) {
+        this.path2Shelf = path2Shelf;
+    }
+
+    public void setPath2Drop(ArrayList<PathPoint> path2Drop) {
+        this.path2Drop = path2Drop;
+    }
+
+    public PathPoint getCartPoint() {
+        synchronized (stateLock) {
+            return this.state.position;
+        }
+    }
+
+    public void setCartPoint(PathPoint point) {
+        synchronized (stateLock) {
+            this.state.position = point;
+        }
+    }
+
     /**
      * Vráti aktuálnu plánovanú cestu vozíka.
      * @return zoznam bodov cesty
@@ -115,17 +192,35 @@ public class Cart {
     public ArrayList<PathPoint> getPathPoints(){
         ArrayList<PathPoint> pathPoints = new ArrayList<>(this.travelledPoints);
 
-        if (path2Shelf.size() == 0) {
-            for (int i = cartPosIndex; i < path2Shelf.size(); i++) {
-                pathPoints.add(path2Shelf.get(i));
+        if (getPath2Shelf().size() == 0) {
+            for (int i = getCartPosIndex(); i < getPath2Shelf().size(); i++) {
+                pathPoints.add(getPath2Shelf().get(i));
             }
-        } else if (path2Drop.size() == 0) {
-            for (int i = cartPosIndex; i < path2Drop.size(); i++) {
-                pathPoints.add(path2Drop.get(i));
+        } else if (getPath2Drop().size() == 0) {
+            for (int i = getCartPosIndex(); i < getPath2Drop().size(); i++) {
+                pathPoints.add(getPath2Drop().get(i));
             }
         }
 
         return pathPoints;
+    }
+
+    public ArrayList<PathPoint> getTravelledPoints() {
+        synchronized (stateLock) {
+            return this.state.travelledPoints;
+        }
+    }
+
+    public void addTravelledPoints(PathPoint point) {
+        synchronized (stateLock) {
+            this.state.travelledPoints.add(point);
+        }
+    }
+
+    public void setTravelledPoints(ArrayList<PathPoint> points) {
+        synchronized (stateLock) {
+            this.state.travelledPoints = new ArrayList<>(points);
+        }
     }
 
     /**
@@ -133,8 +228,10 @@ public class Cart {
      * @return true, ak vozík práve doručuje zásielku, inak false
      */
     public boolean getBusy() {
-        synchronized (this.busyLock) {
-            return this.busy;
+        synchronized (stateLock) {
+            synchronized (this.busyLock) {
+                return this.state.busy;
+            }
         }
     }
 
@@ -143,8 +240,10 @@ public class Cart {
      * @param busy nová hodnota
      */
     public void setBusy(boolean busy) {
-        synchronized (this.busyLock) {
-            this.busy = busy;
+        synchronized (stateLock) {
+            synchronized (this.busyLock) {
+                this.state.busy = busy;
+            }
         }
     }
 
@@ -153,7 +252,9 @@ public class Cart {
      * @return index
      */
     public int getCartPosIndex() {
-        return cartPosIndex;
+        synchronized (stateLock) {
+            return this.state.index;
+        }
     }
 
     /**
@@ -161,38 +262,51 @@ public class Cart {
      * @param index index
      */
     public void setCartPosIndex(int index, boolean drop) {
-        if (!drop && index < path2Shelf.size()) {
-            this.travelledPoints.add(this.cartPoint);
-            this.cartPoint = path2Shelf.get(index);
-            support.firePropertyChange("posX", -1, this.path2Shelf.get(index).getPosX());
-            support.firePropertyChange("posY", -1, this.path2Shelf.get(index).getPosY());
-        } else if (drop && index < path2Drop.size()) {
-            this.travelledPoints.add(this.cartPoint);
-            this.cartPoint = path2Drop.get(index);
-            support.firePropertyChange("posX", -1, this.path2Drop.get(index).getPosX());
-            support.firePropertyChange("posY", -1, this.path2Drop.get(index).getPosY());
+        if (!drop && index < this.getPath2Shelf().size()) {
+            this.addTravelledPoints(getCartPoint());
+            setCartPoint(this.getPath2Shelf().get(index));
+            support.firePropertyChange("posX", -1, this.getPath2Shelf().get(index).getPosX());
+            support.firePropertyChange("posY", -1, this.getPath2Shelf().get(index).getPosY());
+        } else if (drop && index < this.getPath2Drop().size()) {
+            this.addTravelledPoints(getCartPoint());
+            setCartPoint(this.getPath2Drop().get(index));
+            support.firePropertyChange("posX", -1, this.getPath2Drop().get(index).getPosX());
+            support.firePropertyChange("posY", -1, this.getPath2Drop().get(index).getPosY());
         }
 
-        this.cartPosIndex = index;
+        synchronized (stateLock) {
+            this.state.index = index;
+        }
     }
 
     public void load(Request request) {
         if (request.getCount() <= getMaxItems() - getLoadedItems()) {
-            CartLoad cartLoad = new CartLoad(request.getCount(), new Item(request.getItemType()));
-            support.firePropertyChange("load", this.getCartLoad(), cartLoad);
-            this.getCartLoad().add(cartLoad);
-            this.loadedItems += request.getCount();
+            this.addCartLoad(new CartLoad(request.getCount(), new Item(request.getItemType())));
+            support.firePropertyChange("load", null, getCartLoad());
         }
     }
 
     public void unload() {
-        support.firePropertyChange("load", this.getCartLoad(), new ArrayList<>());
-        this.loadedItems = 0;
-        this.cartLoad = new ArrayList<>();
+        this.setCartLoad(new ArrayList<>());
+        support.firePropertyChange("load", null, getCartLoad());
     }
 
     public ArrayList<CartLoad> getCartLoad() {
-        return this.cartLoad;
+        synchronized (stateLock) {
+            return this.state.load;
+        }
+    }
+
+    public void addCartLoad(CartLoad load) {
+       synchronized (stateLock) {
+            this.state.load.add(load);
+       }
+    }
+
+    public void setCartLoad(ArrayList<CartLoad> load) {
+        synchronized (stateLock) {
+            this.state.load = load;
+        }
     }
 
     /**
@@ -200,10 +314,8 @@ public class Cart {
      */
     public void deliverRequests() {
         this.setBusy(true);
-
-        Thread t = new Thread(new CartThread());
-        t.setDaemon(true);
-        t.start();
+        this.cartThread = new CartThread();
+        this.cartThread.start();
     }
 
     public Path getPath() {
@@ -227,12 +339,16 @@ public class Cart {
     }
 
     class CartThread implements Runnable {
+        public Thread worker;
+        private final AtomicBoolean running = new AtomicBoolean(false);
 
         private int calculatePath2Drop() {
             int dropIndex;
+            ArrayList<PathPoint> path2Drop = new ArrayList<>();
 
-            path2Drop = new ArrayList<>();
-            dropIndex = path.calculatePath2Drop(cartPoint.getPosX(), cartPoint.getPosY(), path2Drop);
+            dropIndex = path.calculatePath2Drop(getCartPoint().getPosX(), getCartPoint().getPosY(), path2Drop);
+
+            setPath2Drop(path2Drop);
 
             if (dropIndex == -1) {
                 System.err.format("Nemožno vyložiť %d kusov tovaru.\n", getLoadedItems());
@@ -246,8 +362,9 @@ public class Cart {
             int pickupIndex;
 
             Shelf shelf = request.getShelf();
-            path2Shelf = new ArrayList<>();
-            pickupIndex = path.calculatePath2Shelf(shelf.getPosX(), shelf.getPosY(), cartPoint.getPosX(), cartPoint.getPosY(), path2Shelf);
+            ArrayList<PathPoint> path2Shelf = new ArrayList<>();
+            pickupIndex = path.calculatePath2Shelf(shelf.getPosX(), shelf.getPosY(), getCartPoint().getPosX(), getCartPoint().getPosY(), path2Shelf);
+            setPath2Shelf(path2Shelf);
 
             if (pickupIndex == -1) {
                 System.err.format("Nemožno naložiť %d kusov tovaru '%s' z dôvodu zablokovanej cesty. Vozík čaká na uvoľnenie cesty.\n", request.getCount(), request.getItemType().getName());
@@ -257,16 +374,28 @@ public class Cart {
             }
         }
 
+        public void start() {
+            worker = new Thread(this);
+            worker.setDaemon(true);
+            worker.start();
+        }
+
+        public void stop() {
+            running.set(false);
+        }
+
         @Override
         public void run() {
+            running.set(true);
+
             int pickupIndex = -1;
             int dropIndex = -1;
             int changeCounter;
 
-            path2Drop = new ArrayList<>();
-            path2Shelf = new ArrayList<>();
+            setPath2Shelf(new ArrayList<>());
+            setPath2Drop(new ArrayList<>());
 
-            while (getRequests().size() > 0) {
+            while (getRequests().size() > 0 && running.get()) {
                 Request request = getRequests().get(0);
 
                 if (request.getCount() > getMaxItems() - getLoadedItems()) {
@@ -275,12 +404,12 @@ public class Cart {
                 }
 
                 changeCounter = getPath().getChangeCounter() - 1;
-                path2Shelf = new ArrayList<>();
-                path2Shelf.add(cartPoint);
+                setPath2Shelf(new ArrayList<>());
+                addPath2Shelf(getCartPoint());
                 setCartPosIndex(0, false);
 
                 // nalozenie tovaru
-                while (getCartPosIndex() < path2Shelf.size()) {
+                while (getCartPosIndex() < getPath2Shelf().size() && running.get()) {
                     // cestovanie vozika
                     try {
                         Thread.sleep((long) (500 / StorageController.getSpeed()));
@@ -334,7 +463,7 @@ public class Cart {
 
                         request.getShelf().incrementHeatCounter();
                         load(request);
-                        getRequests().remove(0);
+                        removeRequest();
                         System.out.format("nakladam %d ks '%s'\n", request.getCount(), request.getItemType().getName());
                     }
 
@@ -342,13 +471,13 @@ public class Cart {
                 }
             }
 
-            path2Shelf = new ArrayList<>();
+            setPath2Shelf(new ArrayList<>());
 
             changeCounter = getPath().getChangeCounter() - 1;
-            path2Drop.add(cartPoint);
+            addPath2Drop(getCartPoint());
             setCartPosIndex(0, true);
 
-            while (getCartPosIndex() < path2Drop.size()) {
+            while (getCartPosIndex() < getPath2Drop().size() && running.get()) {
                 // cestovanie vozika
                 try {
                     Thread.sleep((long) (500 / StorageController.getSpeed()));
@@ -409,7 +538,8 @@ public class Cart {
 
             // reset pozicie
             setCartPosIndex(0, false);
-            travelledPoints = new ArrayList<>();
+            setPath2Drop(new ArrayList<>());
+            setTravelledPoints(new ArrayList<>());
 
             setBusy(false);
 

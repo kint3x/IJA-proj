@@ -26,7 +26,8 @@ public class Storage {
     private ArrayList<Shelf> shelfs = new ArrayList<>();
     private int height = 0;
     private int width = 0;
-    private Path path = null;
+    private Path path = new Path(0);
+    private CareTaker careTaker = new CareTaker(this);
 
     /**
      * Vráti hodnotu výšky skladu.
@@ -42,6 +43,10 @@ public class Storage {
      */
     public int getWidth() {
         return this.width;
+    }
+
+    public CareTaker getCareTaker() {
+        return this.careTaker;
     }
 
         /**

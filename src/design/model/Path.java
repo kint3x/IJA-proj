@@ -471,7 +471,9 @@ public class Path {
      * Putenie vozíkov.
      */
     public void startCarts() {
-        this.cartsLock.unlock();
+        if (this.cartsLock.isLocked()) {
+            this.cartsLock.unlock();
+        }
     }
 
     /**
