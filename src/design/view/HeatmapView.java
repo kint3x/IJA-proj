@@ -1,23 +1,15 @@
 package design.view;
 
-import design.StorageApp;
 import design.controllers.Controller;
-import design.gui.GCart;
 import design.gui.GEmpty;
-import design.gui.GPathPoint;
 import design.gui.GShelf;
-import design.model.Cart;
-import design.model.PathPoint;
-import design.model.Shelf;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.LinearGradient;
 import javafx.stage.Stage;
 
-import javax.naming.ldap.Control;
 import java.awt.*;
 import java.util.ArrayList;
 

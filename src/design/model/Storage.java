@@ -5,6 +5,13 @@
 
 package design.model;
 
+import design.model.cart.Cart;
+import design.model.item.Item;
+import design.model.item.ItemType;
+import design.model.memento.CareTaker;
+import design.model.path.Path;
+import design.model.path.PathPoint;
+import design.model.shelf.Shelf;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

@@ -1,4 +1,6 @@
-package design.model;
+package design.model.cart;
+
+import design.model.item.Item;
 
 public class CartLoad {
     private int count;

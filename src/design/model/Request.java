@@ -1,5 +1,8 @@
 package design.model;
 
+import design.model.item.ItemType;
+import design.model.shelf.Shelf;
+
 /**
  * Trieda predstavuje položku na zozname požiadavkov.
  *

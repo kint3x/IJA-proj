@@ -1,4 +1,4 @@
-package design.model;
+package design.model.path;
 
 import java.util.Objects;
 

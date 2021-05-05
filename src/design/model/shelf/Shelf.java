@@ -3,7 +3,12 @@
  * @author Simon Košina
  */
 
-package design.model;
+package design.model.shelf;
+
+import design.model.item.Item;
+import design.model.item.ItemType;
+import design.model.memento.Memento;
+import design.model.memento.ObjectCareTaker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +17,11 @@ import java.util.HashMap;
  * Trieda reprezentujúca regál, obsahujúci položky.
  */
 public class Shelf {
-    private ArrayList<Item> items = new ArrayList<>();
+    private ObjectCareTaker shelfCareTaker = new ObjectCareTaker();
     private HashMap<String, Integer> itemCounts = new HashMap<>();
-    private int posX;
-    private int posY;
-    private int heatCounter;
+    private final int posX;
+    private final int posY;
+    private ShelfState state;
 
     /**
      * Konštruktor.
@@ -26,7 +31,7 @@ public class Shelf {
     public Shelf(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
-        this.heatCounter = 0;
+        this.state = new ShelfState(0, new ArrayList<>());
     }
 
     /**
@@ -50,14 +55,58 @@ public class Shelf {
      * @return čítač
      */
     public int getHeatCounter() {
-        return this.heatCounter;
+        return this.state.heatCounter;
     }
 
     /**
      * Inkrementuje hodnotu čítača návštevnosti.
      */
     public void incrementHeatCounter() {
-        this.heatCounter += 1;
+        this.state.heatCounter += 1;
+    }
+
+    /**
+     * Získanie aktuálneho stavu regálu.
+     * @return stav
+     */
+    public ShelfState getState() {
+        return this.state.clone();
+    }
+
+    /**
+     * Nastavenie stavu regálu a prepočítanie položiek.
+     * @param state nový stav
+     */
+    public void setState(ShelfState state) {
+        this.state = state.clone();
+        this.updateCounts();
+    }
+
+    public ObjectCareTaker getCareTaker() {
+        return this.shelfCareTaker;
+    }
+
+    public Memento saveStateToMemento() {
+        return new Memento(this.getState());
+    }
+
+    public void setStateFromMemento(Memento memento) {
+        this.setState((ShelfState) memento.getState());
+    }
+
+    public void setStateFromMemento() {
+
+    }
+
+    /**
+     * Prepočíta jednotlivé položky v regáli.
+     */
+    public void updateCounts() {
+        itemCounts = new HashMap<>();
+
+        for (Item item : this.state.items) {
+            itemCounts.put(item.getType().getName(), itemCounts.getOrDefault(item.getType().getName(),0) + 1);
+        }
     }
 
     /**
@@ -78,7 +127,7 @@ public class Shelf {
      * @param item  položka
      */
     public void addItem(Item item) {
-        this.items.add(item);
+        this.state.items.add(item);
         this.updateCounts(item.getType().getName(), 1);
     }
 
@@ -124,16 +173,16 @@ public class Shelf {
     public Item removeItem(ItemType itemType) {
         int i = 0;
 
-        for (; i < this.items.size(); i++) {
-            if (this.items.get(i).getType().equals(itemType)) {
+        for (; i < this.state.items.size(); i++) {
+            if (this.state.items.get(i).getType().equals(itemType)) {
                 break;
             }
         }
 
-        if (i >= this.items.size()) {
+        if (i >= this.state.items.size()) {
             return null;
         } else {
-            Item item =  this.items.remove(i);
+            Item item =  this.state.items.remove(i);
 
             this.updateCounts(item.getType().getName(), -1);
 

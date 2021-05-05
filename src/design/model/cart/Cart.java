@@ -1,6 +1,13 @@
-package design.model;
+package design.model.cart;
 
 import design.controllers.StorageController;
+import design.model.*;
+import design.model.item.Item;
+import design.model.memento.Memento;
+import design.model.memento.ObjectCareTaker;
+import design.model.path.Path;
+import design.model.path.PathPoint;
+import design.model.shelf.Shelf;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -12,7 +19,7 @@ import java.util.logging.Logger;
 import static java.lang.Math.min;
 
 public class Cart {
-    private CartCareTaker cartCareTaker = new CartCareTaker();
+    private ObjectCareTaker cartCareTaker = new ObjectCareTaker();
     private int maxItems;
     private final Object busyLock = new Object();
     private PropertyChangeSupport support;
@@ -58,7 +65,7 @@ public class Cart {
         return path.getPoints().get(getCartPosIndex()).getPosX();
     }
 
-    public CartCareTaker getCartCareTaker() {
+    public ObjectCareTaker getCareTaker() {
         return this.cartCareTaker;
     }
 
@@ -97,9 +104,13 @@ public class Cart {
     public void setState(CartState state) {
         synchronized (stateLock) {
             cartThread.stop();
+            this.state = (CartState) state.clone();
+
+            support.firePropertyChange("posX", -1, state.position.getPosX());
+            support.firePropertyChange("posY", -1, state.position.getPosY());
+            support.firePropertyChange("load", null, getCartLoad());
 
             if (state.busy) {
-                this.state = (CartState) state.clone();
                 deliverRequests();
             }
         }
@@ -111,12 +122,12 @@ public class Cart {
         }
     }
 
-    public CartMemento saveStateToMemento() {
-        return new CartMemento(this.getState());
+    public Memento saveStateToMemento() {
+        return new Memento(this.getState());
     }
 
-    public void setStateFromMemento(CartMemento memento) {
-        this.setState(memento.getState());
+    public void setStateFromMemento(Memento memento) {
+        this.setState((CartState) memento.getState());
     }
 
     public ArrayList<Request> getRequests() {
@@ -190,13 +201,13 @@ public class Cart {
      * @return zoznam bodov cesty
      */
     public ArrayList<PathPoint> getPathPoints(){
-        ArrayList<PathPoint> pathPoints = new ArrayList<>(this.travelledPoints);
+        ArrayList<PathPoint> pathPoints = new ArrayList<>(getTravelledPoints());
 
-        if (getPath2Shelf().size() == 0) {
+        if (getPath2Shelf() != null && getTravelledPoints().size() == 0) {
             for (int i = getCartPosIndex(); i < getPath2Shelf().size(); i++) {
                 pathPoints.add(getPath2Shelf().get(i));
             }
-        } else if (getPath2Drop().size() == 0) {
+        } else if (getPath2Drop() != null && getPath2Drop().size() == 0) {
             for (int i = getCartPosIndex(); i < getPath2Drop().size(); i++) {
                 pathPoints.add(getPath2Drop().get(i));
             }
@@ -417,6 +428,10 @@ public class Cart {
                         Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
+                    if (!running.get()) {
+                        return;
+                    }
+
                     // pauza?
                     getPath().getCartsLock().lock();
                     getPath().getCartsLock().unlock();
@@ -433,6 +448,10 @@ public class Cart {
                                 Thread.sleep((long) (5000 / StorageController.getSpeed()));
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            if (!running.get()) {
+                                return;
                             }
 
                             // pauza?
@@ -455,6 +474,10 @@ public class Cart {
                             Thread.sleep((long) (1000 / StorageController.getSpeed()));
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        if (!running.get()) {
+                            return;
                         }
 
                         // pauza?
@@ -485,6 +508,10 @@ public class Cart {
                     Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
+                if (!running.get()) {
+                    return;
+                }
+
                 // pauza?
                 getPath().getCartsLock().lock();
                 getPath().getCartsLock().unlock();
@@ -501,6 +528,10 @@ public class Cart {
                             Thread.sleep((long) (5000 / StorageController.getSpeed()));
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        if (!running.get()) {
+                            return;
                         }
 
                         // pauza?
@@ -532,6 +563,10 @@ public class Cart {
                 Thread.sleep((long) (1000 / StorageController.getSpeed()));
             } catch (InterruptedException ex) {
                 Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (!running.get()) {
+                return;
             }
 
             unload();

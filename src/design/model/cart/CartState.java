@@ -1,8 +1,12 @@
-package design.model;
+package design.model.cart;
+
+import design.model.path.PathPoint;
+import design.model.Request;
+import design.model.memento.State;
 
 import java.util.ArrayList;
 
-public class CartState implements Cloneable {
+public class CartState extends State {
     public PathPoint position;
     public ArrayList<CartLoad> load;
     public ArrayList<Request> requests;

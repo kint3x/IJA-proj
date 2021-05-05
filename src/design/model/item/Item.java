@@ -3,7 +3,7 @@
  * @author Simon Košina
  */
 
-package design.model;
+package design.model.item;
 
 /**
  * Trieda reprezentujúca položku.

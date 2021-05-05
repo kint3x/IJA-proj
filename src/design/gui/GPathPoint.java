@@ -1,7 +1,7 @@
 package design.gui;
 
 import design.controllers.StorageController;
-import design.model.PathPoint;
+import design.model.path.PathPoint;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;

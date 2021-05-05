@@ -1,10 +1,10 @@
-package design.model;
+package design.model.path;
+
+import design.model.Request;
+import design.model.cart.Cart;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Math.abs;

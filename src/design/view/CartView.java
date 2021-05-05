@@ -1,7 +1,7 @@
 package design.view;
 
 import design.gui.GCart;
-import design.model.CartLoad;
+import design.model.cart.CartLoad;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.Label;

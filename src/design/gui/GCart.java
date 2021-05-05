@@ -1,7 +1,7 @@
 package design.gui;
 
 import design.controllers.StorageController;
-import design.model.Cart;
+import design.model.cart.Cart;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;

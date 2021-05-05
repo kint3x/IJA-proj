@@ -5,9 +5,8 @@
 
 package design.gui;
 
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import design.controllers.StorageController;
-import design.model.Shelf;
+import design.model.shelf.Shelf;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
