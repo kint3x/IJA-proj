@@ -12,6 +12,8 @@ import design.model.memento.ObjectCareTaker;
 import design.model.memento.Originator;
 import design.model.memento.State;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,6 +26,7 @@ public class Shelf implements Originator {
     private final int posX;
     private final int posY;
     private ShelfState state;
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     /**
      * Konštruktor.
@@ -68,6 +71,22 @@ public class Shelf implements Originator {
     }
 
     /**
+     * Pridanie observera.
+     * @param pcl observer
+     */
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        this.support.addPropertyChangeListener(pcl);
+    }
+
+    /**
+     * Odobranie observera.
+     * @param pcl observer
+     */
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        this.support.removePropertyChangeListener(pcl);
+    }
+
+    /**
      * Získanie aktuálneho stavu regálu.
      * @return stav
      */
@@ -82,9 +101,8 @@ public class Shelf implements Originator {
      */
     @Override
     public void setState(State state) {
-        // TODO listener
-
         this.state = ((ShelfState) state).clone();
+        support.firePropertyChange("items", null, null);
         this.updateCounts();
     }
 

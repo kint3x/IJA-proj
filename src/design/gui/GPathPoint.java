@@ -7,7 +7,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 
-public class GPathPoint {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+public class GPathPoint implements PropertyChangeListener {
     private StorageController controller;
     private Circle circle;
 
@@ -21,6 +24,7 @@ public class GPathPoint {
         this.x = x;
         this.y =y;
         pathPoint=p;
+        p.addPropertyChangeListener(this);
 
         controller=c;
         circle = new Circle();
@@ -46,7 +50,15 @@ public class GPathPoint {
         circle.setStyle("-fx-fill: "+color+";");
     }
 
-
+    public void propertyChange(PropertyChangeEvent evt) {
+        if(evt.getPropertyName()=="block"){
+            if ((boolean) evt.getNewValue()) {
+                circle.setStyle("-fx-fill: #8ced97");
+            } else {
+                circle.setStyle("-fx-fill: #8ced97");
+            }
+        }
+    }
 
 
     /**

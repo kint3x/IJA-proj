@@ -5,6 +5,8 @@ import design.model.memento.ObjectCareTaker;
 import design.model.memento.Originator;
 import design.model.memento.State;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Objects;
 
 public class PathPoint implements Originator {
@@ -13,11 +15,13 @@ public class PathPoint implements Originator {
     private int posY;
     private Boolean isBlocked;
     private PathPointState state;
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     public PathPoint(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
         this.isBlocked = false;
+        this.state = new PathPointState(false);
     }
 
     public int getPosX() {
@@ -47,8 +51,8 @@ public class PathPoint implements Originator {
 
     @Override
     public void setState(State state) {
-        // TODO listener
-
+        PathPointState pState = (PathPointState) state;
+        support.firePropertyChange("block", this.isBlocked(), pState.isBlocked);
         this.state = (PathPointState) state;
     }
 
@@ -65,6 +69,22 @@ public class PathPoint implements Originator {
     @Override
     public ObjectCareTaker getCareTaker() {
         return this.pathCareTaker;
+    }
+
+    /**
+     * Pridanie observera.
+     * @param pcl observer
+     */
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        this.support.addPropertyChangeListener(pcl);
+    }
+
+    /**
+     * Odobranie observera.
+     * @param pcl observer
+     */
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        this.support.removePropertyChangeListener(pcl);
     }
 
     @Override

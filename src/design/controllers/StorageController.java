@@ -134,7 +134,7 @@ public class StorageController {
             System.err.println(e);
         }
 
-        storage.printStorage();
+//        storage.printStorage();
 
         storageGrid.setPadding(new Insets(10,10,10,10));
 
@@ -216,18 +216,16 @@ public class StorageController {
      */
     public void ClickedAction(GShelf s){
         System.out.println("Kliknutie na shelfu: \n");
-        s.getShelf().printShelf();
+//        s.getShelf().printShelf();
         // Po kliknutí na shelf sa zobrazí vnútro ako popup
 
         try {
-
             storageView.prepareStage_info(s);
             Group root = new Group();
             Scene info = new Scene(root,400,300);
             storageView.drawScene_info(s,info,root,this);
             storageView.getInfoShelfStage().setScene(info);
             storageView.getInfoShelfStage().show();
-
         }
         catch (Exception e) {
             System.out.println("EXCEPT");
