@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 
 import static java.lang.Math.min;
 
+/**
+ * Trieda predstavujúca jeden vozík v sklade.
+ */
 public class Cart implements Originator {
     private ObjectCareTaker cartCareTaker = new ObjectCareTaker();
     private int maxItems;
@@ -29,20 +32,8 @@ public class Cart implements Originator {
     private CartState state;
     private final Object stateLock = new Object();
     private CartThread cartThread = null;
-
-    /**
-     * Cesta pre všetky vozíky.
-     */
     private Path path;
-
-    /**
-     * Zoznam bodov predstavujúci cestu vozíka pre náklad.
-     */
     private ArrayList<PathPoint> path2Shelf;
-
-    /**
-     * Zoznam bodov predstavujúci cestu vozíka na miesto výkladu.
-     */
     private ArrayList<PathPoint> path2Drop;
 
     /**
@@ -67,6 +58,10 @@ public class Cart implements Originator {
         return path.getPoints().get(getCartPosIndex()).getPosX();
     }
 
+    /**
+     * Získanie objektu pre správu stavov daného vozíka.
+     * @return caretaker
+     */
     public ObjectCareTaker getCareTaker() {
         return this.cartCareTaker;
     }
@@ -79,6 +74,10 @@ public class Cart implements Originator {
         return path.getPoints().get(getCartPosIndex()).getPosY();
     }
 
+    /**
+     * Získa počet naložených položiek.
+     * @return počet naložených položiek
+     */
     public int getLoadedItems() {
         int sum = 0;
 
@@ -103,6 +102,10 @@ public class Cart implements Originator {
         }
     }
 
+    /**
+     * Nastaví stav vozíka.
+     * @param state stav
+     */
     public void setState(State state) {
         synchronized (stateLock) {
             if (cartThread != null) {
@@ -121,26 +124,46 @@ public class Cart implements Originator {
         }
     }
 
+    /**
+     * Získa stav vozíka
+     * @return stav
+     */
     public CartState getState() {
         synchronized (stateLock) {
             return (CartState) this.state.clone();
         }
     }
 
+    /**
+     * Získa aktuálny stav vozíka ako objekt triedy Memento.
+     * @return objekt s aktuálnym stavom
+     */
     public Memento saveStateToMemento() {
         return new Memento(this.getState());
     }
 
+    /**
+     * Nastaví stav vozíka na stav predaný pomocou objektu typu Memento.
+     * @param memento objekt so stavom vozíka
+     */
     public void setStateFromMemento(Memento memento) {
         this.setState((CartState) memento.getState());
     }
 
+    /**
+     * Vráti zoznam požiadavkov, ktoré vozík vybavuje.
+     * @return zoznam požiadavkov
+     */
     public ArrayList<Request> getRequests() {
         synchronized (stateLock) {
             return this.state.requests;
         }
     }
 
+    /**
+     * Získa sumu počtu položiek zo všektých objednávok daného vozíka.
+     * @return počet položiek
+     */
     public int getRequestsItemsCount() {
         int sum = 0;
 
@@ -151,6 +174,9 @@ public class Cart implements Originator {
         return sum;
     }
 
+    /**
+     * Odstránenie prvej požiadavky zo zoznamu.
+     */
     public void removeRequest() {
         synchronized (stateLock) {
             this.state.requests.remove(0);
@@ -165,36 +191,68 @@ public class Cart implements Originator {
         return this.maxItems;
     }
 
+    /**
+     * Vráti cestu k regálu.
+     * @return zoznam bodov cesty
+     */
     public ArrayList<PathPoint> getPath2Shelf() {
         return this.path2Shelf;
     }
 
+    /**
+     * Pridanie bodu k zoznamu bodov, predstavujúcich cestu k regálu.
+     * @param point pridávaný bod
+     */
     public void addPath2Shelf(PathPoint point) {
         this.path2Shelf.add(point);
     }
 
+    /**
+     * Získa cestu k výkladnému miestu.
+     * @return zoznam bodov cesty
+     */
     public ArrayList<PathPoint> getPath2Drop() {
         return  this.path2Drop;
     }
 
+    /**
+     * Pridanie bodu k ceste k výkladnému miestu.
+     * @param point bod
+     */
     public void addPath2Drop(PathPoint point) {
         this.path2Drop.add(point);
     }
 
+    /**
+     * Nastaví cestu k regálu.
+     * @param path2Shelf nová cesta
+     */
     public void setPath2Shelf(ArrayList<PathPoint> path2Shelf) {
         this.path2Shelf = path2Shelf;
     }
 
+    /**
+     * Nastaví cestu k výdajnému miestu.
+     * @param path2Drop nová cesta
+     */
     public void setPath2Drop(ArrayList<PathPoint> path2Drop) {
         this.path2Drop = path2Drop;
     }
 
+    /**
+     * Získa aktuálnu pozíciu vozíka.
+     * @return bod, kde je vozík
+     */
     public PathPoint getCartPoint() {
         synchronized (stateLock) {
             return this.state.position;
         }
     }
 
+    /**
+     * Nastaví aktuálnu pozíciu vozíka.
+     * @param point nová pozícia
+     */
     public void setCartPoint(PathPoint point) {
         synchronized (stateLock) {
             this.state.position = point;
@@ -221,18 +279,30 @@ public class Cart implements Originator {
         return pathPoints;
     }
 
+    /**
+     * Získa zoznam bodov, ktorými vozík prešiel pri spracovávaní aktuálnej požiadavky.
+     * @return zoznam bodov
+     */
     public ArrayList<PathPoint> getTravelledPoints() {
         synchronized (stateLock) {
             return this.state.travelledPoints;
         }
     }
 
+    /**
+     * Pridanie bodu k zoznamu navštívených bodov.
+     * @param point pridávaný bod
+     */
     public void addTravelledPoints(PathPoint point) {
         synchronized (stateLock) {
             this.state.travelledPoints.add(point);
         }
     }
 
+    /**
+     * Nastavenie zoznamu navštívených bodov.
+     * @param points zoznam bodov
+     */
     public void setTravelledPoints(ArrayList<PathPoint> points) {
         synchronized (stateLock) {
             this.state.travelledPoints = new ArrayList<>(points);
@@ -295,6 +365,10 @@ public class Cart implements Originator {
         }
     }
 
+    /**
+     * Naloženie nákladu z požiadavku.
+     * @param request požiadavok
+     */
     public void load(Request request) {
         if (request.getCount() <= getMaxItems() - getLoadedItems()) {
             this.addCartLoad(new CartLoad(request.getCount(), new Item(request.getItemType())));
@@ -302,23 +376,38 @@ public class Cart implements Originator {
         }
     }
 
+    /**
+     * Vyloženie všetkého nákladu z vozíka.
+     */
     public void unload() {
         this.setCartLoad(new ArrayList<>());
         support.firePropertyChange("load", null, getCartLoad());
     }
 
+    /**
+     * Získanie aktuálneho nákladu vozíka.
+     * @return náklad
+     */
     public ArrayList<CartLoad> getCartLoad() {
         synchronized (stateLock) {
             return this.state.load;
         }
     }
 
+    /**
+     * Pridanie položky ku aktuálnemu nákladu.
+     * @param load náklad
+     */
     public void addCartLoad(CartLoad load) {
        synchronized (stateLock) {
             this.state.load.add(load);
        }
     }
 
+    /**
+     * Nastavenie aktuálneho nákladu.
+     * @param load náklad
+     */
     public void setCartLoad(ArrayList<CartLoad> load) {
         synchronized (stateLock) {
             this.state.load = load;
@@ -334,6 +423,10 @@ public class Cart implements Originator {
         this.cartThread.start();
     }
 
+    /**
+     * Získanie objektu cesty.
+     * @return cesta
+     */
     public Path getPath() {
         return this.path;
     }
@@ -354,10 +447,17 @@ public class Cart implements Originator {
         this.support.removePropertyChangeListener(pcl);
     }
 
+    /**
+     * Trieda predstavujúca beh vozíka počas vybaovvania požiadavkov.
+     */
     class CartThread implements Runnable {
         public Thread worker;
         private final AtomicBoolean running = new AtomicBoolean(false);
 
+        /**
+         * Výpočet cesty k výkladnému miestu.
+         * @return index do zoznamu, predstavujúci nákladne miesto
+         */
         private int calculatePath2Drop() {
             int dropIndex;
             ArrayList<PathPoint> path2Drop = new ArrayList<>();
@@ -374,6 +474,11 @@ public class Cart implements Originator {
             }
         }
 
+        /**
+         * Výpočet cesta k regálov s položkami.
+         * @param request objednávka
+         * @return index do zoznamu, predstavujúci výkladné miesto
+         */
         private int calculatePath2Shelf(Request request) {
             int pickupIndex;
 
@@ -390,16 +495,25 @@ public class Cart implements Originator {
             }
         }
 
+        /**
+         * Spustenie vlákna.
+         */
         public void start() {
             worker = new Thread(this);
             worker.setDaemon(true);
             worker.start();
         }
 
+        /**
+         * Ukončenie vlákna.
+         */
         public void stop() {
             running.set(false);
         }
 
+        /**
+         * Beh vlákna.
+         */
         @Override
         public void run() {
             running.set(true);
