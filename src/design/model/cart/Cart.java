@@ -208,11 +208,11 @@ public class Cart implements Originator {
     public ArrayList<PathPoint> getPathPoints(){
         ArrayList<PathPoint> pathPoints = new ArrayList<>(getTravelledPoints());
 
-        if (getPath2Shelf() != null && getTravelledPoints().size() == 0) {
+        if (getPath2Shelf() != null && getPath2Drop().size() == 0) {
             for (int i = getCartPosIndex(); i < getPath2Shelf().size(); i++) {
                 pathPoints.add(getPath2Shelf().get(i));
             }
-        } else if (getPath2Drop() != null && getPath2Drop().size() == 0) {
+        } else if (getPath2Drop() != null && getPath2Shelf().size() == 0) {
             for (int i = getCartPosIndex(); i < getPath2Drop().size(); i++) {
                 pathPoints.add(getPath2Drop().get(i));
             }

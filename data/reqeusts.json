@@ -2,12 +2,24 @@
   "requests":
   [
     {
-      "items": ["polička", "vaňa"],
-      "counts": [2,1]
+      "items": ["polička", "vaňa", "stôl"],
+      "counts": [2, 1, 1]
     },
     {
-      "items": ["vaňa"],
-      "counts": [3]
+      "items": ["vaňa", "umývadlo"],
+      "counts": [3, 2]
+    },
+    {
+      "items": ["pero"],
+      "counts": [2]
+    },
+    {
+      "items": ["ceruzka", "zošiť"],
+      "counts": [1, 2]
+    },
+    {
+      "items": ["ponožky", "tričko"],
+      "counts": [3, 3]
     }
   ]
 }

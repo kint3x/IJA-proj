@@ -215,7 +215,7 @@ public class StorageController {
      * @param s Gshelfa ktorá akciu zavolala
      */
     public void ClickedAction(GShelf s){
-        System.out.println("Kliknutie na shelfu: \n");
+//        System.out.println("Kliknutie na shelfu: \n");
 //        s.getShelf().printShelf();
         // Po kliknutí na shelf sa zobrazí vnútro ako popup
 
