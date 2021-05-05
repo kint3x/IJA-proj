@@ -11,8 +11,8 @@ public class GPathPoint {
     private StorageController controller;
     private Circle circle;
 
-    private int x;
-    private int y;
+    public int x;
+    public int y;
 
     private PathPoint pathPoint;
 
@@ -37,10 +37,16 @@ public class GPathPoint {
         rectDefaultstyle();
     }
 
-    private void rectDefaultstyle(){
+    public void rectDefaultstyle(){
         circle.setRadius(controller.getRect_s()/3.0);
         circle.setStyle("-fx-fill: #8ced97");
     }
+
+    public  void setColorClicked(String color){
+        circle.setStyle("-fx-fill: "+color+";");
+    }
+
+
 
 
     /**

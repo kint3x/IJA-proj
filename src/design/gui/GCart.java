@@ -56,7 +56,17 @@ public class GCart implements PropertyChangeListener {
             controller.clickedGCart(this);
 
         });
+        farba.setOnMouseEntered(event -> {
+            controller.hoverGCart(this);
+        });
 
+        farba.setOnMouseExited(event -> {
+            controller.endHoverGCart(this);
+        });
+
+    }
+    public String getColor(){
+        return this.randColor;
     }
     public Cart getCart(){
         return this.cart;

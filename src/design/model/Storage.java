@@ -429,12 +429,12 @@ public class Storage {
         for (Shelf s : this.shelfs) {
             s.printShelf();
         }
-
+        /*
         try {
-            this.exportStorage("C:\\Users\\simon\\IdeaProjects\\IJA-proj\\data\\config.json");
+            this.exportStorage();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
