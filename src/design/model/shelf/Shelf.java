@@ -106,16 +106,28 @@ public class Shelf implements Originator {
         this.updateCounts();
     }
 
+    /**
+     * Získanie správcu stavov daného objektu.
+     * @return správca stavov
+     */
     @Override
     public ObjectCareTaker getCareTaker() {
         return this.shelfCareTaker;
     }
 
+    /**
+     * Získanie stavu ako objekt Memento.
+     * @return objekt s aktuálnym stavom
+     */
     @Override
     public Memento saveStateToMemento() {
         return new Memento(this.getState());
     }
 
+    /**
+     * Nastavanie stavu z objektu Memento.
+     * @param memento objekt s novým stavom
+     */
     @Override
     public void setStateFromMemento(Memento memento) {
         this.setState((ShelfState) memento.getState());
@@ -248,7 +260,6 @@ public class Shelf implements Originator {
      * Vráti objekt reprezetujúci stav skladu. Kľúčami sú názvy položiek a hodnotami sú počty.
      */
     public HashMap<String, Integer> getItemCounts(){
-
         return this.itemCounts;
     }
 

@@ -436,12 +436,6 @@ public class Storage {
         for (Shelf s : this.shelfs) {
             s.printShelf();
         }
-        /*
-        try {
-            this.exportStorage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
 
@@ -496,6 +490,10 @@ public class Storage {
         return res;
     }
 
+    /**
+     * Vrátanie objektu cestu.
+     * @return cesta
+     */
     public Path getPath(){
         return this.path;
     }

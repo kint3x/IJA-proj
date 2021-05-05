@@ -481,11 +481,13 @@ public class Path {
      * Zastavenie vozíkov.
      */
     public void stopCarts() {
-        this.cartsLock.lock();
+        if (!this.cartsLock.isLocked()) {
+            this.cartsLock.lock();
+        }
     }
 
     /**
-     * Putenie vozíkov.
+     * Pustenie vozíkov.
      */
     public void startCarts() {
         if (this.cartsLock.isLocked()) {
