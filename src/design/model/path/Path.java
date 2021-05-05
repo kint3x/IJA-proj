@@ -10,6 +10,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import static java.lang.Math.abs;
 import static java.lang.Math.random;
 
+/**
+ * Objektu spravujúci cestu a vozíky v sklade.
+ */
 public class Path {
     private int changeCounter = 0;
     private final Object changeCounterLock = new Object();
@@ -41,14 +44,26 @@ public class Path {
         }
     }
 
+    /**
+     * Získanie indexu výkladného miesta.
+     * @return index
+     */
     public int getDropIndex() {
         return this.dropIndex;
     }
 
+    /**
+     * Získanie zoznamu aktuálne spracovávaných požiadavkov.
+     * @return zoznam spracovávanýh požiadavkov
+     */
     public ArrayList<Request> getWaitingRequests() {
         return this.waitingRequests;
     }
 
+    /**
+     * Získanie zoznamu otvorených požiadavkov, ktoré ešte neboli uložené medzi spracovávané.
+     * @return zoznam otvorených objednávok
+     */
     public ArrayList<Request> getOpenRequests() {
         return openRequests;
     }
@@ -404,8 +419,10 @@ public class Path {
         this.deliverRequests();
     }
 
+    /**
+     * Doručenie spracovaných objednávok.
+     */
     public void deliverRequests() {
-
         while (this.getWaitingRequests().size() > 0) {
             int freeCarts = 0;
             boolean added = false;
@@ -516,14 +533,21 @@ public class Path {
         });
     }
 
+    /**
+     * Získanie zoznamu bodov cesty.
+     * @return zoznam bodov
+     */
     public ArrayList<PathPoint> getPoints(){
         synchronized (pointsLock) {
             return this.points;
         }
     }
 
+    /**
+     * Získanie vozíkov.
+     * @return zoznam vozíkov
+     */
     public ArrayList<Cart> getCarts(){
         return this.carts;
     }
-
 }
