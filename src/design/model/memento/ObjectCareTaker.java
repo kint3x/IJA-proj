@@ -24,4 +24,12 @@ public class ObjectCareTaker {
     public Memento getState(int index) {
         return this.mementoList.get(index);
     }
+
+    /**
+     * Vráti počet uložených stavov.
+     * @return počet uložených stavov
+     */
+    public int getStatesCount() {
+        return this.mementoList.size();
+    }
 }

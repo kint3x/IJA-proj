@@ -52,6 +52,10 @@ public class Storage {
         return this.width;
     }
 
+    /**
+     * Získa objektu správcu stavov.
+     * @return správca stavov
+     */
     public CareTaker getCareTaker() {
         return this.careTaker;
     }

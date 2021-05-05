@@ -40,6 +40,11 @@ public class CareTaker {
      * Načítanie stavov poličiek, bodov cesty a vozíkov.
      */
     public void setState(int index) {
+        if (index >= this.storage.getAllShelfs().get(0).getCareTaker().getStatesCount()) {
+            System.err.format("Index mimo rozsah stavov. Index: %d, Počet stavov: %d\n", index, this.storage.getAllShelfs().get(0).getCareTaker().getStatesCount());
+            return;
+        }
+
         for (PathPoint point : this.storage.getPath().getPoints()) {
             point.setStateFromMemento(point.getCareTaker().getState(index));
         }
