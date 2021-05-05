@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 import java.util.HashMap;
 
-public class StorageView {
+public class StorageView  {
 
     private Stage info_shelf; // obsahuje view okno na vykreslenie obsahu poličky
 

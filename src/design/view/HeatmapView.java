@@ -5,6 +5,7 @@ import design.gui.GEmpty;
 import design.gui.GShelf;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -90,7 +91,9 @@ public class HeatmapView {
             int g = 255 - b - r;
 
             Color my = new Color(r,g,b);
-
+            if(maxVal == 0){
+                my = new Color(0,0,255);
+            }
             gshelf.setColor(my);
             gshelves.add(gshelf);
             //heatm.add(gshelf,s.getShelf().getPosX(),s.getShelf().getPosY());
@@ -98,9 +101,11 @@ public class HeatmapView {
         }
 
         ImageView bar = new ImageView("/design/res/grad.png");
-
+        Label mer = new Label();
+        mer.setText(minVal + " - " + maxVal);
         vbox.setSpacing(10);
         vbox.getChildren().add(bar);
+        vbox.getChildren().add(mer);
 
         root.getChildren().add(vbox);
 

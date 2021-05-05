@@ -10,7 +10,7 @@ import design.gui.GCart;
 import design.gui.GEmpty;
 import design.gui.GPathPoint;
 import design.gui.GShelf;
-import design.model.*;
+import design.model.Storage;
 import design.model.cart.Cart;
 import design.model.item.Item;
 import design.model.item.ItemType;
@@ -45,7 +45,7 @@ public class StorageController {
     private double initial_coordY;  //premenna pre drag na uchovavanie predoslej pozicie
 
     private StorageView storageView;
-    private CartView cartView;
+    public CartView cartView;
     private RequestView requestView;
 
     public static float speed = 1;
@@ -214,23 +214,21 @@ public class StorageController {
      * Akcia volaná ak sa klikne na shelfu.
      * @param s Gshelfa ktorá akciu zavolala
      */
-    public void ClickedAction(GShelf s){
-//        System.out.println("Kliknutie na shelfu: \n");
-//        s.getShelf().printShelf();
-        // Po kliknutí na shelf sa zobrazí vnútro ako popup
+    public void ClickedShelfAction(GShelf s){
 
-        try {
-            storageView.prepareStage_info(s);
-            Group root = new Group();
-            Scene info = new Scene(root,400,300);
-            storageView.drawScene_info(s,info,root,this);
-            storageView.getInfoShelfStage().setScene(info);
-            storageView.getInfoShelfStage().show();
-        }
-        catch (Exception e) {
-            System.out.println("EXCEPT");
-            System.out.println(e);
-        }
+
+             try {
+                storageView.prepareStage_info(s);
+                Group root = new Group();
+                Scene info = new Scene(root,400,300);
+                storageView.drawScene_info(s,info,root,this);
+                storageView.getInfoShelfStage().setScene(info);
+                storageView.getInfoShelfStage().show();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
     }
 
@@ -358,8 +356,8 @@ public class StorageController {
 
         }
         catch (Exception e) {
-            System.out.println("EXCEPT");
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
+
 }

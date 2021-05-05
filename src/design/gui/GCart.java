@@ -50,7 +50,7 @@ public class GCart implements PropertyChangeListener {
 
     private void setDefStyle(){
         cartIcon.setPreserveRatio(true);
-//        System.out.println("-fx-background-color: "+this.randColor+";");
+
         farba.setFill(Paint.valueOf(this.randColor));
         farba.setOnMouseClicked(event -> {
             controller.clickedGCart(this);
@@ -105,7 +105,12 @@ public class GCart implements PropertyChangeListener {
             this.drawCart();
 
         }
-        else if(evt.getPropertyName()=="load"){
+        else{
+            Platform.runLater(
+                    () -> {
+                        controller.cartView.refreshCart(this);
+                    }
+            );
 
         }
     }

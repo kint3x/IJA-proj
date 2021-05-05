@@ -1,7 +1,7 @@
 package design.model.cart;
 
 import design.controllers.StorageController;
-import design.model.*;
+import design.model.Request;
 import design.model.item.Item;
 import design.model.memento.Memento;
 import design.model.memento.ObjectCareTaker;

@@ -18,9 +18,13 @@ public class CartView {
     private Stage cart_stage;
     private ArrayList<CartLoad> cartLoad;
 
+    private GCart last_cart;
+    private Group last_group;
+
     public CartView(){
         this.cart_stage=new Stage();
-
+        last_cart=null;
+        last_group=null;
     }
 
     /**
@@ -35,6 +39,12 @@ public class CartView {
 
     public void drawScene_cart(GCart gc, Group root) {
 
+        this.last_cart = gc;
+        this.last_group = root;
+
+        for(int i=0; i<root.getChildren().size();i++){
+            root.getChildren().remove(i);
+        }
         ScrollPane scrollPane = new ScrollPane();
         root.getChildren().add(scrollPane);
 
@@ -50,7 +60,7 @@ public class CartView {
         nadpis.setFont(f_nadpis);
 
 
-        nadpis.setText("Názov položky, počet");
+        nadpis.setText("Názov položky, počet   "+gc.getCart().getLoadedItems()+"/"+gc.getCart().getMaxItems());
         nadpis.setPadding(new Insets(0, 0, 10, 0));
         vbox.getChildren().add(nadpis);
 
@@ -80,4 +90,9 @@ public class CartView {
         return this.cart_stage;
     }
 
+    public void refreshCart(GCart g){
+        if(g.equals(this.last_cart)){
+            this.drawScene_cart(last_cart,last_group);
+        }
+    }
 }

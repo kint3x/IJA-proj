@@ -43,7 +43,13 @@ public class GPathPoint implements PropertyChangeListener {
 
     public void rectDefaultstyle(){
         circle.setRadius(controller.getRect_s()/3.0);
-        circle.setStyle("-fx-fill: #8ced97");
+        if(pathPoint.isBlocked()){
+            circle.setStyle("-fx-fill: #f27983");
+        }
+        else{
+            circle.setStyle("-fx-fill: #8ced97");
+        }
+
     }
 
     public  void setColorClicked(String color){

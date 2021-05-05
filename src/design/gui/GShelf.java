@@ -75,7 +75,7 @@ public class GShelf {
      * Ak je kliknute na políčko, zavola metodu storageControlleru.
      */
     EventHandler<MouseEvent> clickedHandler = ev -> {
-        controller.ClickedAction(this);
+        controller.ClickedShelfAction(this);
         ev.consume();
     };
 
