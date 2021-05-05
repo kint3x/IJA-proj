@@ -1,21 +1,27 @@
 package design.model.memento;
 
 import design.model.path.PathPoint;
-import design.model.path.PathPointState;
 import design.model.shelf.Shelf;
 import design.model.Storage;
 import design.model.cart.Cart;
 
-import java.util.ArrayList;
-
+/**
+ * Trieda spravujúca ukladanie a načítavanie stavov objektov.
+ */
 public class CareTaker {
     public Storage storage;
-    public ArrayList<ObjectCareTaker> cartCareTakers = new ArrayList<>();
 
+    /**
+     * Konštruktor.
+     * @param storage objekt skladu, ktorý spravuje
+     */
     public CareTaker(Storage storage) {
         this.storage = storage;
     }
 
+    /**
+     * Uloženie stavov poličiek, bodov cesty a vozíkov.
+     */
     public void saveState() {
         for (PathPoint point : this.storage.getPath().getPoints()) {
             point.getCareTaker().addState(point.saveStateToMemento());
@@ -30,6 +36,9 @@ public class CareTaker {
         }
     }
 
+    /**
+     * Načítanie stavov poličiek, bodov cesty a vozíkov.
+     */
     public void setState(int index) {
         for (PathPoint point : this.storage.getPath().getPoints()) {
             point.setStateFromMemento(point.getCareTaker().getState(index));
