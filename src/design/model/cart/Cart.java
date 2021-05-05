@@ -5,6 +5,8 @@ import design.model.*;
 import design.model.item.Item;
 import design.model.memento.Memento;
 import design.model.memento.ObjectCareTaker;
+import design.model.memento.Originator;
+import design.model.memento.State;
 import design.model.path.Path;
 import design.model.path.PathPoint;
 import design.model.shelf.Shelf;
@@ -18,7 +20,7 @@ import java.util.logging.Logger;
 
 import static java.lang.Math.min;
 
-public class Cart {
+public class Cart implements Originator {
     private ObjectCareTaker cartCareTaker = new ObjectCareTaker();
     private int maxItems;
     private final Object busyLock = new Object();
@@ -26,7 +28,7 @@ public class Cart {
     private ArrayList<PathPoint> travelledPoints = new ArrayList<>();
     private CartState state;
     private final Object stateLock = new Object();
-    private CartThread cartThread;
+    private CartThread cartThread = null;
 
     /**
      * Cesta pre všetky vozíky.
@@ -101,16 +103,19 @@ public class Cart {
         }
     }
 
-    public void setState(CartState state) {
+    public void setState(State state) {
         synchronized (stateLock) {
-            cartThread.stop();
-            this.state = (CartState) state.clone();
+            if (cartThread != null) {
+                cartThread.stop();
+            }
 
-            support.firePropertyChange("posX", -1, state.position.getPosX());
-            support.firePropertyChange("posY", -1, state.position.getPosY());
+            this.state = ((CartState) state).clone();
+
+            support.firePropertyChange("posX", -1, this.state.position.getPosX());
+            support.firePropertyChange("posY", -1, this.state.position.getPosY());
             support.firePropertyChange("load", null, getCartLoad());
 
-            if (state.busy) {
+            if (this.state.busy) {
                 deliverRequests();
             }
         }

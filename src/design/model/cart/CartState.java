@@ -32,7 +32,7 @@ public class CartState extends State {
     }
 
     @Override
-    public Object clone() {
+    public CartState clone() {
         return new CartState(this.position, this.load, this.requests, this.busy, this.index, this.travelledPoints);
     }
 }

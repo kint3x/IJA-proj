@@ -1,5 +1,7 @@
 package design.model.memento;
 
+import design.model.path.PathPoint;
+import design.model.path.PathPointState;
 import design.model.shelf.Shelf;
 import design.model.Storage;
 import design.model.cart.Cart;
@@ -15,6 +17,10 @@ public class CareTaker {
     }
 
     public void saveState() {
+        for (PathPoint point : this.storage.getPath().getPoints()) {
+            point.getCareTaker().addState(point.saveStateToMemento());
+        }
+
         for (Shelf shelf : this.storage.getAllShelfs()) {
             shelf.getCareTaker().addState(shelf.saveStateToMemento());
         }
@@ -25,6 +31,10 @@ public class CareTaker {
     }
 
     public void setState(int index) {
+        for (PathPoint point : this.storage.getPath().getPoints()) {
+            point.setStateFromMemento(point.getCareTaker().getState(index));
+        }
+
         for (Shelf shelf : this.storage.getAllShelfs()) {
             shelf.setStateFromMemento(shelf.getCareTaker().getState(index));
         }

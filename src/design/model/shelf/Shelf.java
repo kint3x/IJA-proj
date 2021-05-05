@@ -9,6 +9,8 @@ import design.model.item.Item;
 import design.model.item.ItemType;
 import design.model.memento.Memento;
 import design.model.memento.ObjectCareTaker;
+import design.model.memento.Originator;
+import design.model.memento.State;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 /**
  * Trieda reprezentujúca regál, obsahujúci položky.
  */
-public class Shelf {
+public class Shelf implements Originator {
     private ObjectCareTaker shelfCareTaker = new ObjectCareTaker();
     private HashMap<String, Integer> itemCounts = new HashMap<>();
     private final int posX;
@@ -69,7 +71,8 @@ public class Shelf {
      * Získanie aktuálneho stavu regálu.
      * @return stav
      */
-    public ShelfState getState() {
+    @Override
+    public State getState() {
         return this.state.clone();
     }
 
@@ -77,25 +80,27 @@ public class Shelf {
      * Nastavenie stavu regálu a prepočítanie položiek.
      * @param state nový stav
      */
-    public void setState(ShelfState state) {
-        this.state = state.clone();
+    @Override
+    public void setState(State state) {
+        // TODO listener
+
+        this.state = ((ShelfState) state).clone();
         this.updateCounts();
     }
 
+    @Override
     public ObjectCareTaker getCareTaker() {
         return this.shelfCareTaker;
     }
 
+    @Override
     public Memento saveStateToMemento() {
         return new Memento(this.getState());
     }
 
+    @Override
     public void setStateFromMemento(Memento memento) {
         this.setState((ShelfState) memento.getState());
-    }
-
-    public void setStateFromMemento() {
-
     }
 
     /**
