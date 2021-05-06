@@ -32,8 +32,7 @@ public class AnimationController {
 
         allStates=0;
         currState=0;
-        currIndex=0;
-        history=false;
+        currIndex=-1;
     }
 
     /**
@@ -81,10 +80,7 @@ public class AnimationController {
      */
     @FXML
     public void handleNextBtn(){
-        if(!history){
-            history=true;
-            currState++;
-        }
+
         if(currIndex+1 >= allStates) return;
         currIndex++;
         currState++;
@@ -98,6 +94,8 @@ public class AnimationController {
     public void addState(){
         if(StorageApp.file_path == null) return;
         allStates++;
+        currState++;
+        currIndex++;
         drawState();
     }
     /**
