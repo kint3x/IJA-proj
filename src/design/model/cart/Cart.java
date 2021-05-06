@@ -112,6 +112,8 @@ public class Cart implements Originator {
                 cartThread.stop();
             }
 
+            this.setPath2Shelf(new ArrayList<>());
+            this.setPath2Drop(new ArrayList<>());
             this.state = ((CartState) state).clone();
 
             support.firePropertyChange("posX", -1, this.state.position.getPosX());
