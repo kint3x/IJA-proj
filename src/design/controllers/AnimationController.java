@@ -17,9 +17,9 @@ public class AnimationController {
     private Label recordCounter;
 
     private int allStates;
-    private int currState;
     private int currIndex;
-    private boolean history;
+
+
 
     @FXML
     protected void initialize(){
@@ -31,8 +31,7 @@ public class AnimationController {
         });
 
         allStates=0;
-        currState=0;
-        currIndex=-1;
+        currIndex=0;
     }
 
     /**
@@ -66,43 +65,29 @@ public class AnimationController {
     }
     /**
      * Funkcia obslúži tlačítko Prev
+     *
      */
     @FXML
     public void handlePrevBtn(){
-        if(currIndex-1 < 0) return;
+        if(currIndex < 1) return;
         currIndex--;
-        currState--;
         Controller.storage.getStorage().getCareTaker().setState(currIndex);
         drawState();
     }
-    /**
-     * Funkcia obslúži tlačítko Next
-     */
-    @FXML
-    public void handleNextBtn(){
-
-        if(currIndex+1 >= allStates) return;
-        currIndex++;
-        currState++;
-        Controller.storage.getStorage().getCareTaker().setState(currIndex);
-        drawState();
-    }
-
     /**
      * Funkcia obnoví počet nahraných stavov
      */
     public void addState(){
         if(StorageApp.file_path == null) return;
         allStates++;
-        currState++;
-        currIndex++;
+        currIndex=allStates;
         drawState();
     }
     /**
      * Funkcia vykreslí label so stavmi
      */
     public void drawState(){
-        recordCounter.setText(currState + "/" + allStates);
+        recordCounter.setText(currIndex + "/" + allStates);
     }
 
 }

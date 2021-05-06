@@ -5,16 +5,15 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="37.0" prefWidth="612.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="design.controllers.AnimationController">
+<AnchorPane prefHeight="37.0" prefWidth="554.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="design.controllers.AnimationController">
    <children>
       <Label layoutX="8.0" layoutY="9.0" text="Rýchlosť" />
       <Slider fx:id="slider" layoutX="60.0" layoutY="10.0" max="10.0" min="0.1" prefHeight="14.0" prefWidth="150.0" />
       <Label fx:id="val" layoutX="220.0" layoutY="9.0" text="0.1" />
       <Button layoutX="270.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#handlePlayBtn" text="Play" />
       <Button layoutX="322.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#handlePauseBtn" text="Pause" />
-      <Button layoutX="407.0" layoutY="6.0" mnemonicParsing="false" text="Record" onMouseClicked="#handleRecordBtn"/>
-      <Button layoutX="470.0" layoutY="6.0" mnemonicParsing="false" text="Prev" onMouseClicked="#handlePrevBtn"/>
-      <Button layoutX="519.0" layoutY="6.0" mnemonicParsing="false" text="Next" onMouseClicked="#handleNextBtn"/>
-      <Label layoutX="572.0" layoutY="10.0" text="0/0" fx:id="recordCounter" />
+      <Button layoutX="407.0" layoutY="6.0" mnemonicParsing="false" onMouseClicked="#handleRecordBtn" text="Record" />
+      <Button layoutX="470.0" layoutY="6.0" mnemonicParsing="false" onMouseClicked="#handlePrevBtn" text="Prev" />
+      <Label fx:id="recordCounter" layoutX="523.0" layoutY="10.0" text="0/0" />
    </children>
 </AnchorPane>
