@@ -56,6 +56,9 @@
         <fileset dir="src">
           <include name="design/layouts/*.fxml"/>
         </fileset>
+        <fileset dir="src">
+          <include name="design/res/*.png"/>
+        </fileset>
       </fx:jar>
       
    
