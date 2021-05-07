@@ -257,7 +257,7 @@ public class Path {
      * Vypočíta cestu k poličke.
      * @param posX x-ová pozícia regálu
      * @param posY y-ová pozícia regálu
-     * @oaram cartX x-ová pozícia vozíka na ceste
+     * @param cartX x-ová pozícia vozíka na ceste
      * @param cartY y-ová pozícia vozíka na ceste
      * @param path zoznam bodov, ktorý bude modifikovaný, nesmie byť null
      * @return index v ceste, kde je nutné vyzdvihnúť náklad
@@ -292,7 +292,7 @@ public class Path {
 
     /**
      * Vypočíta cestu k miestu pre vyzdvihnutie tovaru.
-     * @oaram cartX x-ová pozícia vozíka na ceste
+     * @param cartX x-ová pozícia vozíka na ceste
      * @param cartY y-ová pozícia vozíka na ceste
      * @param path zoznam bodov, ktorý bude modifikovaný, nesmie byť null
      * @return index v ceste, kde je nutné vyzdvihnúť náklad
